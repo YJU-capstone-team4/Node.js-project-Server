@@ -13,8 +13,12 @@ control 크롤링서버 as Lamda
 
 == 지도페이지 - 동선 폴더 미리보기 로딩 ==
 User --> App : [Req] Feb 버튼 클릭
-App --> Node : [Req] 동선 폴더 안의 리스트 요청
-    Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 리스트
+    App --> Node : [Req] 최근 사용한 폴더 유무 확인
+    alt 최근에 사용한 폴더 가 있을 경우
+        Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 리스트
+    else 최근에 사용한 폴더가 없을 경우
+        Node --> Node : [Query-Select] default 동선 폴더에 포함된 리스트
+    end
 Node -> App : [Res] 동선 리스트 반환
 App --> User : [Res] 동선 폴더의 리스트 렌더링
 

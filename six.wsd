@@ -14,14 +14,18 @@ control 크롤링서버 as Lamda
 == 지도페이지 로딩 ==
 User --> App : [Req] 지도 버튼 클릭
 App --> Node : [Req] 지도 페이지 요청
-    Node --> Node : [Query-Select] 전국 맛집 정보
+    alt 유튜버가 선택 되어 있을 때
+        Node --> Node : 해당 유튜버의 전국 맛집 정보
+    else 유튜버가 선택 되지 않았을 때
+        Node --> Node : [Query-Select] 전국 맛집 정보
+    end
 Node -> App : [Res] 맛집 정보 반환
 App --> User : [Res] 지도 페이지 렌더링
 
 == 지도페이지 - 지도 확대 ==
 User --> App : [Req] 지도에서 원하는 지역 확대
 App --> Node : [Req] 해당 지역의 맛집 정보 요청
-    Node --> Node : [Query-Select] 해당 지역의 맛집 이름, 맛집 관련 영상 썸네일 정보
+    Node --> Node : [Query-Select] 해당 지역의 맛집 이름, 맛집 좌표 정보
 Node -> App : [Res] 맛집 정보 반환
 App --> User : [Res] 지도 페이지 렌더링
 
@@ -52,19 +56,13 @@ App --> User : [Res] 맛집 상세 페이지 렌더링
 
 == 지도페이지 - 썸네일 사진을 클릭 했을 때 ==
 User --> App : [Req] 썸네일 사진을 클릭
-App --> Node : [Req] 클릭한 맛집의 영상 요청
-    Node --> Node : [Query-Select] 해당 유튜브 영상 링크
-Node -> App : [Res] 유튜브 영상 링크 반환
-App --> User : [Res] 유튜브 영상 재생
+App --> User : [Res] 클릭한 맛집의 영상 재생
 
 == 지도페이지 - 즐겨찾기를 눌렀을 경우 ==
 User --> App : [Req] 선택된 동선에 추가 요청
-    alt 동선 폴더가 없을 경우
-        Node --> App : default 폴더 생성
-    end
-App --> Node : [Req] 맛집 이름, 맛집 좌표를 통해 동선에 추가 요청
-    Node --> Node : [Query-Insert] 선택 되어진 동선 폴더에 맛집 이름, 맛집 좌표를 통한 맛집 추가
-Node --> App : [Res] 맛집이 추가된 새로운 동선 폴더 반환
+App --> Node : [Req] 해당 id를 통해 동선에 추가 요청
+    Node --> Node : [Query-Insert] 선택 되어진 동선 폴더에 맛집 id 추가
+Node --> App : [Res] 성공 여부 반환
 App --> User : [Res] 즐겨 찾기 표시
 
 @enduml

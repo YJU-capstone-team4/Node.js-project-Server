@@ -27,10 +27,7 @@ App --> User : [Res] 유튜버 상세 페이지 렌더링
 
 == 맛집 상세 페이지 로딩 - 유튜브 썸네일을 눌렀을 경우 ==
 User --> App : [Req] 유튜브 썸네일 클릭
-App --> Node : [Req] 해당 썸네일 유튜브 영상 요청
-    Node --> Node : [Query-Select] 해당 썸네일 유튜브 영상 링크
-Node -> App : [Res] 썸네일 유튜브 영상 링크 반환
-App --> User : [Res] 썸네일 유튜브 영상 재생
+App --> User : [Res] 유튜브 영상 재생
 
 == 맛집 상세 페이지 로딩 - 동선 제목을 눌렀을 경우 ==
 User --> App : [Req] 동선 제목 클릭
@@ -41,11 +38,8 @@ App --> User : [Res] 동선 페이지 렌더링
 
 == 맛집 상세 페이지 로딩 - 즐겨찾기를 눌렀을 경우 ==
 User --> App : [Req] 선택된 동선에 추가 요청
-    alt 동선 폴더가 없을 경우
-        Node --> App : default 폴더 생성
-    end
-App --> Node : [Req] 맛집 이름, 맛집 좌표를 통해 동선에 추가 요청
-    Node --> Node : [Query-Insert] 선택 되어진 동선 폴더에 맛집 이름, 맛집 좌표를 통한 맛집 추가
-Node --> App : [Res] 맛집이 추가된 새로운 동선 폴더 반환
+App --> Node : [Req] 맛집 id를 통해 동선에 추가 요청
+    Node --> Node : [Query-Insert] 선택 되어진 동선 폴더에 맛집 id를 통한 맛집 추가
+Node --> App : [Res] 성공 여부 반환
 App --> User : [Res] 즐겨 찾기 표시
 @enduml
