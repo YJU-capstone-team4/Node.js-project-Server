@@ -1,0 +1,36 @@
+지도 페이지 동선 미리보기 페이지
+@startuml
+
+title YJU-capstone-team4
+
+actor 사용자 as User
+actor 관리자 as Admin
+
+control App
+control Web
+control 노드서버 as Node
+control 크롤링서버 as Lamda
+
+== 지도페이지 - 동선 폴더 미리보기 로딩 ==
+User --> App : [Req] Feb 버튼 클릭
+App --> Node : [Req] 동선 폴더 안의 리스트 요청
+    Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 리스트
+Node -> App : [Res] 동선 리스트 반환
+App --> User : [Res] 동선 폴더의 리스트 렌더링
+
+
+== 지도 페이지 - 선택된 동선 폴더 미리보기 로딩 ==
+User --> App : [Req] select box 에서 원하느 동선 선택
+App --> Node : [Req] 선택된 동선 폴더 안의 리스트 요청
+    Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 리스트
+Node -> App : [Res] 동선 리스트 반환
+App --> User : [Res] 선택된 동선 폴더의 리스트 렌더링
+
+
+== 지도페이지 - 동선 페이지 로딩 ==
+User --> App : [Req] 선택된 동선 폴더의 자세히 보기 요청
+App --> Node : [Req] 선택된 동선 폴더 안의 맛집 리스트 요청
+    Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 맛집 리스트
+Node -> App : [Res] 맛집 리스트 반환
+App --> User : [Res] 선택된 동선 폴더의 리스트 렌더링
+@enduml

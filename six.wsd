@@ -1,0 +1,70 @@
+지도 페이지
+@startuml
+
+title YJU-capstone-team4
+
+actor 사용자 as User
+actor 관리자 as Admin
+
+control App
+control Web
+control 노드서버 as Node
+control 크롤링서버 as Lamda
+
+== 지도페이지 로딩 ==
+User --> App : [Req] 지도 버튼 클릭
+App --> Node : [Req] 지도 페이지 요청
+    Node --> Node : [Query-Select] 전국 맛집 정보
+Node -> App : [Res] 맛집 정보 반환
+App --> User : [Res] 지도 페이지 렌더링
+
+== 지도페이지 - 지도 확대 ==
+User --> App : [Req] 지도에서 원하는 지역 확대
+App --> Node : [Req] 해당 지역의 맛집 정보 요청
+    Node --> Node : [Query-Select] 해당 지역의 맛집 이름, 맛집 관련 영상 썸네일 정보
+Node -> App : [Res] 맛집 정보 반환
+App --> User : [Res] 지도 페이지 렌더링
+
+== 지도페이지 - 유튜버 검색 ==
+User --> App : [Req] 유튜버 검색
+App --> Node : [Req] 해당 유튜버 방문 맛집 요청
+    Node --> Node : [Query-Select] 해당 유튜버 방문 맛집 정보
+        alt 해당 유튜버에 대한 정보가 없을 경우
+            User --> App : 해당 유튜버에 대한 정보 수집 요청
+        end
+Node --> App : [Res] 맛집 정보 반환
+App --> User : [Res] 검색한 유튜버 방문 맛집 정보 렌더링
+
+
+== 지도페이지 - 맛집을 클릭 했을 때 ==
+User --> App : [Req] 맛집을 클릭
+App --> Node : [Req] 클릭한 맛집의 썸네일 사진 요청
+    Node --> Node : [Query-Select] 해당 맛집의 썸네일 사진
+Node -> App : [Res] 맛집 썸네일 사진 반환
+App --> User : [Res] 썸네일 렌더링
+
+== 지도페이지 - 식당 이름을 클릭 했을 때 ==
+User --> App : [Req] 식당 이름을 클릭
+App --> Node : [Req] 클릭한 맛집의 상세 정보 요청
+    Node --> Node : [Query-Select] 맛집 상세 정보
+Node -> App : [Res] 맛집 상세 정보 반환
+App --> User : [Res] 맛집 상세 페이지 렌더링
+
+== 지도페이지 - 썸네일 사진을 클릭 했을 때 ==
+User --> App : [Req] 썸네일 사진을 클릭
+App --> Node : [Req] 클릭한 맛집의 영상 요청
+    Node --> Node : [Query-Select] 해당 유튜브 영상 링크
+Node -> App : [Res] 유튜브 영상 링크 반환
+App --> User : [Res] 유튜브 영상 재생
+
+== 지도페이지 - 즐겨찾기를 눌렀을 경우 ==
+User --> App : [Req] 선택된 동선에 추가 요청
+    alt 동선 폴더가 없을 경우
+        Node --> App : default 폴더 생성
+    end
+App --> Node : [Req] 맛집 이름, 맛집 좌표를 통해 동선에 추가 요청
+    Node --> Node : [Query-Insert] 선택 되어진 동선 폴더에 맛집 이름, 맛집 좌표를 통한 맛집 추가
+Node --> App : [Res] 맛집이 추가된 새로운 동선 폴더 반환
+App --> User : [Res] 즐겨 찾기 표시
+
+@enduml
