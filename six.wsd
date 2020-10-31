@@ -14,9 +14,9 @@ control 크롤링서버 as Lamda
 == 지도페이지 로딩 ==
 User --> App : [Req] 지도 버튼 클릭
 App --> Node : [Req] 지도 페이지 요청
-    alt 유튜버가 선택 되어 있을 때
-        Node --> Node : 해당 유튜버의 전국 맛집 정보
-    else 유튜버가 선택 되지 않았을 때
+    alt 유튜버가 검색 되어 있을 때
+        Node --> Node : [Query-Select] 해당 유튜버의 전국 맛집 정보
+    else 유튜버가 검색 되지 않았을 때
         Node --> Node : [Query-Select] 전국 맛집 정보
     end
 Node -> App : [Res] 맛집 정보 반환
@@ -24,21 +24,28 @@ App --> User : [Res] 지도 페이지 렌더링
 
 == 지도페이지 - 지도 확대 ==
 User --> App : [Req] 지도에서 원하는 지역 확대
+activate User
 App --> Node : [Req] 해당 지역의 맛집 정보 요청
     Node --> Node : [Query-Select] 해당 지역의 맛집 이름, 맛집 좌표 정보
 Node -> App : [Res] 맛집 정보 반환
 App --> User : [Res] 지도 페이지 렌더링
+deactivate User
 
 == 지도페이지 - 유튜버 검색 ==
 User --> App : [Req] 유튜버 검색
-App --> Node : [Req] 해당 유튜버 방문 맛집 요청
-    Node --> Node : [Query-Select] 해당 유튜버 방문 맛집 정보
+App --> Node : [Req] 유튜버 유무 확인 요청
+    Node --> Node :  [Query-Select] 유튜버 유무 확인
         alt 해당 유튜버에 대한 정보가 없을 경우
-            User --> App : 해당 유튜버에 대한 정보 수집 요청
+            Node --> App : [Res]해당 유튜버 관련 정보 없음을 반환
+            App --> User : [Res] 유튜버 검색 결과 없음, 유튜브 신청 페이지 렌더링 
+            User --> App : [Req]유튜버 신청
+        else 유튜버 정보가 있을 경우
+            Node --> App : [Res]해당 유튜버 정보 있음을 반환
+            App --> Node : [Req] 해당 유튜버 방문 맛집 요청
+                Node --> Node : [Query-Select] 해당 유튜버 방문 맛집 정보
+            Node --> App : [Res] 맛집 정보 반환
+            App --> User : [Res] 검색한 유튜버 방문 맛집 정보 렌더링
         end
-Node --> App : [Res] 맛집 정보 반환
-App --> User : [Res] 검색한 유튜버 방문 맛집 정보 렌더링
-
 
 == 지도페이지 - 맛집을 클릭 했을 때 ==
 User --> App : [Req] 맛집을 클릭
