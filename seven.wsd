@@ -11,35 +11,35 @@ control Web
 control 노드서버 as Node
 control 크롤링서버 as Lamda
 
-== 맛집 상세 페이지 로딩 ==
-User --> App : [Req] 맛집 상세 페이지 요청
-App --> Node : [Req] 자세히 보기 눌러진 맛집 정보 요청
+== [유저] 맛집 상세 페이지 로딩 ==
+User --> App : <font color=red>[Req]</font> 맛집 상세 페이지 요청
+App --> Node : <font color=red>[Req]</font> 자세히 보기 눌러진 맛집 정보 요청
     Node --> Node : [Query-Select] 해당 맛집 주소, 방문 유튜버, 맛집을 포함한 Top3 동선, 주변 명소(카페, 관광지)
-Node -> App : [Res] 맛집 상세 정보 반환
-App --> User : [Res] 맛집 상세 페이지 렌더링
+Node -> App : <font color=blue>[Res]</font> 맛집 상세 정보 반환
+App --> User : <font color=blue>[Res]</font> 맛집 상세 페이지 렌더링
 
-== 맛집 상세 페이지 로딩 - 유튜버 이름을 눌렀을 경우 ==
-User --> App : [Req] 유튜버 이름 클릭
-App --> Node : [Req] 유튜버 상세 정보 요청
+== [유저] 맛집 상세 페이지 로딩 - 유튜버 이름을 눌렀을 경우 ==
+User --> App : <font color=red>[Req]</font> 유튜버 이름 클릭
+App --> Node : <font color=red>[Req]</font> 유튜버 상세 정보 요청
     Node --> Node : [Query-Select] 유튜버 상세 조회 정보(유튜버 순위, 조회수 top3 영상, 야외 먹방 데이터)
-Node -> App : [Res] 유튜버 상세 조회 정보
-App --> User : [Res] 유튜버 상세 페이지 렌더링
+Node -> App : <font color=blue>[Res]</font> 유튜버 상세 조회 정보
+App --> User : <font color=blue>[Res]</font> 유튜버 상세 페이지 렌더링
 
-== 맛집 상세 페이지 로딩 - 유튜브 썸네일을 눌렀을 경우 ==
-User --> App : [Req] 유튜브 썸네일 클릭
-App --> User : [Res] 유튜브 영상 재생
+== [유저] 맛집 상세 페이지 로딩 - 유튜브 썸네일을 눌렀을 경우 ==
+User --> App : <font color=red>[Req]</font> 유튜브 썸네일 클릭
+App --> User : <font color=blue>[Res]</font> 유튜브 영상 재생
 
-== 맛집 상세 페이지 로딩 - 동선 제목을 눌렀을 경우 ==
-User --> App : [Req] 동선 제목 클릭
-App --> Node : [Req] 해당 동선  요청
+== [유저] 맛집 상세 페이지 로딩 - 동선 제목을 눌렀을 경우 ==
+User --> App : <font color=red>[Req]</font> 동선 제목 클릭
+App --> Node : <font color=red>[Req]</font> 해당 동선  요청
     Node --> Node : [Query-Select] 해당 동선 정보
-Node -> App : [Res] 해당 동선 정보 반환
-App --> User : [Res] 동선 페이지 렌더링
+Node -> App : <font color=blue>[Res]</font> 해당 동선 정보 반환
+App --> User : <font color=blue>[Res]</font> 동선 페이지 렌더링
 
-== 맛집 상세 페이지 로딩 - 즐겨찾기를 눌렀을 경우 ==
-User --> App : [Req] 선택된 동선에 추가 요청
-App --> Node : [Req] 맛집 id를 통해 동선에 추가 요청
+== [유저] 맛집 상세 페이지 로딩 - 즐겨찾기를 눌렀을 경우 ==
+User --> App : <font color=red>[Req]</font> 선택된 동선에 추가 요청
+App --> Node : <font color=red>[Req]</font> 맛집 id를 통해 동선에 추가 요청
     Node --> Node : [Query-Insert] 선택 되어진 동선 폴더에 맛집 id를 통한 맛집 추가
-Node --> App : [Res] 성공 여부 반환
-App --> User : [Res] 즐겨 찾기 표시
+Node --> App : <font color=blue>[Res]</font> 성공 여부 반환
+App --> User : <font color=blue>[Res]</font> 즐겨 찾기 표시
 @enduml

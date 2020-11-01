@@ -11,31 +11,31 @@ control Web
 control 노드서버 as Node
 control 크롤링서버 as Lamda
 
-== 지도페이지 - 동선 폴더 미리보기 로딩 ==
-User --> App : [Req] Feb 버튼 클릭
-App --> Node : [Req] 동선 폴더 미리보기 요청
-    Node --> Node : [Req] 최근 사용한 폴더 유무 확인
+== [유저] 지도페이지 - 동선 폴더 미리보기 로딩 ==
+User --> App : <font color=red>[Req]</font> Feb 버튼 클릭
+App --> Node : <font color=red>[Req]</font> 동선 폴더 미리보기 요청
+    Node --> Node : <font color=red>[Req]</font> 최근 사용한 폴더 유무 확인
     alt 최근에 사용한 폴더 가 있을 경우
         Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 리스트
     else 최근에 사용한 폴더가 없을 경우
         Node --> Node : [Query-Select] default 동선 폴더에 포함된 리스트
     end
-Node -> App : [Res] 동선 리스트 반환
-App --> User : [Res] 동선 폴더의 리스트 렌더링
+Node -> App : <font color=blue>[Res]</font> 동선 리스트 반환
+App --> User : <font color=blue>[Res]</font> 동선 폴더의 리스트 렌더링
 
 
-== 지도 페이지 - 선택된 동선 폴더 미리보기 로딩 ==
-User --> App : [Req] select box 에서 원하느 동선 선택
-App --> Node : [Req] 선택된 동선 폴더 안의 리스트 요청
+== [유저] 지도 페이지 - 선택된 동선 폴더 미리보기 로딩 ==
+User --> App : <font color=red>[Req]</font> select box 에서 원하느 동선 선택
+App --> Node : <font color=red>[Req]</font> 선택된 동선 폴더 안의 리스트 요청
     Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 리스트
-Node -> App : [Res] 동선 리스트 반환
-App --> User : [Res] 선택된 동선 폴더의 리스트 렌더링
+Node -> App : <font color=blue>[Res]</font> 동선 리스트 반환
+App --> User : <font color=blue>[Res]</font> 선택된 동선 폴더의 리스트 렌더링
 
 
-== 지도페이지 - 동선 페이지 로딩 ==
-User --> App : [Req] 선택된 동선 폴더의 자세히 보기 요청
-App --> Node : [Req] 선택된 동선 폴더 안의 맛집 리스트 요청
+== [유저] 지도페이지 - 동선 페이지 로딩 ==
+User --> App : <font color=red>[Req]</font> 선택된 동선 폴더의 자세히 보기 요청
+App --> Node : <font color=red>[Req]</font> 선택된 동선 폴더 안의 맛집 리스트 요청
     Node --> Node : [Query-Select] 해당 동선 폴더에 포함된 맛집 리스트
-Node -> App : [Res] 맛집 리스트 반환
-App --> User : [Res] 선택된 동선 폴더의 리스트 렌더링
+Node -> App : <font color=blue>[Res]</font> 맛집 리스트 반환
+App --> User : <font color=blue>[Res]</font> 선택된 동선 폴더의 리스트 렌더링
 @enduml
