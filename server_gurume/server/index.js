@@ -9,7 +9,7 @@ const path = '/server';
 
 const Schema = require('../graphql/schema/index');
 const Resolvers = require('../graphql/resolvers/index');
-const Connector = require('./model/index');
+//const Connector = require('./model/index');
 
 mongoose.connect('mongodb://localhost/admin', (err) => {
     if(err) {
