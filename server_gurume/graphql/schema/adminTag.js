@@ -3,6 +3,7 @@ const { gql } = require('apollo-server');
 const adminTagTypeDefs = gql`
   type Query {
     adminTags: [adminTagTb]
+    adminTag(id: ID!): adminTagTb
   }
 
   type adminTagTb {
@@ -22,6 +23,7 @@ const adminTagTypeDefs = gql`
 
   type Mutation{
     createAdminTag(adminTagInput: AdminTagInput): adminTag!
+    updateAdminTag(adminTagInput: AdminTagInput): adminTag!
   }
 `;
 module.exports = adminTagTypeDefs;

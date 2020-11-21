@@ -9,17 +9,14 @@ const userTagTypeDefs = gql`
     _id: ID
     userTag: [userTag]
   }
-
-  type userTag {
-    userTag: [String]
-  }
-
+  
   input UserTagInput {
     userTag: [String]
   }
 
   type Mutation{
     createUserTag(userTagInput: UserTagInput): userTag!
+    updateUserTag(userTagInput: UserTagInput): userTag!
   }
 `;
 module.exports = userTagTypeDefs;

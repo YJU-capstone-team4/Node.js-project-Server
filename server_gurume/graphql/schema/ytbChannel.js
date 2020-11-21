@@ -9,20 +9,19 @@ const ytbChannelTypeDefs = gql`
     ytbChannel: String
     ytbProfile: String
     ytbLinkAddress: String
-    ytbSubscribe: Int
-    ytbHits: Int
+    ytbSubscribe: String
+    ytbHits: String
     video: [video]
   }
 
   type video {
-    _id: ID
     ytbVideoName: String
     ytbThumbnail: String
     ytbAddress: String
     ytbStoreTbId: ID
-    storeId: Int
-    hits: Int
-    uploadDate: date
+    storeId: String
+    hits: String
+    uploadDate: String
   }
 
   input YtbChannelInput {
@@ -46,6 +45,8 @@ const ytbChannelTypeDefs = gql`
   type Mutation{
     createYtbChannel(ytbchannelInput: YtbChannelInput): ytbChannelTb!
     createVideo(videoInput: VideoInput): video!
+    updateYtbChannel(ytbchannelInput: YtbChannelInput): ytbChannelTb!
+    updateVideo(videoInput: VideoInput): video!
   }
 `;
 module.exports = ytbChannelTypeDefs;

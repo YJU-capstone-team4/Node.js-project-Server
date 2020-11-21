@@ -23,7 +23,7 @@ const shareFlowTbSchema = new Schema({
   hits: Number
 }, {
   versionKey: false,
-  collection: "ShareFlowTb"
+  collection: "shareFlowTb"
 });
 
 const ShareFlowTb = mongoose.model('shareFlowTb', shareFlowTbSchema);

@@ -18,8 +18,8 @@ const shareFlowTypeDefs = gql`
     userTags: [String]
     shareDate: String
     updateDate: String
-    likeUp: int
-    hits: int
+    likeUp: Int
+    hits: Int
   }
 
   type adminTag {
@@ -37,8 +37,8 @@ const shareFlowTypeDefs = gql`
     adminTagTbId: ID
     shareDate: String
     updateDate: String
-    likeUp: int
-    hits: int
+    likeUp: Int
+    hits: Int
   }
 
   input AdminTagInput {
@@ -49,6 +49,8 @@ const shareFlowTypeDefs = gql`
   type Mutation{
     createShareFlow(shareFlowInput: ShareFlowInput): shareFlowTb!
     createAdminTag(adminTagInput: AdminTagInput): adminTag!
+    updateShareFlow(shareFlowInput: ShareFlowInput): shareFlowTb!
+    updateAdminTag(adminTagInput: AdminTagInput): adminTag!
   }
 `;
 module.exports = shareFlowTypeDefs;

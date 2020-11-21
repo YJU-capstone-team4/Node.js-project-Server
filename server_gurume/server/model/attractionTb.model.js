@@ -17,6 +17,7 @@ const attractionTbSchema = new Schema({
   },
   adminTagTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'adminTagTb',
                     default: "5fb0dd00760c862f24a3d4c2", required: true },
+                  
   regionTag: String,
 }, {
   versionKey: false,

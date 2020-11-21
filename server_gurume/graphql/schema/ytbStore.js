@@ -20,8 +20,8 @@ const ytbStoreTypeDefs = gql`
   }
 
   type location {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
   input YtbStoreTbInput {
@@ -36,14 +36,17 @@ const ytbStoreTypeDefs = gql`
   }
 
   input LocationInput {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
   type Mutation{
     createYtbStoreTb(ytbStoreTbInput: YtbStoreTbInput): ytbStoreTb!
     createStoreInfoTb(storeInfoTbInput: StoreInfoTbInput): storeInfo!
     createLocation(locationInput: LocationInput): location!
+    updateYtbStoreTb(ytbStoreTbInput: YtbStoreTbInput): ytbStoreTb!
+    updateStoreInfoTb(storeInfoTbInput: StoreInfoTbInput): storeInfo!
+    updateLocation(locationInput: LocationInput): location!
   }
 `;
 module.exports = ytbStoreTypeDefs;

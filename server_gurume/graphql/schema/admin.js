@@ -2,7 +2,8 @@ const { gql } = require('apollo-server');
 // 쿼리문만 작성
 const adminTypeDefs = gql`
   type Query {
-    admin: [adminTb]
+    admins: [adminTb]
+    admin(_id: ID!): [adminTb]
   }
 
   type adminTb {
@@ -20,6 +21,7 @@ const adminTypeDefs = gql`
 
   type Mutation{
     createAdmin(adminInput: AdminInput): adminTb!
+    updateAdmin(adminInput: AdminInput): adminTb!
   }
 `;
 module.exports = adminTypeDefs;

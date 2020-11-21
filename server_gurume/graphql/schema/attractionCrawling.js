@@ -20,8 +20,8 @@ const attractionCrawlingTypeDefs = gql`
   }
 
   type location {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
   input AttractionInput {
@@ -36,14 +36,17 @@ const attractionCrawlingTypeDefs = gql`
   }
 
   input LocationInput {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
   type Mutation{
     createAttraction(attractionInput: AttractionInput): attractionCrawlingTb!
     createAttractionInfo(attractionInfoInput: AttractionInfoInput): attractionInfo!
     createLocation(locationInput: LocationInput): location!
+    updateAttraction(attractionInput: AttractionInput): attractionCrawlingTb!
+    updateAttractionInfo(attractionInfoInput: AttractionInfoInput): attractionInfo!
+    updateLocation(locationInput: LocationInput): location!
   }
 `;
 module.exports = attractionCrawlingTypeDefs;

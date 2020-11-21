@@ -8,7 +8,6 @@ const userFlowTbSchema = new Schema({
   userId: String,
   folders: [
     {
-      _id: mongoose.Schema.Types.ObjectId,
       folderTitle: String,
       createDate: Date,
       updateDate: Date,

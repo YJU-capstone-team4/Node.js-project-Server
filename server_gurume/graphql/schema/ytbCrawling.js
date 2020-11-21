@@ -13,12 +13,11 @@ const ytbChannelTypeDefs = gql`
   }
 
   type video {
-    _id: ID
     ytbVideoName: String
     ytbThumbnail: String
     ytbAddress: String
     hits: Int
-    uploadDate: date
+    uploadDate: String
     more: String
     storeInfo: [storeInfo]
   }
@@ -31,8 +30,8 @@ const ytbChannelTypeDefs = gql`
   }
 
   type location {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
   input YtbCrawlingTbInput {
@@ -48,7 +47,7 @@ const ytbChannelTypeDefs = gql`
     ytbThumbnail: String
     ytbAddress: String
     hits: Int
-    uploadDate: date
+    uploadDate: String
     more: String
   }
 
@@ -68,6 +67,10 @@ const ytbChannelTypeDefs = gql`
     createVideo(videoInput: VideoInput): video!
     createStoreInfo(StoreInfoInput: StoreInfoInput): storeInfo!
     createLocation(locationInput: LocationInput): location!
+    updateChannel(ytbCrawlingTbInput: YtbCrawlingTbInput): ytbCrawlingTb!
+    updateVideo(videoInput: VideoInput): video!
+    updateStoreInfo(StoreInfoInput: StoreInfoInput): storeInfo!
+    updateLocation(locationInput: LocationInput): location!
   }
 `;
 module.exports = ytbChannelTypeDefs;

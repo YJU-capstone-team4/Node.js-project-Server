@@ -10,8 +10,8 @@ const ytbChannelTypeDefs = gql`
     ytbChannel: String
     ytbProfile: String
     ytbLinkAddress: String
-    ytbSubscribe: int
-    ytbHits: int
+    ytbSubscribe: Int
+    ytbHits: Int
     userTbId: ID
     userId: String
   }
@@ -26,6 +26,7 @@ const ytbChannelTypeDefs = gql`
 
   type Mutation{
     createytbReqTb(ytbReqTbInput: YtbReqTbInput): ytbReqTb!
+    updateytbReqTb(ytbReqTbInput: YtbReqTbInput): ytbReqTb!
   }
 `;
 module.exports = ytbChannelTypeDefs;

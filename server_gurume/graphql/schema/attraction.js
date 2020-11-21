@@ -21,8 +21,8 @@ const attractionTypeDefs = gql`
   }
   
   type location {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
   input AttractionInput {
@@ -38,8 +38,8 @@ const attractionTypeDefs = gql`
   }
 
   input LocationInput {
-    lat: int
-    lng: int
+    lat: Int
+    lng: Int
   }
 
 
@@ -47,6 +47,9 @@ const attractionTypeDefs = gql`
     createAttraction(attractionInput: AttractionInput): attractionTb!
     createAttractionInfo(attractionInfoInput: AttractionInfoInput): attractionInfo!
     createLocation(locationInput: LocationInput): location!
+    updateAttraction(attractionInput: AttractionInput): attractionTb!
+    updateAttractionInfo(attractionInfoInput: AttractionInfoInput): attractionInfo!
+    updateLocation(locationInput: LocationInput): location!
   }
 `;
 module.exports = attractionTypeDefs;

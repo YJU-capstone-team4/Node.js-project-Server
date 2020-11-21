@@ -13,7 +13,6 @@ const userFlowTypeDefs = gql`
   }
 
   type folder {
-    _id: ID
     folderTitle: String
     createDate: DateTime
     updateDate: DateTime
@@ -21,8 +20,8 @@ const userFlowTypeDefs = gql`
   }
   
   type store {
-    _id: ID
     ytbStoreTbId: ID
+    attractionTbId: ID
     storeId: String
     typeStore: String
   }
@@ -34,8 +33,8 @@ const userFlowTypeDefs = gql`
 
   input FolderInput {
     folderTitle: String
-    createDate: DateTime
-    updateDate: DateTime
+    createDate: String
+    updateDate: String
   }
 
   input StoreInput {
@@ -48,6 +47,9 @@ const userFlowTypeDefs = gql`
     createUserFlowTb(userFlowTbInput: UserFlowTbInput): userFlowTb!
     createFolder(folderInput: FolderInput): folder!
     createStore(storeInput: StoreInput): store!
+    updateUserFlowTb(userFlowTbInput: UserFlowTbInput): userFlowTb!
+    updateFolder(folderInput: FolderInput): folder!
+    updateStore(storeInput: StoreInput): store!
   }
 `;
 module.exports = userFlowTypeDefs;

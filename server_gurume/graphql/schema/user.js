@@ -22,6 +22,7 @@ const userTypeDefs = gql`
 
   type Mutation{
     createUserTb(userTbInput: UserTbInput): userTb!
+    updateUserTb(userTbInput: UserTbInput): userTb!
   }
 `;
 module.exports = userTypeDefs;

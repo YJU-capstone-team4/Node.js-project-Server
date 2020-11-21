@@ -1,1 +1,0 @@
-// resolvers, schema 폴더에서 import 해 export 하기

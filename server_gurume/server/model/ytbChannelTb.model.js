@@ -15,6 +15,7 @@ const ytbChannelTbSchema = new Schema({
       ytbThumbnail: String,
       ytbAddress: String,
       ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
+      regionTag: { type: String, ref: 'ytbStoreTb' },
       storeId: String,
       hits: String,
       uploadDate: Date
