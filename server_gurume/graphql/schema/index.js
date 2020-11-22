@@ -116,9 +116,10 @@ type adminTb {
   }
 
   type store {
-    ytbStoreTbId: ID
+    _id: ID
     attractionTbId: ID
-    storeId: String
+    storeName: String
+    ytbStoreTb: ytbStoreTb
     typeStore: String
   }
 

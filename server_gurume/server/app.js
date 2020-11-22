@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const {ApolloServer} = require('apollo-server-express');
 
-const PORT = 5000;
+const PORT = 3333;
 const app = express();
 const path = '/graphql';
 

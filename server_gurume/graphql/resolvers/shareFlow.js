@@ -13,7 +13,7 @@ const ShareFlowResolvers = {
       localShareFlow(_, args) {
         return ShareFlow.find({'adminTag.regionTag': args.regionTag})
         .select()
-        .sort('-likeUp')
+        .sort('-hits')
         .populate('../../server/model/userTbId')
         .populate('../../server/model/userFlowTbId')
         .populate('../../server/model/adminTagTbId')
