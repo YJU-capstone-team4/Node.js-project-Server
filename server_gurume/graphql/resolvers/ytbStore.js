@@ -4,7 +4,7 @@ const { startSession } = require('mongoose');
 const YtbStoreResolvers = {
     Query: {
       ytbStore(_, args) {
-        return YtbStore.find({})
+        return YtbStore.find()
         .populate('../../server/model/adminTagTbId')
         .exec();
       },

@@ -59,8 +59,8 @@ type adminTb {
   }
 
   type location {
-    lat: Int
-    lng: Int
+    lat: Float
+    lng: Float
   }
 
 
@@ -117,7 +117,7 @@ type adminTb {
 
   type store {
     _id: ID
-    attractionTbId: ID
+    attractionTbId: [ID]
     storeName: String
     ytbStoreTb: ytbStoreTb
     typeStore: String
@@ -141,6 +141,7 @@ type adminTb {
     ytbHits: String
     video: [video]
   }
+
   type localYtbChannelTb {
     _id: ID
     ytbChannel: String
@@ -150,16 +151,17 @@ type adminTb {
     ytbHits: String
     video(ytbStoreTbId: String): [video]
   }
+  
   type video {
+    _id: ID
     ytbVideoName: String
     ytbThumbnail: String
     ytbAddress: String
-    ytbStoreTbId: ID
-    storeId: ID
+    ytbStoreTb: ytbStoreTb
+    storeId: String
     hits: String
     more: String
     uploadDate: String
-    regionTag: String
   }
 
   type ytbCrawlingTb {
@@ -172,7 +174,7 @@ type adminTb {
   type storeInfo {
     storeName: String
     storeAddress: String
-    location: [location]
+    location: location
     status: String
   }
 
@@ -189,7 +191,7 @@ type adminTb {
 
   type ytbStoreTb {
     _id: ID
-    storeInfo: [storeInfo]
+    storeInfo: storeInfo
     adminTagTbId: ID
     regionTag: String
   }

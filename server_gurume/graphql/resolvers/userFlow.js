@@ -1,19 +1,23 @@
 const UserFlow = require("../../server/model/userFlowTb.model");
 const { startSession } = require('mongoose');
+const DataLOeader = require('dataloader');
+
 
 const UserFlowResolvers = {
     Query: {
       userFlow(_, args) {
-        return UserFlow.find()
+        const result =  UserFlow.find()
         .populate('../../server/model/userTbId')
-      //  .populate('../../server/model/folders.stores.ytbStoreTbId')
+        .populate('../../server/model/folders.stores.ytbStoreTbId')
         .populate({
           path: '../../server/model/folders.stores.ytbStoreTbId',
-          populate: { path: 'adminTagTbId' }
+          populate: { path: '../../server/model/adminTagTbId' }
       })
         .populate('../../server/model/folders.stores.attractionTbId')
-        .exec();
-      },
+        .exec()
+        .then();
+        return result;
+      }
       // oneFlow(_, args) {
       //   return UserFlow.find({'adminTag.regionTag': args.regionTag})
       //   .select()
