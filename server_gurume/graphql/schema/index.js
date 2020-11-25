@@ -2,29 +2,29 @@ const { gql } = require('apollo-server');
 
 const typedefs =gql`
 type Query {
-    admin: [adminTb]
-    adminTags: [adminTagTb]
-    attraction: [attractionTb]
-    attractionInfo: [attractionInfo]
-    location: [location]
-    attractionCrawling: [attractionCrawlingTb]
-    shareFlow: [shareFlowTb]
-    localShareFlow(regionTag: String): [shareFlowTb]
-    user: [userTb]
-    userFlow: [userFlowTb]
-    folders: [folder]
-    stores: [store]
-    userTag: [userTagTb]
-    ytbChannel: [ytbChannelTb]
-    localChannel(ytbStoreTbId: ID): [localYtbChannelTb]
-    video: [video]
-    localVideo: [video]
-    ytbCrawling: [ytbCrawlingTb]
-    storeInfo: [storeInfo]
-    ytbReq: [ytbReqTb]
-    ytbStore: [ytbStoreTb]
-    localYtbStore(regionTag: String): [ytbStoreTb]
-    adminTag: [adminTag]
+  admin: [adminTb]
+  adminTags: [adminTagTb]
+  attraction: [attractionTb]
+  attractionInfo: [attractionInfo]
+  location: [location]
+  attractionCrawling: [attractionCrawlingTb]
+  shareFlow: [shareFlowTb]
+  localShareFlow(regionTag: String): [shareFlowTb]
+  user: [userTb]
+  userFlow: [userFlowTb]
+  folders: [folder]
+  stores: [store]
+  userTag: [userTagTb]
+  ytbChannel: [ytbChannelTb]
+  localChannel(ytbStoreTbId: ID): [localYtbChannelTb]
+  video: [video]
+  localVideo: [video]
+  ytbCrawling: [ytbCrawlingTb]
+  storeInfo: [storeInfo]
+  ytbReq: [ytbReqTb]
+  ytbStore: [ytbStoreTb]
+  localYtbStore(regionTag: String): [ytbStoreTb]
+  adminTag: [adminTag]
   }
 
 type adminTb {
@@ -36,25 +36,26 @@ type adminTb {
   
   type adminTagTb {
     _id: ID
-    adminTag: adminTags
+    adminTag: AdminTags
   }
 
-  type adminTags {
-    seasonTags: [String]
-    regionTags: [String]
+  type AdminTags {
+    seasonTag: [String]
+    regionTag: [String]
   }
 
   type attractionTb {
     _id: ID
-    attractionInfo: [attractionInfo]
-    adminTagTbId: ID
+    attractionInfo: attractionInfo
+    adminTagTbId: adminTagTb
     regionTag: String
   }
+
   type attractionInfo {
     attractionName: String
     attractionAddress: String
     attractionPhoto: String
-    location: [location]
+    location: location
     typeStore: String
   }
 
@@ -66,19 +67,19 @@ type adminTb {
 
   type attractionCrawlingTb {
     _id: ID
-    attractionInfo: [attractionInfo]
+    attractionInfo: attractionInfo
     status: String
   }
 
   type shareFlowTb {
     _id: ID
-    userTbId: ID
+    userTbId: userTb
     userId: String
     shareTitle: String
     shareThumbnail: String
-    userFlowTbId: ID
+    userFlowTbId: userFlowTb
     folderTitle: String
-    adminTagTbId: ID
+    adminTagTbId: adminTagTb
     adminTag : adminTag
     userTags: [String]
     shareDate: String
@@ -117,7 +118,7 @@ type adminTb {
 
   type store {
     _id: ID
-    attractionTbId: [ID]
+    attractionTbId: ID
     storeName: String
     ytbStoreTb: ytbStoreTb
     typeStore: String
@@ -157,7 +158,7 @@ type adminTb {
     ytbVideoName: String
     ytbThumbnail: String
     ytbAddress: String
-    ytbStoreTb: ytbStoreTb
+    ytbStore: ytbStoreTb
     storeId: String
     hits: String
     more: String
@@ -185,14 +186,14 @@ type adminTb {
     ytbLinkAddress: String
     ytbSubscribe: Int
     ytbHits: Int
-    userTbId: ID
+    userTbId: userTb
     userId: String
   }
 
   type ytbStoreTb {
     _id: ID
     storeInfo: storeInfo
-    adminTagTbId: ID
+    adminTagTbId: adminTagTb
     regionTag: String
   }
 
@@ -201,9 +202,16 @@ type adminTb {
     password: String
     nickname: String
   }
+  input userIdinput {
+    ytbReqId: String
+    userId: String
+  }
 
   type Mutation {
     createAdmin(adminTbInput: AdminTbInput): adminTb!
+
+    createYtbStore(storeId: String, videoId: ID, ytbChannelId: ID): ytbChannelTb
+    addUserTb(userIdinput: userIdinput): ytbReqTb!
   }
 
 `;

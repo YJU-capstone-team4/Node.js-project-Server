@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 
 const ytbReqTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  ytbChannel: String,
-  ytbProfile: String,
-  ytbLinkAddress: String,
-  ytbSubscribe: Number,
-  ytbHits: Number,
+  ytbChannel: {type: String},
+  ytbProfile: {type: String},
+  ytbLinkAddress: {type: String},
+  ytbSubscribe: {type: Number},
+  ytbHits: {type: Number},
   userTbId: { type: mongoose.Schema.Types.ObjectId, ref: "userTb", required: true },
-  userId: String
+  userId: {type: String}
 }, {
   versionKey: false,
   collection: "ytbReqTb"

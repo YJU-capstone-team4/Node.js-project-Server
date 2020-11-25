@@ -23,5 +23,5 @@ const AdminResolvers = {
   }
 
 };
-  
+
   module.exports = AdminResolvers;

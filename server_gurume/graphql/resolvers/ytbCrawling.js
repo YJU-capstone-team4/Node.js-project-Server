@@ -4,7 +4,9 @@ const { startSession } = require('mongoose');
 const YtbCrawlingResolvers = {
     Query: {
       ytbCrawling(_, args) {
-        return YtbCrawling.find();
+        return  YtbCrawlingTb.find()
+        .exec();
+    
       },
     },
   };

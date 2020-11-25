@@ -7,19 +7,19 @@ const Schema = mongoose.Schema;
 const userFlowTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   userTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'userTb' },
-  userId: String,
+  userId: {type: String},
   folders: [
     {
-      folderTitle: String,
-      createDate: Date,
-      updateDate: Date,
+      folderTitle: {type: String},
+      createDate: {type: Date},
+      updateDate: {type: Date},
       stores: [
         {
         //  ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
           ytbStoreTb: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
           attractionTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'attractionTb' },
-          storeId: String,
-          typeStore: String
+          storeId: {type: String},
+          typeStore: {type: String}
         }
       ]
     }

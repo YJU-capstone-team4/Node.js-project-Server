@@ -5,22 +5,22 @@ const Schema = mongoose.Schema;
 const shareFlowTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   userTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'userTb' },
-  userId: String,
-  shareTitle: String,
-  shareThumbnail: String,
+  userId: {type: String},
+  shareTitle: {type: String},
+  shareThumbnail: {type: String},
   userFlowTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'userFlowTb' },
-  folderTitle: String,
+  folderTitle: {type: String},
   adminTagTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'adminTagTb',
                     default: "5fb0dd00760c862f24a3d4c2", required: true },
   adminTag: {
-    seasonTag: String,
-    regionTag: String,
+    seasonTag: {type: String},
+    regionTag: {type: String},
   },
-  userTags: Array,
-  shareDate: Date,
-  updateDate: Date,
-  likeUp: Number,
-  hits: Number
+  userTags: {type: Array},
+  shareDate: {type: Date},
+  updateDate: {type: Date},
+  likeUp: {type: Number},
+  hits: {type: Number}
 }, {
   versionKey: false,
   collection: "shareFlowTb"

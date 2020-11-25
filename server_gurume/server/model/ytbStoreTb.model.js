@@ -5,17 +5,17 @@ const Schema = mongoose.Schema;
 const ytbStoreTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   storeInfo: {
-    storeName: {type: String},
-    storeAddress: {type: String},
+    storeName: String,
+    storeAddress: String,
     location: {
-      lat: {type: Number},
-      lng: {type: Number},
+      lat: Number,
+      lng: Number,
     },
-    typeStore: {type: String}
+    typeStore: String
   },
   adminTagTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'adminTagTb',
                     default: "5fb0dd00760c862f24a3d4c2", required: true },
-  regionTag: {type: String}
+  regionTag: String
 }, {
   versionKey: false,
   collection: "ytbStoreTb"

@@ -2,9 +2,9 @@
   "name": "server_gurume",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "NODE_PATH=src nodemon --exec babel-node src/app.js"
   },
   "author": "",
   "license": "ISC",

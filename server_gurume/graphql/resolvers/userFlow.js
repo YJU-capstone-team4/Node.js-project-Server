@@ -1,33 +1,31 @@
 const UserFlow = require("../../server/model/userFlowTb.model");
 const { startSession } = require('mongoose');
-const DataLOeader = require('dataloader');
-
 
 const UserFlowResolvers = {
     Query: {
       userFlow(_, args) {
-        const result =  UserFlow.find()
+        return UserFlow.find()
         .populate('../../server/model/userTbId')
         .populate('../../server/model/folders.stores.ytbStoreTbId')
-        .populate({
-          path: '../../server/model/folders.stores.ytbStoreTbId',
-          populate: { path: '../../server/model/adminTagTbId' }
-      })
         .populate('../../server/model/folders.stores.attractionTbId')
-        .exec()
-        .then();
-        return result;
-      }
-      // oneFlow(_, args) {
-      //   return UserFlow.find({'adminTag.regionTag': args.regionTag})
-      //   .select()
-      //   .sort('-likeUp')
-      //   .populate('../../server/model/userTbId')
-      //   .populate('../../server/model/userFlowTbId')
-      //   .populate('../../server/model/adminTagTbId')
-      //   .exec();
-      // },
+        .exec();
+      },
     },
+
+  //   shareFlowTb : {
+  //     async userTbId(_, args) {
+  //       const user = await User.findById(_.userTbId._id);
+  //       return user;
+  //     },
+  //     async userFlowTbId(_, args) {
+  //       const userFlow = await UserFlow.findById(_.userFlowTbId._id);
+  //       return userFlow;
+  //     },
+  //     async adminTagTbId(_, args) {
+  //       const adminTag = await AdminTag.findById(_.adminTagTbId._id);
+  //       return adminTag;
+  //     },
+  // },
   };
-  
+
   module.exports = UserFlowResolvers;

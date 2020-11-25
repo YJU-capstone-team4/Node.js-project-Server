@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const {ApolloServer} = require('apollo-server-express');
 
-const PORT = 8090;
+const PORT = 3333;
 const app = express();
 const path = '/graphql';
 
@@ -17,8 +17,8 @@ mongoose.connect('mongodb+srv://root:root@ycdb.lbktk.mongodb.net/YCDB?retryWrite
     return true;
 });
 
-const testSchema = require('../graphql/schema/shareFlow');
-const testResolver = require('../graphql/resolvers/shareFlow');
+const testSchema = require('../graphql/schema/ytbChannel');
+const testResolver = require('../graphql/resolvers/ytbChannel');
 
 
 // APOLLO 서버 객체 만들어서 미들웨어 연결 필요

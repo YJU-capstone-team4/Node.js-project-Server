@@ -4,21 +4,21 @@ const Schema = mongoose.Schema;
 
 const attractionTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  attractionId: String,
+  attractionId: {type: String},
   attractionInfo: {
-    attractionName: String,
-    attractionAddress: String,
+    attractionName: {type: String},
+    attractionAddress: {type: String},
     attractionPhoto: { type: String, default: "../images/test.png" },
     location: {
-      lat: Number,
-      lng: Number,
+      lat: {type: Number},
+      lng: {type: Number},
     },
-    typeStore: String,
+    typeStore: {type: String},
   },
   adminTagTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'adminTagTb',
                     default: "5fb0dd00760c862f24a3d4c2", required: true },
                   
-  regionTag: String,
+  regionTag: {type: String},
 }, {
   versionKey: false,
   collection: "attractionTb"

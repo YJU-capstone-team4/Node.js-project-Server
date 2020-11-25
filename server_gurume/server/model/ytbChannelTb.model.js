@@ -4,20 +4,20 @@ const Schema = mongoose.Schema;
 
 const ytbChannelTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  ytbChannel: {type: String},
-  ytbProfile: {type: String},
-  ytbLinkAddress: {type: String},
-  ytbSubscribe: {type: String},
-  ytbHits: {type: String},
+  ytbChannel: String,
+  ytbProfile: String,
+  ytbLinkAddress: String,
+  ytbSubscribe: String,
+  ytbHits: String,
   video: [
     {
-      ytbVideoName: {type: String},
-      ytbThumbnail:{type: String},
-      ytbAddress: {type: String},
-      ytbStoreTb: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' }],
-      storeId: {type: String},
-      hits: {type: String},
-      uploadDate: {type: Date}
+      ytbVideoName: String,
+      ytbThumbnail: String,
+      ytbAddress: String,
+      ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
+      storeId: String,
+      hits: String,
+      uploadDate: Date
     }
   ]
 }, {
