@@ -103,7 +103,7 @@ type adminTb {
 
   type userFlowTb {
     _id: ID
-    userTbId: ID
+    userTbId: userTb
     userId: String
     folders: [folder]
   }
@@ -118,9 +118,9 @@ type adminTb {
 
   type store {
     _id: ID
-    attractionTbId: ID
+    attractionTbId: attractionTb
     storeName: String
-    ytbStoreTb: ytbStoreTb
+    ytbStoreTbId: ytbStoreTb
     typeStore: String
   }
 
@@ -158,10 +158,10 @@ type adminTb {
     ytbVideoName: String
     ytbThumbnail: String
     ytbAddress: String
-    ytbStore: ytbStoreTb
+    ytbStoreTbId: ytbStoreTb
     storeId: String
     hits: String
-    more: String
+    more: [String]
     uploadDate: String
   }
 

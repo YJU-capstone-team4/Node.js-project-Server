@@ -1,18 +1,26 @@
 {
-  "name": "server_gurume",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start:dev": "NODE_PATH=src nodemon --exec babel-node src/app.js"
+    "start": "nodemon --exec babel-node server/app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.19.0",
     "apollo-server-express": "^2.19.0",
+    "dataloader": "^2.0.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
     "graphql-tools": "^7.0.1",
-    "mongoose": "^5.10.15",
+    "mongoose": "^5.10.13",
     "nodemon": "^2.0.6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1"
   }
 }

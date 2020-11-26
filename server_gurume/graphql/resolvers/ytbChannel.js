@@ -1,5 +1,6 @@
 const YtbChannel = require("../../server/model/ytbChannelTb.model");
 //const YtbStore = require("../../server/model/ytbStoreTb.model");
+const YtbStore = require("../../server/model/ytbStoreTb.model");
 const { startSession } = require('mongoose');
 
 const YtbChannelResolver = {
@@ -7,10 +8,7 @@ const YtbChannelResolver = {
     Query: {
       ytbChannel(_, args) {
         return YtbChannel.find()
-
-        //.populate('../../server/model/ytbStoreTb')
-        //.populate('../../server/model/ytbChannelTb.video.ytbStoreTbId')
-        .populate('../../server/model/video.ytbStoreTb')
+        .populate('../../server/model/video.ytbStoreTbId')
         .exec();
       }
 
@@ -33,15 +31,15 @@ const YtbChannelResolver = {
       //   }
       // },
     },
-    // ytbChannelTb:  {
-    //   video: [{
-    //     async ytbStoreTbId(_, args) {
-    //       const store = await YtbStore.find({"ytbStoreId_id" : _.video.ytbStoreId._id});
-    //       return store;
-    //     }
-    //   }]
+    ytbChannelTb:  {
+      video:  [{
+        async ytbStoreTbId(_, args) {
+          const store = await YtbStore.find({"video._id" : _.video.ytbStoreTbId._id});
+          return store;
+        }
+      }]
 
-  //  },
+    },
     Mutation: {
       // createYtbStore: async(_, {storeId, videoId, ytbChannelId}) => {
       //   try {

@@ -16,7 +16,7 @@ const userFlowTbSchema = new Schema({
       stores: [
         {
         //  ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
-          ytbStoreTb: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
+          ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
           attractionTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'attractionTb' },
           storeId: {type: String},
           typeStore: {type: String}

@@ -13,15 +13,15 @@ const ShareFlowResolvers = {
         .populate('../../server/model/adminTagTbId')
         .exec();
       },
-      // localShareFlow(_, args) {
-      //   return ShareFlow.find({'adminTag.regionTag': args.regionTag})
-      //   .select()
-      //   .sort('-hits')
-      //   .populate('../../server/model/userTbId')
-      //   .populate('../../server/model/userFlowTbId')
-      //   .populate('../../server/model/adminTagTbId')
-      //   .exec();
-      // },
+      localShareFlow(_, args) {
+        return ShareFlow.find({'adminTag.regionTag': args.regionTag})
+        .select()
+        .sort('-hits')
+        .populate('../../server/model/userTbId')
+        .populate('../../server/model/userFlowTbId')
+        .populate('../../server/model/adminTagTbId')
+        .exec();
+      },
     },
     shareFlowTb : {
       async userTbId(_, args) {

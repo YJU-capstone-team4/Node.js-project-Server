@@ -4,26 +4,26 @@ const Schema = mongoose.Schema;
 
 const ytbCrawlingTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  ytbChannel: {type: String},
-  ytbProfile: {type: String},
-  videoCount: {type: Number},
+  ytbChannel: String,
+  ytbProfile: String,
+  videoCount: Number,
   video: [
     {
-      ytbVideoName: {type: String},
-      ytbThumbnail: {type: String},
-      ytbAddress: {type: String},
-      hits: {type: Number},
-      uploadDate: {type: Date},
-      more: {type: String},
+      ytbVideoName: String,
+      ytbThumbnail: String,
+      ytbAddress: String,
+      hits: Number,
+      uploadDate: Date,
+      more: Array,
       storeInfo: {
-        storeName: {type: String},
-        storeAddress: {type: String},
+        storeName: String,
+        storeAddress: String,
         location: {
-          lat: {type: Number},
-          lng: {type: Number},
+          lat: Number,
+          lng: Number,
         }
       },
-      status: {type: String}
+      status: String
     }
   ]
 }, {
