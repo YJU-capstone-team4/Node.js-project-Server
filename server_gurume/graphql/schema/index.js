@@ -16,7 +16,7 @@ type Query {
   stores: [store]
   userTag: [userTagTb]
   ytbChannel: [ytbChannelTb]
-  localChannel(ytbStoreTbId: ID): [localYtbChannelTb]
+  localChannel(regionTag: String): [localYtbChannelTb]
   video: [video]
   localVideo: [video]
   ytbCrawling: [ytbCrawlingTb]
@@ -150,7 +150,7 @@ type adminTb {
     ytbLinkAddress: String
     ytbSubscribe: String
     ytbHits: String
-    video(ytbStoreTbId: String): [video]
+    video: [localVideo]
   }
   
   type video {
@@ -164,6 +164,18 @@ type adminTb {
     more: [String]
     uploadDate: String
   }
+  type localVideo {
+    _id: ID
+    ytbVideoName: String
+    ytbThumbnail: String
+    ytbAddress: String
+    ytbStoreTbId(regionTag: String): ytbStoreTb
+    storeId: String
+    hits: String
+    more: [String]
+    uploadDate: String
+  }
+
 
   type ytbCrawlingTb {
     _id: ID

@@ -28,11 +28,11 @@ const UserFlowResolvers = {
     store : 
       {
       async ytbStoreTbId(_, args) {
-        const ytbStore = await YtbStore.findById(_.ytbStoreTbId._id);
+        const ytbStore = await YtbStore.findById(_.ytbStoreTbId);
         return ytbStore;
       },
       async attractionTbId(_, args) {
-        const attraction = await Attraction.findById(_.attractionTbId._id);
+        const attraction = await Attraction.findById(_.attractionTbId);
         return attraction;
       },
     }

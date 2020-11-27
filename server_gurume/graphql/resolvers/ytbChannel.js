@@ -12,7 +12,7 @@ const YtbChannelResolver = {
         .exec();
       },
       localChannel(_, args) {
-        return YtbChannel.find({'video.ytbStoreTbId.regionTag': args.regionTag})
+        return YtbChannel.find({'video.ytbStoreTbId.regionTag' : args.regionTag})
         .select()
         .sort('-ytbSubscribe')
         .populate('../../server/model/video.ytbStoreTbId')
@@ -24,7 +24,15 @@ const YtbChannelResolver = {
           const store = await YtbStore.findById(_.ytbStoreTbId._id);
           return store;
       },
-    }
+    },
+    localVideo: {
+      async ytbStoreTbId(_, args) {
+        const store = await YtbStore.findById(_.ytbStoreTbId._id)
+        .where('regionTag')
+        .equals(args.regionTag)
+        return store;
+    },
+  }
     ,
     Mutation: {
       // createYtbStore: async(_, {storeId, videoId, ytbChannelId}) => {
