@@ -10,36 +10,22 @@ const YtbChannelResolver = {
         return YtbChannel.find()
         .populate('../../server/model/video.ytbStoreTbId')
         .exec();
-      }
-
-      // localChannel(_, args) {
-      //   return YtbChannel.find({'video.ytbStoreTbId': args.ytbStoreTbId})
-      //   .select()
-      //   .sort('-ytbSubscribe')
-      //   .populate({
-      //     path: '../../server/model/folders.stores.ytbStoreTbId',
-      //     populate: { path: '../../server/model/adminTagTbId' }
-      // })
-      //   .exec();
-      // },
-      // ytbChannel: async () => {
-      //   try {
-      //     const ytbChannels = await YtbChannel.find()
-      //     return ytbChannels;
-      //   }catch (error) {
-      //     throw new Error(error);
-      //   }
-      // },
+      },
+      localChannel(_, args) {
+        return YtbChannel.find({'video.ytbStoreTbId.regionTag': args.regionTag})
+        .select()
+        .sort('-ytbSubscribe')
+        .populate('../../server/model/video.ytbStoreTbId')
+        .exec();
+      },
     },
-    ytbChannelTb:  {
-      video:  [{
+    video: {
         async ytbStoreTbId(_, args) {
-          const store = await YtbStore.find({"video._id" : _.video.ytbStoreTbId._id});
+          const store = await YtbStore.findById(_.ytbStoreTbId._id);
           return store;
-        }
-      }]
-
-    },
+      },
+    }
+    ,
     Mutation: {
       // createYtbStore: async(_, {storeId, videoId, ytbChannelId}) => {
       //   try {

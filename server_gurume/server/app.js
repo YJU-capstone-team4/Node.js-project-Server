@@ -10,12 +10,8 @@ const path = '/graphql';
 const Schemas = require('../graphql/schema/index');
 const Resolvers = require('../graphql/resolvers/index');
 
-mongoose.connect('mongodb+srv://root:root@ycdb.lbktk.mongodb.net/YCDB?retryWrites=true&w=majority', (err) => {
-    if(err) {
-        return err;
-    }
-    return true;
-});
+mongoose.connect('mongodb+srv://root:root@ycdb.lbktk.mongodb.net/YCDB?retryWrites=true&w=majority', 
+{ useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 const testSchema = require('../graphql/schema/ytbChannel');
 const testResolver = require('../graphql/resolvers/ytbChannel');

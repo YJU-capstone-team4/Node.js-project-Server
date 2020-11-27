@@ -24,24 +24,20 @@ const UserFlowResolvers = {
         const user = await User.findById(_.userTbId._id);
         return user;
       },
-      folders : [
-        {
-        stores : [
-          {
-          async ytbStoreTbId(_, args) {
-            const ytbStore = await YtbStore.findById(_.folders.stores.ytbStoreTbId._id);
-            return ytbStore;
-          },
-          async attractionTbId(_, args) {
-            const attraction = await Attraction.findById(_.folders.stores.attractionTbId._id);
-            return attraction;
-          },
-        }
-      ]
-      }
-    ]
-
-  },
+    },
+    store : 
+      {
+      async ytbStoreTbId(_, args) {
+        const ytbStore = await YtbStore.findById(_.ytbStoreTbId._id);
+        return ytbStore;
+      },
+      async attractionTbId(_, args) {
+        const attraction = await Attraction.findById(_.attractionTbId._id);
+        return attraction;
+      },
+    }
+    
+    
   };
 
   module.exports = UserFlowResolvers;
