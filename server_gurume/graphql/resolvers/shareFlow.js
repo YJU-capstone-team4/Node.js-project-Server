@@ -37,6 +37,11 @@ const ShareFlowResolvers = {
         return adminTag;
       },
   },
+  Mutation: {
+    async createShareFlow(_, {shareFlowInput}) {
+      return await ShareFlow.create(shareFlowInput);
+    } 
+  }
   };
   
   module.exports = ShareFlowResolvers;

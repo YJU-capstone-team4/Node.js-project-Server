@@ -11,7 +11,8 @@ type Query {
   shareFlow: [shareFlowTb]
   localShareFlow(regionTag: String): [shareFlowTb]
   user: [userTb]
-  userFlow: [userFlowTb]
+  userFlow(userId: String): [userFlowTb]
+  selectUserFlow(_id: ID): [selectUserFlow]
   folders: [folder]
   stores: [store]
   userTag: [userTagTb]
@@ -108,7 +109,22 @@ type adminTb {
     folders: [folder]
   }
 
+  type selectUserFlow {
+    _id: ID
+    userTbId: userTb
+    userId: String
+    folders(_id: ID): [selectFolder]
+  }
+
   type folder {
+    _id: ID
+    folderTitle: String
+    createDate: String
+    updateDate: String
+    stores: [store]
+  }
+
+  type selectFolder {
     _id: ID
     folderTitle: String
     createDate: String
@@ -119,7 +135,6 @@ type adminTb {
   type store {
     _id: ID
     attractionTbId: attractionTb
-    storeName: String
     ytbStoreTbId: ytbStoreTb
     typeStore: String
   }
@@ -218,9 +233,25 @@ type adminTb {
     ytbReqId: String
     userId: String
   }
+  input ShareFlowInput{
+    userTbId: ID
+    userId: String
+    shareTitle: String
+    shareThumbnail: String
+    userFlowTbId: ID
+    folderTitle: String
+    adminTagTbId: ID
+    adminTag : AdminTagInput
+    userTags: [String]
+  }
+  input AdminTagInput{
+    seasonTag: String
+    regionTag: String
+  }
 
   type Mutation {
     createAdmin(adminTbInput: AdminTbInput): adminTb!
+    createShareFlow(shareFlowInput: ShareFlowInput): shareFlowTb
 
     createYtbStore(storeId: String, videoId: ID, ytbChannelId: ID): ytbChannelTb
     addUserTb(userIdinput: userIdinput): ytbReqTb!

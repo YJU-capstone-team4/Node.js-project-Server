@@ -15,7 +15,6 @@ const userFlowTbSchema = new Schema({
       updateDate: {type: Date},
       stores: [
         {
-        //  ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
           ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
           attractionTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'attractionTb' },
           storeId: {type: String},

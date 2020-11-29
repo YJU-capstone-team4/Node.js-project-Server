@@ -8,6 +8,16 @@ const { startSession } = require('mongoose');
 const UserFlowResolvers = {
     Query: {
       userFlow(_, args) {
+        return UserFlow.find({'userId':args.userId})
+        .populate('../../server/model/userTbId')
+        .populate({
+          path: '../../server/model/folders.stores.ytbStoreTbId',
+          populate: { path: '../../server/model/adminTagTbId' }
+        })
+        .populate('../../server/model/folders.stores.attractionTbId')
+        .exec();
+      },
+      selectUserFlow(_, args) {
         return UserFlow.find()
         .populate('../../server/model/userTbId')
         .populate({
@@ -25,6 +35,18 @@ const UserFlowResolvers = {
         return user;
       },
     },
+    selectUserFlow : {
+      async userTbId(_, args) {
+        const user = await User.findById(_.userTbId._id);
+        return user;
+      },
+    },
+    folder : {
+      async _id(_, args) {
+        const folder = await UserFlow.findOne({'_id' : args._id})
+      }
+    }
+    ,
     store : 
       {
       async ytbStoreTbId(_, args) {
