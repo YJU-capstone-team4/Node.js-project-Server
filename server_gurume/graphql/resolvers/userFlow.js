@@ -2,6 +2,7 @@ const UserFlow = require("../../server/model/userFlowTb.model");
 const User = require("../../server/model/userTb.model");
 const YtbStore = require("../../server/model/ytbStoreTb.model");
 const Attraction = require("../../server/model/attractionTb.model");
+//const selectUserFlow = require('../../server/model/SelectuserFlowTb.model');
 
 const { startSession } = require('mongoose');
 
@@ -18,7 +19,7 @@ const UserFlowResolvers = {
         .exec();
       },
       selectUserFlow(_, args) {
-        return UserFlow.find()
+        return UserFlow.find({'folders._id' :args._id})
         .populate('../../server/model/userTbId')
         .populate({
           path: '../../server/model/folders.stores.ytbStoreTbId',
@@ -41,12 +42,6 @@ const UserFlowResolvers = {
         return user;
       },
     },
-    folder : {
-      async _id(_, args) {
-        const folder = await UserFlow.findOne({'_id' : args._id})
-      }
-    }
-    ,
     store : 
       {
       async ytbStoreTbId(_, args) {

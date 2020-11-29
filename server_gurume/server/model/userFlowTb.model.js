@@ -8,7 +8,7 @@ const userFlowTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   userTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'userTb' },
   userId: {type: String},
-  folders: [
+  folders: 
     {
       folderTitle: {type: String},
       createDate: {type: Date},
@@ -22,7 +22,7 @@ const userFlowTbSchema = new Schema({
         }
       ]
     }
-  ]
+  
 }, {
   versionKey: false,
   collection: "userFlowTb"
