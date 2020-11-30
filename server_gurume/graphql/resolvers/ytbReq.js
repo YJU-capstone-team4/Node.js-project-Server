@@ -6,7 +6,7 @@ const YtbReqResolvers = {
     Query: {
       ytbReq(_, args) {
         return YtbReq.find()
-        .populate('../../server/model/userTb')
+        .populate('../../server/model/userTbId')
         .exec();
       },
     },

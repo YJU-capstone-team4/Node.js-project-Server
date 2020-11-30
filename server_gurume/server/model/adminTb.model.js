@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 
 const adminTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  userId: {type: String},
-  password: {type: String},
-  nickname: {type: String}
+  userId: String,
+  password: String,
+  nickname: String
 }, {
   versionKey: false,
   collection: "adminTb"

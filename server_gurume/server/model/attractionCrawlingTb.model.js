@@ -5,14 +5,14 @@ const Schema = mongoose.Schema;
 const attractionCrawlingTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   attractionInfo: {
-    attractionName: {type: String},
-    attractionAddress: {type: String},
+    attractionName: String,
+    attractionAddress: String,
     attractionPhoto: { type: String, default: "../images/test.png" },
     location: {
-      lat: {type: Number},
-      lng: {type: Number}
+      lat: Number,
+      lng: Number
     },
-    typeStore: {type: String},
+    typeStore: String,
   },
   status: {type: String, default: "대기"},
 }, {

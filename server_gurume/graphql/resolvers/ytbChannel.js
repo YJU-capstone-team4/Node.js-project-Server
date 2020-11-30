@@ -1,8 +1,8 @@
 const YtbChannel = require("../../server/model/ytbChannelTb.model");
-const AdminTag = require("../../server/model/adminTagTb.model");
 const YtbStore = require("../../server/model/ytbStoreTb.model");
 const { startSession } = require('mongoose');
 const { where, exists, populate } = require("../../server/model/ytbStoreTb.model");
+const { json } = require("express");
 
 const YtbChannelResolver = {
 
@@ -20,16 +20,17 @@ const YtbChannelResolver = {
       //   .populate('../../server/model/video.ytbStoreTbId')
       //   .exec();
       // },
-     localChannel(_, args) {
-        return YtbChannel.find()
-        .select()
+      localChannel(_, args) {
+        let youtube =  YtbChannel.find({
+          'regionTag': args.regionTag
+        });
+        youtube
         .sort('-ytbSubscribe')
-        .populate({
-          path: '../../server/model/video.ytbStoreTbId',
-          populate: {path : '../../server/model/adminTagTbId'}})
-        // .where('video.ytbStoreTbId.regionTag')
-        // .equals(args.regionTag)
-        .exec();
+        .populate({path : '../../server/model/video.ytbStoreTbId',
+                  match: {regionTag: args.regionTag}})
+        .exec(function(err, youtube) {
+          return json(youtube);
+          });
       },
     },
 
@@ -42,16 +43,11 @@ const YtbChannelResolver = {
     localVideo: {
       async ytbStoreTbId(_, args) {
         const store = await YtbStore.findById(_.ytbStoreTbId._id)
-        .where('regionTag')
-        .equals(args.regionTag)
+        // .where('regionTag')
+        // .equals(args.regionTag)
         return store;
     },
-  },
-    ytbStoreTb: {
-      async adminTagTbId(_, args) {
-        const adminTag = await AdminTag.findById(_.adminTagTbId._id);
-        return adminTag;
-      },
+  
   }, 
     Mutation: {
       // createYtbStore: async(_, {storeId, videoId, ytbChannelId}) => {
@@ -69,3 +65,6 @@ const YtbChannelResolver = {
   };
   
   module.exports = YtbChannelResolver;
+
+          // .where(video.ytbStoreTbId(regionTag))
+        // .equals(args.regionTag)

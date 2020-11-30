@@ -4,10 +4,25 @@ const Schema = mongoose.Schema;
 
 const userTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  userId: {type: String},
-  password: {type: String},
-  nickname: {type: String},
-  memo: { type:String, default: '' }
+  userId: String,
+  password: String,
+  nickname: String,
+  memo: { type:String, default: '' },
+  folders: [
+    {
+      folderTitle: String,
+      createDate: Date,
+      updateDate: Date,
+      stores: [
+        {
+          ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
+          attractionTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'attractionTb' },
+          storeId: String,
+          typeStore: String
+        }
+      ]
+    }
+  ]
 }, {
   versionKey: false,
   collection: "userTb"

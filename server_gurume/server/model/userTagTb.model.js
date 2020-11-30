@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const userTagTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  userTag: {type: Array}
+  userTag: Array
 }, {
   versionKey: false,
   collection: "userTagTb"

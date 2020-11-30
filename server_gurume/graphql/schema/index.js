@@ -6,22 +6,18 @@ type Query {
   adminTags: [adminTagTb]
   attraction: [attractionTb]
   attractionInfo: [attractionInfo]
-  location: [location]
   attractionCrawling: [attractionCrawlingTb]
   shareFlow: [shareFlowTb]
   localShareFlow(regionTag: String): [shareFlowTb]
-  user: [userTb]
-  userFlow(userId: String): [userFlowTb]
-  selectUserFlow(_id: ID): [selectUserFlow]
-  folders: [folder]
-  stores: [store]
+  user(regionTag: String): [userTb]
+  selectFlow(_id: ID): [userTb]
+  selectUserTb(_id: ID): [selectUserTb]
+  folders(_id: ID): [folder]
   userTag: [userTagTb]
   ytbChannel: [ytbChannelTb]
-  localChannel(regionTag: String): [localYtbChannelTb]
-  video: [video]
+  localChannel(regionTag: String): [ytbChannelTb]
   localVideo: [video]
   ytbCrawling: [ytbCrawlingTb]
-  storeInfo: [storeInfo]
   ytbReq: [ytbReqTb]
   ytbStore: [ytbStoreTb]
   localYtbStore(regionTag: String): [ytbStoreTb]
@@ -48,7 +44,6 @@ type adminTb {
   type attractionTb {
     _id: ID
     attractionInfo: attractionInfo
-    adminTagTbId: adminTagTb
     regionTag: String
   }
 
@@ -78,9 +73,7 @@ type adminTb {
     userId: String
     shareTitle: String
     shareThumbnail: String
-    userFlowTbId: userFlowTb
     folderTitle: String
-    adminTagTbId: adminTagTb
     adminTag : adminTag
     userTags: [String]
     shareDate: String
@@ -100,19 +93,15 @@ type adminTb {
     password: String
     nickname: String
     memo: String
-  }
-
-  type userFlowTb {
-    _id: ID
-    userTbId: userTb
-    userId: String
     folders: [folder]
   }
 
-  type selectUserFlow {
+  type selectUserTb {
     _id: ID
-    userTbId: userTb
     userId: String
+    password: String
+    nickname: String
+    memo: String
     folders(_id: ID): [selectFolder]
   }
 
@@ -134,16 +123,12 @@ type adminTb {
 
   type store {
     _id: ID
-    attractionTbId: attractionTb
     ytbStoreTbId: ytbStoreTb
     typeStore: String
   }
 
   type userTagTb {
     _id: ID
-    userTag: [userTag]
-  }
-  type userTag {
     userTag: [String]
   }
 
@@ -203,7 +188,7 @@ type adminTb {
     storeName: String
     storeAddress: String
     location: location
-    status: String
+    typeStore: String
   }
 
   type ytbReqTb {
@@ -220,7 +205,6 @@ type adminTb {
   type ytbStoreTb {
     _id: ID
     storeInfo: storeInfo
-    adminTagTbId: adminTagTb
     regionTag: String
   }
 
