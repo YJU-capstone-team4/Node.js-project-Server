@@ -10,7 +10,11 @@ const UserResolvers = {
       selectFlow(_, args) {
         return User.find({'folders._id' : args._id})
         .populate('../../server/model/folders.stores.ytbStoreTbId');
-      }
+      },
+      // folders(_, args) {
+      //   return User.find().select('folders')
+      //   .populate('../../server/model/folders.stores.ytbStoreTbId');
+      // }
     },
     store : 
     {

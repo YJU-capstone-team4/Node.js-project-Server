@@ -20,19 +20,16 @@ const YtbChannelResolver = {
       //   .populate('../../server/model/video.ytbStoreTbId')
       //   .exec();
       // },
-      localChannel(_, args) {
-        let youtube =  YtbChannel.find({
-          'regionTag': args.regionTag
-        });
-        youtube
-        .sort('-ytbSubscribe')
-        .populate({path : '../../server/model/video.ytbStoreTbId',
-                  match: {regionTag: args.regionTag}})
-        .exec(function(err, youtube) {
-          return json(youtube);
-          });
-      },
-    },
+localChannel(_, args) {
+  let youtube =  YtbChannel.find({
+    'video.ytbStoreId.regionTag': args.regionTag
+  });
+  youtube
+  .sort('-ytbSubscribe')
+  .populate({path : '../../server/model/video.ytbStoreTbId'})
+  .exec();
+},
+},
 
     video: {
         async ytbStoreTbId(_, args) {
