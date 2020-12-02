@@ -10,9 +10,9 @@ type Query {
   shareFlow: [shareFlowTb]
   localShareFlow(regionTag: String): [shareFlowTb]
   user(regionTag: String): [userTb]
-  selectFlow(_id: ID): [userTb]
+  selectFlow(folderTitle: String): [userTb]
   selectUserTb(_id: ID): [selectUserTb]
-  folders(_id: ID): folder
+  folders(folderTitle: String): folder
   userTag: [userTagTb]
   ytbChannel: [ytbChannelTb]
   localChannel(regionTag: String): [ytbChannelTb]
