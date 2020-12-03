@@ -38,6 +38,7 @@ const UserResolvers = {
               as: "ytbStoreTbId"
             }, 
             $lookup: {
+
               from: "attractionTb",
               localField: "folders.stores.attractionTbId",
               foreignField: "_id",
@@ -53,13 +54,11 @@ const UserResolvers = {
          .exec( 
 
         )
-        .then(        
-           function(err, result) {
-          if(err) {
-            console.log(err);
-          }
-          console.log(result);
-        });
+        .then(data => {
+          console.log(data);
+          return data;
+        })
+        .catch(err => console.log(err));
         //.then();
 
       },
