@@ -12,7 +12,7 @@ type Query {
   user(regionTag: String): [userTb]
   selectFlow(folderTitle: String): [userTb]
   selectUserTb(_id: ID): [selectUserTb]
-  folders(folderTitle: String): folder
+  folders(_id: ID): folder
   userTag: [userTagTb]
   ytbChannel: [ytbChannelTb]
   localChannel(regionTag: String): [ytbChannelTb]
