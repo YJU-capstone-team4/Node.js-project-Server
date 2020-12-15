@@ -1,4 +1,5 @@
 const User = require("../../server/model/userTb.model");
+const YtbStore = require("../../server/model/ytbStoreTb.model");
 const { startSession } = require('mongoose');
 
 const UserResolvers = {
@@ -49,15 +50,33 @@ const UserResolvers = {
         //     $skip: 0
         //   }
         // ])
-        .find({'folders.folderTitle': args.folderTitle})
-        .populate('../../server/model/folders.stores.ytbStoreTbId')
-         .exec()
-        .then(data => {
-          console.log(data);
-          return data;
-        })
-        .catch(err => console.log(err));
+        // .find({'folders.folderTitle': args.folderTitle})
+        // .populate('../../server/model/folders.stores.ytbStoreTbId')
+        //  .exec()
+        // .then(data => {
+        //   console.log(data);
+        //   return data;
+        // })
+        // .catch(err => console.log(err));
         //.then();
+        .find({
+          "folders._id": args._id
+      },{
+          "_id": 0,
+          "folders": {
+              "$elemMatch": {
+              "_id": args._id
+              }
+          }
+      })
+      .populate('../../server/model/folders.stores.ytbStoreTbId')
+      .exec();
+      // .then(data => {
+      //   console.log(data);
+      //   return data;
+      // })
+      // .catch(err => console.log(err));
+
 
       },
       folders(_, args) {
@@ -65,6 +84,7 @@ const UserResolvers = {
         .populate('../../server/model/folders.stores.ytbStoreTbId')         
         .exec()
         .then(data => {
+          const folder = data.folders.id(args._id);
           console.log(data);
           return data;
         })

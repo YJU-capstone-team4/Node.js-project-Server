@@ -10,7 +10,7 @@ type Query {
   shareFlow: [shareFlowTb]
   localShareFlow(regionTag: String): [shareFlowTb]
   user(regionTag: String): [userTb]
-  selectFlow(folderTitle: String): [userTb]
+  selectFlow(_id: ID): [userTb]
   selectUserTb(_id: ID): [selectUserTb]
   folders(_id: ID): folder
   userTag: [userTagTb]
@@ -18,7 +18,7 @@ type Query {
   localChannel(regionTag: String): [ytbChannelTb]
   localVideo: [video]
   ytbCrawling: [ytbCrawlingTb]
-  ytbReq: [ytbReqTb]
+  ytbReq(_id: ID): [ytbReqTb]
   ytbStore: [ytbStoreTb]
   localYtbStore(regionTag: String): [ytbStoreTb]
   adminTag: [adminTag]
@@ -150,7 +150,7 @@ type adminTb {
     ytbLinkAddress: String
     ytbSubscribe: String
     ytbHits: String
-    video: [localVideo]
+    video: [video]
   }
   
   type video {

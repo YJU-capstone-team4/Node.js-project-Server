@@ -20,26 +20,31 @@ const YtbChannelResolver = {
       //   .populate('../../server/model/video.ytbStoreTbId')
       //   .exec();
       // },
-localChannel(_, args) {
-  let youtube =  YtbChannel.find({
-    'video.ytbStoreId.regionTag': args.regionTag
-  });
-  youtube
-  .sort('-ytbSubscribe')
-  .populate({path : '../../server/model/video.ytbStoreTbId'})
-  .exec();
-},
+  localChannel(_, args) {
+    return YtbChannel.find({
+      //'video.ytbStoreId.regionTag': args.regionTag
+    })
+    .sort('-ytbSubscribe')
+    .populate({path : '../../server/model/video.ytbStoreTbId',
+              match: {'regionTag': args.regionTag}  
+  })
+    .then(data => {
+      console.log(data);
+      return data;
+    })
+    .catch(err => console.log(err));
+  },
 },
 
     video: {
-        async ytbStoreTbId(_, args) {
-          const store = await YtbStore.findById(_.ytbStoreTbId._id);
-          return store;
+      async ytbStoreTbId(_, args) {
+        const ytbStore = await YtbStore.findById(_.ytbStoreTbId);
+        return ytbStore;
       },
     },
     localVideo: {
       async ytbStoreTbId(_, args) {
-        const store = await YtbStore.findById(_.ytbStoreTbId._id)
+        const store = await YtbStore.findById(_.ytbStoreTbId)
         // .where('regionTag')
         // .equals(args.regionTag)
         return store;

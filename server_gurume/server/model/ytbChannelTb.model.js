@@ -14,8 +14,8 @@ const ytbChannelTbSchema = new Schema({
       ytbVideoName: String,
       ytbThumbnail: String,
       ytbAddress: String,
-      //ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
-      ytbStoreTbId: { type: String, ref: 'ytbStoreTb' },
+      ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
+      //ytbStoreTbId: { type: String, ref: 'ytbStoreTb' },
       storeId: String,
       hits: String,
       uploadDate: Date
