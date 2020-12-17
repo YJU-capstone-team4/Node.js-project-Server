@@ -9,8 +9,16 @@ const YtbChannelResolver = {
     Query: {
       ytbChannel(_, args) {
         return YtbChannel.find()
-        .populate('../../server/model/video.ytbStoreTbId')
-        .exec();
+        .populate({path : '../../server/model/video.ytbStoreTbId',
+        match: {'regionTag': args.regionTag}})
+        .exec(function(err, ytbChannel) {
+          ytbChannel = ytbChannel.filter(function(ytbChannel) {
+            return ytbChannel.regionTag;
+          })
+        })
+        // .exec(function(err, ytbStore) {
+        //   ytbStore.filter(function())
+        // });
       },
       // localChannel(_, args) {
       //   return YtbChannel.find({'localVideo.ytbStoreTbId.regionTag' : args.regionTag})
@@ -26,27 +34,29 @@ const YtbChannelResolver = {
     })
     .sort('-ytbSubscribe')
     .populate({path : '../../server/model/video.ytbStoreTbId',
-              match: {'regionTag': args.regionTag}  
-  })
-    .then(data => {
-      console.log(data);
-      return data;
-    })
-    .catch(err => console.log(err));
+              match: {regionTag: args.regionTag}})
+    ;
+    // .then(data => {
+    //   console.log(data);
+    //   return data;
+    // })
+    // .catch(err => console.log(err));
   },
 },
 
     video: {
       async ytbStoreTbId(_, args) {
-        const ytbStore = await YtbStore.findById(_.ytbStoreTbId);
+        const ytbStore = await YtbStore.findById(_.ytbStoreTbId)
+        // .where('regionTag')
+        // .equals(args.regionTag);
         return ytbStore;
       },
     },
     localVideo: {
       async ytbStoreTbId(_, args) {
         const store = await YtbStore.findById(_.ytbStoreTbId)
-        // .where('regionTag')
-        // .equals(args.regionTag)
+        .where('regionTag')
+        .equals(args.regionTag)
         return store;
     },
   

@@ -15,7 +15,7 @@ type Query {
   folders(_id: ID): folder
   userTag: [userTagTb]
   ytbChannel: [ytbChannelTb]
-  localChannel(regionTag: String): [ytbChannelTb]
+  localChannel(regionTag: String) : [ytbChannelTb]
   localVideo: [video]
   ytbCrawling: [ytbCrawlingTb]
   ytbReq(_id: ID): [ytbReqTb]

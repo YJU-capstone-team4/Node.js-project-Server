@@ -12,26 +12,23 @@ const YtbReqResolvers = {
     },
       ytbReqTb : {
         async userTbId(_, args) {
-          console.log(args.id);
+          console.log(_.id);
           const user = await User.findById(_.userTbId._id)
           .exec();
 
-          let ids = user.equals(args._id);
-
-          const data = await YtbReq.find( {
-            "userTbId": {$in: ids}
-            })
-            .populate({
-              path:'../../server/model/userTbId'
-            })
-            .exec()
-            .then(data => {
-              console.log(data);
-              return data;
-            })
-            .catch(err => console.log(err))
-          ;
           return user;
+          //return user.map((id) => ({_id : id}));
+          //  await YtbReq.populate(_, {path: '../../server/model/userTbId'});
+
+          //  return _._id;
+
+          //   .then(data => {
+          //     console.log(data);
+          //     return data;
+          //   })
+          //   .catch(err => console.log(err))
+          // ;
+          //return user;
         },
     },
     Mutation: {
