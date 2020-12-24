@@ -10,10 +10,11 @@ const YtbChannelResolver = {
       ytbChannel(_, args) {
         return YtbChannel.find()
         .populate({path : '../../server/model/video.ytbStoreTbId',
-        match: {'regionTag': args.regionTag}})
+        match: { regionTag: args.regionTag }})
         .exec(function(err, ytbChannel) {
           ytbChannel = ytbChannel.filter(function(ytbChannel) {
-            return ytbChannel.regionTag;
+            console.log(ytbChannel.ytbProfile);
+            return ytbChannel.ytbProfile;
           })
         })
         // .exec(function(err, ytbStore) {

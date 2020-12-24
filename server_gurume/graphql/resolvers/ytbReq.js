@@ -6,17 +6,39 @@ const YtbReqResolvers = {
     Query: {
       ytbReq(_, args) {
         return YtbReq.find()
-        .populate('../../server/model/userTbId')
-        .exec();
+        .populate({path : '../../server/model/userTbId'})//,
+                  // match : args._id})
+        .exec()
       },
     },
       ytbReqTb : {
         async userTbId(_, args) {
-          console.log(_.id);
           const user = await User.findById(_.userTbId._id)
-          .exec();
+          .exec()
+            // .then(data => {
+            //   const folder = data.folders.id(args._id);
+            //   console.log(data);
+            //   return data;
+            // })
+            // .catch(err => console.log(err));
+          },
+        },
 
-          return user;
+          // let ids = '';
+          // user.array.foreach(element => {
+          //   ids = element.id;
+          // });
+
+          // const data = await YtbReq.find({
+          //   "userTbId": {$in:ids}
+          // })
+          // .populate({
+          //   path: 'userTbId'
+          // })
+          // .exec();
+
+
+         // return user;
           //return user.map((id) => ({_id : id}));
           //  await YtbReq.populate(_, {path: '../../server/model/userTbId'});
 
@@ -29,8 +51,8 @@ const YtbReqResolvers = {
           //   .catch(err => console.log(err))
           // ;
           //return user;
-        },
-    },
+    //     },
+    // },
     Mutation: {
       // createUserTb: async (_, { userId, ytbReqTbId}) => {
       //   try {
