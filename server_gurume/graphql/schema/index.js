@@ -16,7 +16,7 @@ type Query {
   userTag: [userTagTb]
   ytbChannel(regionTag: String): [ytbChannelTb]
   localChannel(regionTag: String) : [ytbChannelTb]
-  localVideo: [video]
+  localVideo(regionTag: String): [video]
   ytbCrawling: [ytbCrawlingTb]
   ytbReq(_id: ID): [ytbReqTb]
   ytbStore: [ytbStoreTb]
@@ -150,7 +150,7 @@ type adminTb {
     ytbLinkAddress: String
     ytbSubscribe: String
     ytbHits: String
-    video: [video]
+    video(regionTag: String): [localVideo]
   }
   
   type video {

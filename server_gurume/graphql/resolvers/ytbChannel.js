@@ -11,13 +11,13 @@ const YtbChannelResolver = {
         return YtbChannel.find()
         .populate({path : '../../server/model/video.ytbStoreTbId',
         match: { regionTag: args.regionTag }})
-        .exec(function(err, ytbChannel) {
-          ytbChannel = ytbChannel.filter(function(ytbChannel) {
-            console.log(ytbChannel.ytbProfile);
-            return ytbChannel.ytbProfile;
-          })
-        })
-        // .exec(function(err, ytbStore) {
+        .exec()
+    //         .then(data => {
+    //   console.log(data);
+    //   return data;
+    // })
+    // .catch(err => console.log(err));
+       // .exec(function(err, ytbStore) {
         //   ytbStore.filter(function())
         // });
       },
@@ -36,7 +36,13 @@ const YtbChannelResolver = {
     .sort('-ytbSubscribe')
     .populate({path : '../../server/model/video.ytbStoreTbId',
               match: {regionTag: args.regionTag}})
-    ;
+    // .exec(function(err, channels) {
+    //   channels = channels.filter(function(channel) {
+    //     console.log(channel.ytbStoreTbId.regionTag);
+    //     return channel.ytbStoreTbId.regionTag;
+    //   })
+    // })
+
     // .then(data => {
     //   console.log(data);
     //   return data;
@@ -44,24 +50,24 @@ const YtbChannelResolver = {
     // .catch(err => console.log(err));
   },
 },
-
-    video: {
-      async ytbStoreTbId(_, args) {
-        const ytbStore = await YtbStore.findById(_.ytbStoreTbId)
-        // .where('regionTag')
-        // .equals(args.regionTag);
-        return ytbStore;
-      },
-    },
-    localVideo: {
-      async ytbStoreTbId(_, args) {
-        const store = await YtbStore.findById(_.ytbStoreTbId)
-        .where('regionTag')
-        .equals(args.regionTag)
-        return store;
-    },
+video: {
+  async ytbStoreTbId(_, args) {
+    const store = await YtbStore.findById(_.ytbStoreTbId._id);
+    return store;
+},
+},
+localVideo: {
   
-  }, 
+async ytbStoreTbId(_, args) {
+
+  const store = await YtbStore.findById(_.ytbStoreTbId._id)
+  // .where('regionTag')
+  // .equals(_.args.regionTag)
+
+  return store.regionTag;
+},
+
+}, 
     Mutation: {
       // createYtbStore: async(_, {storeId, videoId, ytbChannelId}) => {
       //   try {
