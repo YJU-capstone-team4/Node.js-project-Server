@@ -9,9 +9,20 @@ const YtbChannelResolver = {
     Query: {
       ytbChannel(_, args) {
         return YtbChannel.find()
+        // .populate({path : '../../server/model/video.ytbStoreTbId',
+        // match: { regionTag: args.regionTag }})
         .populate({path : '../../server/model/video.ytbStoreTbId',
-        match: { regionTag: args.regionTag }})
-        .exec()
+        model : 'YtbStore',
+        match: {'regionTag': args.regionTag}})
+        //.exec()
+        .exec(function(err, channels) {
+          console.log(args.regionTag)
+          console.log(channels.ytbChannel)
+          // channels = channels.filter(function(channel) {
+          //   console.log(channel.ytbStoreTbId.regionTag);
+          //   return channel.ytbStoreTbId.regionTag;
+          // })
+        })
     //         .then(data => {
     //   console.log(data);
     //   return data;
@@ -35,13 +46,16 @@ const YtbChannelResolver = {
     })
     .sort('-ytbSubscribe')
     .populate({path : '../../server/model/video.ytbStoreTbId',
-              match: {regionTag: args.regionTag}})
-    // .exec(function(err, channels) {
-    //   channels = channels.filter(function(channel) {
-    //     console.log(channel.ytbStoreTbId.regionTag);
-    //     return channel.ytbStoreTbId.regionTag;
-    //   })
-    // })
+              model : 'YtbStore',
+              match: {'video.ytbStoreTbId.regionTag': args.regionTag}})
+    .exec(function(err, channels) {
+      console.log(args.regionTag)
+      console.log(channels.ytbChannel)
+      // channels = channels.filter(function(channel) {
+      //   console.log(channel.ytbStoreTbId.regionTag);
+      //   return channel.ytbStoreTbId.regionTag;
+      // })
+    })
 
     // .then(data => {
     //   console.log(data);
