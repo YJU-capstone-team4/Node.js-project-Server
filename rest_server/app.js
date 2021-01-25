@@ -19,6 +19,8 @@ app.use(session({secret:'MySecret', resave: false, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
 // 로그인 라우트
 app.use('/', require('./routes/main'));
 app.use('/auth', require('./routes/auth'));

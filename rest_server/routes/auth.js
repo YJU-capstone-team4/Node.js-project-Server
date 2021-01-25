@@ -12,12 +12,17 @@ router.get('/logout', function(req, res) {
 });
 
 router.get('/google',
-  passport.authenticate('google', { scope: ['profile'] })
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
 router.get('/google/callback',
   passport.authenticate('google'), authSuccess
 );
+
+router.get("/current_user", (req, res) => { 
+  res.send(req.user); 
+});
+
 
 function authSuccess(req, res) {
   res.redirect('/');
