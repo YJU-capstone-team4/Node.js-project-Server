@@ -38,29 +38,29 @@ app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
-// const userTbRouter = require('./routes/userTb');
-// const adminTbRouter = require('./routes/adminTb');
-// const adminTagTbRouter = require('./routes/adminTagTb');
-// const userTagTbRouter = require('./routes/userTagTb');
-// const ytbReqTbRouter = require('./routes/ytbReqTb');
-// const ytbCrawlingTbRouter = require('./routes/ytbCrawlingTb');
-// const ytbStoreTbRouter = require('./routes/ytbStoreTb');
-// const ytbChannelTbRouter = require('./routes/ytbChannelTb');
-// const attractionCrawlingTbRouter = require('./routes/attractionCrawlingTb');
-// const attractionTbRouter = require('./routes/attractionTb');
-// const shareFlowTbRouter = require('./routes/shareFlowTb');
+const userTbRouter = require('./routes/userTb');
+const adminTbRouter = require('./routes/adminTb');
+const adminTagTbRouter = require('./routes/adminTagTb');
+const userTagTbRouter = require('./routes/userTagTb');
+const ytbReqTbRouter = require('./routes/ytbReqTb');
+const ytbCrawlingTbRouter = require('./routes/ytbCrawlingTb');
+const ytbStoreTbRouter = require('./routes/ytbStoreTb');
+const ytbChannelTbRouter = require('./routes/ytbChannelTb');
+const attractionCrawlingTbRouter = require('./routes/attractionCrawlingTb');
+const attractionTbRouter = require('./routes/attractionTb');
+const shareFlowTbRouter = require('./routes/shareFlowTb');
 
-// app.use('/userTb', userTbRouter);
-// app.use('/adminTb', adminTbRouter);
-// app.use('/adminTagTb', adminTagTbRouter);
-// app.use('/userTagTb', userTagTbRouter);
-// app.use('/ytbReqTb', ytbReqTbRouter);
-// app.use('/ytbCrawlingTb', ytbCrawlingTbRouter);
-// app.use('/ytbStoreTb', ytbStoreTbRouter);
-// app.use('/ytbChannelTb', ytbChannelTbRouter);
-// app.use('/attractionCrawlingTb', attractionCrawlingTbRouter);
-// app.use('/attractionTb', attractionTbRouter);
-// app.use('/shareFlowTb', shareFlowTbRouter);
+app.use('/userTb', userTbRouter);
+app.use('/adminTb', adminTbRouter);
+app.use('/adminTagTb', adminTagTbRouter);
+app.use('/userTagTb', userTagTbRouter);
+app.use('/ytbReqTb', ytbReqTbRouter);
+app.use('/ytbCrawlingTb', ytbCrawlingTbRouter);
+app.use('/ytbStoreTb', ytbStoreTbRouter);
+app.use('/ytbChannelTb', ytbChannelTbRouter);
+app.use('/attractionCrawlingTb', attractionCrawlingTbRouter);
+app.use('/attractionTb', attractionTbRouter);
+app.use('/shareFlowTb', shareFlowTbRouter);
 
 // 포트 연결
 app.listen(PORT, function(){
