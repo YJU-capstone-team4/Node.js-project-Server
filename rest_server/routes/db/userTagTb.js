@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     userTag: doc.userTag,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/userTag/' + doc.userTag
+                        url: 'http://localhost:3000/userTag/' + doc.userTag
                     }
                 }
             })
@@ -45,7 +45,7 @@ router.post('/', (req, res, next) => {
                 userTag: result.userTag,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:5000/userTagTb/' + result.userTag
+                    url: 'http://localhost:3000/userTagTb/' + result.userTag
                 }
             }
         });

@@ -23,7 +23,7 @@ router.get('/', (req, res, next) => {
                     video: doc.video,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/ytbChannelTb/' + doc._id
+                        url: 'http://localhost:3000/ytbChannelTb/' + doc._id
                     }
                 }
             })
@@ -54,7 +54,7 @@ router.get('/:channerId', (req, res, next) => {
                 userTb: doc,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:5000/ytbChannelTb'
+                    url: 'http://localhost:3000/ytbChannelTb'
                 }
             });
         } else {

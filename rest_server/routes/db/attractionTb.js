@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
                     regionTag: doc.regionTag,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/attractionTb/' + doc._id
+                        url: 'http://localhost:3000/attractionTb/' + doc._id
                     }
                 }
             })

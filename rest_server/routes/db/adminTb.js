@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
                     nickname: doc.nickname,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/adminTb/' + doc.userId
+                        url: 'http://localhost:3000/adminTb/' + doc.userId
                     }
                 }
             })
@@ -52,7 +52,7 @@ router.post('/', (req, res, next) => {
                 nickname: result.nickname,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:5000/products/' + result._id
+                    url: 'http://localhost:3000/products/' + result._id
                 }
             }
         });
@@ -76,7 +76,7 @@ router.get('/:userId', (req, res, next) => {
                 adminTb: doc,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:5000/adminTb'
+                    url: 'http://localhost:3000/adminTb'
                 }
             });
         } else {
@@ -102,7 +102,7 @@ router.patch('/:adminId', (req, res, next) => {
             message: 'AdeminTb updated',
             request: {
                 type: 'GET',
-                url: 'http://localhost:5000/adminTb' + userId
+                url: 'http://localhost:3000/adminTb' + userId
             }
         });
     }).catch(err => {
@@ -123,7 +123,7 @@ router.delete('/:userId', (req, res, next) => {
             message: 'AdminTb deleted',
             request: {
                 type: 'POST',
-                url: 'http://localhost:5000/adminTb/',
+                url: 'http://localhost:3000/adminTb/',
                 // body: { name: 'String', price: 'Number' }
             }
         })

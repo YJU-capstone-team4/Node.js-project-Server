@@ -32,7 +32,7 @@ router.get('/', (req, res, next) => {
                     hits: doc.hits,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/shareFlowTb/' + doc._id
+                        url: 'http://localhost:3000/shareFlowTb/' + doc._id
                     }
                 }
             })

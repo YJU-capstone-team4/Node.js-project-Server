@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
                     adminTag: doc.adminTag,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/adminTag/' + doc.adminTag
+                        url: 'http://localhost:3000/adminTag/' + doc.adminTag
                     }
                 }
             })
@@ -59,7 +59,7 @@ router.get('/:adminTag', (req, res, next) => {
 //                 adminTag: result.adminTag,
 //                 request: {
 //                     type: 'GET',
-//                     url: 'http://localhost:5000/adminTagTb/' + result.adminTag
+//                     url: 'http://localhost:3000/adminTagTb/' + result.adminTag
 //                 }
 //             }
 //         });
@@ -85,7 +85,7 @@ router.patch('/:userId', (req, res, next) => {
             message: 'UserTb updated',
             request: {
                 type: 'GET',
-                url: 'http://localhost:5000/userTb' + userId
+                url: 'http://localhost:3000/userTb' + userId
             }
         });
     }).catch(err => {
@@ -107,7 +107,7 @@ router.delete('/:userId', (req, res, next) => {
             message: 'UserTb deleted',
             request: {
                 type: 'POST',
-                url: 'http://localhost:5000/userTb/',
+                url: 'http://localhost:3000/userTb/',
                 // body: { name: 'String', price: 'Number' }
             }
         })

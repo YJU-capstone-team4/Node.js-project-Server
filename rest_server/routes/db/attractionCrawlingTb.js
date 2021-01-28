@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
                     status: doc.status,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/attractionCrawlingTb/' + doc._id
+                        url: 'http://localhost:3000/attractionCrawlingTb/' + doc._id
                     }
                 }
             })
@@ -48,7 +48,7 @@ router.post('/', (req, res, next) => {
                 status: result.status,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:5000/attractionCrawlingTb/' + result.userId
+                    url: 'http://localhost:3000/attractionCrawlingTb/' + result.userId
                 }
             }
         });
@@ -72,7 +72,7 @@ router.post('/', (req, res, next) => {
 //                 userTb: doc,
 //                 request: {
 //                     type: 'GET',
-//                     url: 'http://localhost:5000/attractionCrawlingTb'
+//                     url: 'http://localhost:3000/attractionCrawlingTb'
 //                 }
 //             });
 //         } else {
@@ -98,7 +98,7 @@ router.post('/', (req, res, next) => {
 //             message: 'AttractionCrawlingTb updated',
 //             request: {
 //                 type: 'GET',
-//                 url: 'http://localhost:5000/attractionCrawlingTb' + userId
+//                 url: 'http://localhost:3000/attractionCrawlingTb' + userId
 //             }
 //         });
 //     }).catch(err => {
@@ -119,7 +119,7 @@ router.post('/', (req, res, next) => {
 //             message: 'AttractionCrawlingTb deleted',
 //             request: {
 //                 type: 'POST',
-//                 url: 'http://localhost:5000/attractionCrawlingTb/',
+//                 url: 'http://localhost:3000/attractionCrawlingTb/',
 //                 // body: { name: 'String', price: 'Number' }
 //             }
 //         })

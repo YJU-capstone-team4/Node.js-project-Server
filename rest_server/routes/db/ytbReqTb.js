@@ -25,7 +25,7 @@ router.get('/', (req, res, next) => {
                     userId: doc.userId,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/ytbReqTb/' + doc.ytbChannel
+                        url: 'http://localhost:3000/ytbReqTb/' + doc.ytbChannel
                     }
                 }
             })
