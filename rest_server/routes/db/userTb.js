@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const UserTb = require('../models/userTb.model');
+const UserTb = require('../../models/userTb.model');
 
 router.get('/', (req, res, next) => {
   UserTb.find()

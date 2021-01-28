@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const UserTagTb = require('../models/userTagTb.model');
+const UserTagTb = require('../../models/userTagTb.model');
 router.get('/', (req, res, next) => {
   UserTagTb.find()
     // .select("name price _id")

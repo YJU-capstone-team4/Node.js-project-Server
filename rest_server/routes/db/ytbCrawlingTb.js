@@ -2,22 +2,24 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const AttractionCrawlingTb = require('../models/attractionCrawlingTb.model');
+const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
 router.get('/', (req, res, next) => {
-  AttractionCrawlingTb.find()
-    // .select("name price _id")
+  YtbCrawlingTb.find()
+    // .select("name price _id") 
     .exec()
     .then(docs => {
         const response = {
             count: docs.length,
-            attractionCrawlingTb: docs.map(doc => {
+            ytbCrawlingTb: docs.map(doc => {
                 return {
                     _id: doc._id,
-                    attractionInfo: doc.attractionInfo,
-                    status: doc.status,
+                    ytbChannel: doc.ytbChannel,
+                    ytbProfile: doc.ytbProfile,
+                    videoCount: doc.videoCount,
+                    video: doc.video,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/attractionCrawlingTb/' + doc._id
+                        url: 'http://localhost:5000/ytbCrawlingTb/' + doc._id
                     }
                 }
             })
@@ -32,23 +34,26 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    const attractionCrawlingTb = new AttractionCrawlingTb({
+    const ytbCrawlingTb = new YtbCrawlingTb({
       _id: new mongoose.Types.ObjectId(),
-      attractionInfo: req.body.attractionInfo,
-      status: req.body.status
+      ytbChannel: req.body.ytbChannel,
+      ytbProfile: req.body.ytbProfile,
+      videoCount: doc.videoCount,
+      video: req.body.video,
     });
-    attractionCrawlingTb.save()
+    ytbCrawlingTb.save()
     .then(result => {
         console.log(result);
         res.status(201).json({
-            message: 'Created attractionCrawlingTb successfully',
-            createdAttractionCrawlingTbId: {
+            message: 'Created ytbCrawlingTb successfully',
+            createdYtbCrawlingTbId: {
                 _id: result._id,
-                attractionInfo: result.attractionInfo,
-                status: result.status,
+                ytbChannel: result.ytbChannel,
+                ytbProfile: result.ytbProfile,
+                video: result.video,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:5000/attractionCrawlingTb/' + result.userId
+                    url: 'http://localhost:5000/attractionCrawlingTb/' + result._id
                 }
             }
         });

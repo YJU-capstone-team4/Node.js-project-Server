@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const YtbChannelTb = require("../models/ytbChannelTb.model")
+const YtbChannelTb = require("../../models/ytbChannelTb.model")
 
 router.get('/', (req, res, next) => {
     YtbChannelTb.find()

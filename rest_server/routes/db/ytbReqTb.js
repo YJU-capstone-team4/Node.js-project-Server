@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const YtbReqTb = require("../models/ytbReqTb.model")
-const UserTb = require("../models/userTb.model")
+const YtbReqTb = require("../../models/ytbReqTb.model")
+const UserTb = require("../../models/userTb.model")
 
 router.get('/', (req, res, next) => {
     YtbReqTb.find()

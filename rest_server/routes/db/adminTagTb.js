@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const AdminTagTb = require('../models/adminTagTb.model');
+const AdminTagTb = require('../../models/adminTagTb.model');
 router.get('/', (req, res, next) => {
   AdminTagTb.find()
     .exec()

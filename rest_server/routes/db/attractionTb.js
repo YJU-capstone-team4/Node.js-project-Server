@@ -2,23 +2,24 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const YtbStoreTb = require("../models/ytbStoreTb.model")
+const AttractionTb = require("../../models/attractionTb.model")
 
 router.get('/', (req, res, next) => {
-    YtbStoreTb.find()
+    AttractionTb.find()
     .select()
+    .populate('adminTagTbId')
     .exec()
     .then(docs => {
         res.status(200).json({
             count: docs.length,
-            ytbStoreTb: docs.map(doc => {
+            attractionTb: docs.map(doc => {
                 return {
                     _id: doc._id,
-                    storeInfo: doc.storeInfo,
+                    attractionInfo: doc.attractionInfo,
                     regionTag: doc.regionTag,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:5000/ytbStoreTb/' + doc._id
+                        url: 'http://localhost:5000/attractionTb/' + doc._id
                     }
                 }
             })
@@ -33,24 +34,24 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-      const ytbStoreTb = new YtbStoreTb({
+      const attractionTb = new AttractionTb({
         _id: new mongoose.Types.ObjectId(),
-        storeInfo: req.body.storeInfo,
+        attractionInfo: req.body.attractionInfo,
         regionTag: req.body.regionTag
       });
-      ytbStoreTb.save()
+      attractionTb.save()
       .then(result => {
         console.log(result);
         res.status(201).json({
-            message: 'ytbStoreTb stored',
-            createdYtbStoreTb: {
+            message: 'attractionTb stored',
+            createdAttractionTb: {
                 _id: result._id,
-                ytbStoreTbInfo: result.ytbStoreTbInfo,
+                attractionInfo: result.attractionInfo,
                 regionTag: result.regionTag
             },
             request: {
                 type: 'POST',
-                url: 'http://localhost:3000/ytbStoreTb/' + result._id
+                url: 'http://localhost:3000/attractionTb/' + result._id
             }
         });
     })

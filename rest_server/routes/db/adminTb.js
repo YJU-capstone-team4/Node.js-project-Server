@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const AdminTb = require('../models/adminTb.model');
+const AdminTb = require('../../models/adminTb.model');
 router.get('/', (req, res, next) => {
   AdminTb.find()
     // .select("name price _id")

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const ShareFlowTb = require("../models/shareFlowTb.model")
+const ShareFlowTb = require("../../models/shareFlowTb.model")
 
 router.get('/', (req, res, next) => {
     ShareFlowTb.find()
