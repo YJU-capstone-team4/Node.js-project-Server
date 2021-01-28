@@ -19,11 +19,15 @@ app.use(session({secret:'MySecret', resave: false, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+ app.get('/', (req, res) => {
+    res.json({
+        success: true,
+    });
+});
 
-
-// 로그인 라우트
-app.use('/', require('./routes/main'));
-app.use('/auth', require('./routes/auth'));
+// // 로그인 라우트
+// app.use('/', require('./routes/main'));
+// app.use('/auth', require('./routes/auth'));
 
 // 포트 연결
 app.listen(PORT, function(){
