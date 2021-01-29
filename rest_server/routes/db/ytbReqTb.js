@@ -152,9 +152,12 @@ router.get('/:userId', async (req, res, next) => {
     }
 });
 
-// 신청 유튜버 작성
-router.post('/', (req, res, next) => {
-      const ytbReqTb = new YtbReqTb({
+// 신청 유튜버 승인 시 - 보류
+router.post('/cetification/:youtuber', (req, res, next) => {
+    YtbReqTb.find({ 'ytbChannel' : req.params.youtuber })
+    
+
+    const ytbReqTb = new YtbReqTb({
         _id: new mongoose.Types.ObjectId(),
         ytbChannel: req.body.ytbChannel,
         ytbProfile: req.body.ytbProfile,
@@ -163,9 +166,9 @@ router.post('/', (req, res, next) => {
         ytbHits: req.body.ytbHits,
         userTbId: req.body.userTbId,
         userId: req.body.userId
-      });
-      ytbReqTb.save()
-      .then(result => {
+    });
+    ytbReqTb.save()
+    .then(result => {
         console.log(result);
         res.status(201).json({
             message: 'ytbReqTb stored',
