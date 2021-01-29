@@ -7,8 +7,9 @@ const ytbChannelTbSchema = new Schema({
   ytbChannel: String,
   ytbProfile: String,
   ytbLinkAddress: String,
-  ytbSubscribe: String,
-  ytbHits: String,
+  ytbSubscribe: Number,
+  ytbSubIncrease: Number,
+  ytbHits: Number,
   video: [
     {
       ytbVideoName: String,
@@ -16,7 +17,8 @@ const ytbChannelTbSchema = new Schema({
       ytbAddress: String,
       ytbStoreTbId: { type: mongoose.Schema.Types.ObjectId, ref: 'ytbStoreTb' },
       storeId: String,
-      hits: String,
+      hits: Number,
+      hitsIncrease: Number,
       uploadDate: Date
     }
   ]

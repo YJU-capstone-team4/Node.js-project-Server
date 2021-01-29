@@ -20,6 +20,7 @@ router.get('/', (req, res, next) => {
                     social: doc.social,
                     nickname: doc.nickname,
                     photoUrl: doc.photoUrl,
+                    shareCount: doc.shareCount,
                     memo: doc.memo,
                     folders: doc.folders,
                     request: {
@@ -45,6 +46,7 @@ router.post('/', (req, res, next) => {
         social: req.body.social,
         nickname: req.body.nickname,
         photoUrl: req.body.photoUrl,
+        shareCount: req.body.shareCount,
         memo: req.body.memo,
         folders: req.body.folders
     });
@@ -59,6 +61,7 @@ router.post('/', (req, res, next) => {
                 social: result.social,
                 nickname: result.nickname,
                 photoUrl: result.photoUrl,
+                shareCount: result.shareCount,
                 memo: result.memo,
                 folders: result.folders,
                 request: {
