@@ -37,6 +37,7 @@ router.get('/', (req, res, next) => {
     });
 });
 
+// 유튜버 채널명으로 검색
 router.get('/:channerId', (req, res, next) => {
     YtbChannelTb.find({ytbChannel : req.params.channerId})
     // .populate({
@@ -54,7 +55,34 @@ router.get('/:channerId', (req, res, next) => {
                 userTb: doc,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/ytbChannelTb'
+                    url: 'http://localhost:3000/ytbChannelTb/' + req.params.channerId
+                }
+            });
+        } else {
+            res.status(404)
+            .json({
+                message: "No valid entry found for object Id"
+            })
+        }
+    }).catch(err => {
+        console.log(err);
+    });
+});
+
+// 유튜버 클릭 시 해당 유튜버 영상들 반환
+router.get('/show/:channerId', (req, res, next) => {
+    YtbChannelTb.find({ytbChannel : req.params.channerId})
+    .populate('video.ytbStoreTbId')
+    .select('video')
+    .exec()
+    .then(doc => {
+        console.log("From database", doc);
+        if (doc) {
+            res.status(200).json({
+                userTb: doc,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/ytbChannelTb/show/' + req.params.channerId
                 }
             });
         } else {
