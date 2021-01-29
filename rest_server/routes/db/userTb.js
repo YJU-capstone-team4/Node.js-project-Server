@@ -176,6 +176,7 @@ router.get('/folder/:folderId', (req, res, next) => {
     });
 });
 
+// 유저 수정 - 관리자에서는 사용 안함
 router.patch('/:userId', (req, res, next) => {
     const updateOps = {};
     for(const ops of req.body) {
@@ -199,6 +200,7 @@ router.patch('/:userId', (req, res, next) => {
     });
 });
 
+// 유저 삭제 - 사용 안함
 router.delete('/:userId', (req, res, next) => {
     UserTb.remove({userId : req.params.userId})
     // const id = req.params.productId;
