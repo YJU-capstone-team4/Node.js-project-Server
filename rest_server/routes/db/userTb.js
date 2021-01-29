@@ -22,6 +22,8 @@ router.get('/', (req, res, next) => {
                     photoUrl: doc.photoUrl,
                     shareCount: doc.shareCount,
                     memo: doc.memo,
+                    likeYoutuber: doc.likeYoutuber,
+                    likeFlows: doc.likeFlows,
                     folders: doc.folders,
                     request: {
                         type: 'GET',
@@ -48,6 +50,8 @@ router.post('/', (req, res, next) => {
         photoUrl: req.body.photoUrl,
         shareCount: req.body.shareCount,
         memo: req.body.memo,
+        likeYoutuber: req.body.likeYoutuber,
+        likeFlows: req.body.likeFlows,
         folders: req.body.folders
     });
     userTb.save()
@@ -63,6 +67,8 @@ router.post('/', (req, res, next) => {
                 photoUrl: result.photoUrl,
                 shareCount: result.shareCount,
                 memo: result.memo,
+                likeYoutuber: result.likeYoutuber,
+                likeFlows: result.likeFlows,
                 folders: result.folders,
                 request: {
                     type: 'GET',

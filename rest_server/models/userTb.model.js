@@ -9,6 +9,8 @@ const userTbSchema = new Schema({
   nickname: String,
   photoUrl: String,
   shareCount: Number,
+  likeYoutuber: Array,
+  likeFlows: Array,
   memo: { type:String, default: '' },
   folders: [
     {
