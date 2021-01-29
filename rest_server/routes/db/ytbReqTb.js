@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const YtbReqTb = require("../../models/ytbReqTb.model")
 const UserTb = require("../../models/userTb.model")
+const YtbChannelTb = require("../../models/ytbChannelTb.model")
 
 router.get('/', (req, res, next) => {
     YtbReqTb.find()
@@ -119,7 +120,7 @@ router.get('/', (req, res, next) => {
 //     }
 // });
 
-// populated 내 쿼리 map 안 쓴 버전
+// populated 내 쿼리 map 안 쓴 버전 - userId
 router.get('/:userId', async (req, res, next) => {
     try {
         const docs = await UserTb.find({
@@ -151,6 +152,7 @@ router.get('/:userId', async (req, res, next) => {
     }
 });
 
+// 신청 유튜버 작성
 router.post('/', (req, res, next) => {
       const ytbReqTb = new YtbReqTb({
         _id: new mongoose.Types.ObjectId(),
@@ -189,6 +191,47 @@ router.post('/', (req, res, next) => {
             error: err
         });
     });
+});
+
+// 신청 유튜버 승인 시 - ytbChannelTb에 입력
+router.put('/:youtuber', (req, res, next) => {
+    const ytbChannelTb = new YtbChannelTb({
+      _id: new mongoose.Types.ObjectId(),
+      ytbChannel: req.body.ytbChannel,
+      ytbProfile: req.body.ytbProfile,
+      ytbLinkAddress: req.body.ytbLinkAddress,
+      ytbSubscribe: req.body.ytbSubscribe,
+      ytbHits: req.body.ytbHits,
+      userTbId: req.body.userTbId,
+      userId: req.body.userId
+    });
+    ytbReqTb.save()
+    .then(result => {
+      console.log(result);
+      res.status(201).json({
+          message: 'ytbReqTb stored',
+          createdYtbReqTbTb: {
+              _id: result._id,
+              ytbChannel: result.ytbChannel,
+              ytbProfile: result.ytbProfile,
+              ytbLinkAddress: result.ytbLinkAddress,
+              ytbSubscribe: result.ytbSubscribe,
+              ytbHits: result.ytbHits,
+              userTbId: result.userTbId,
+              userId: result.userId
+          },
+          request: {
+              type: 'POST',
+              url: 'http://localhost:3000/ytbReqTb/' + result._id
+          }
+      });
+  })
+  .catch(err => {
+      console.log(err);
+      res.status(500).json({
+          error: err
+      });
+  });
 });
 
 module.exports = router;

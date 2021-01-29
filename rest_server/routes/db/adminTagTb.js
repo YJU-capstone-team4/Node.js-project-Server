@@ -44,48 +44,47 @@ router.get('/:adminTag', (req, res, next) => {
     });
 });
 
-// router.post('/', (req, res, next) => {
-//     const adminTagTb = new AdminTagTb({
-//         _id: new mongoose.Types.ObjectId(),
-//         adminTag: req.body.adminTag
-//     });
-//     adminTagTb.save()
-//     .then(result => {
-//         console.log(result);
-//         res.status(201).json({
-//             message: 'Created adminTagTb successfully',
-//             createdAdminTagId: {
-//                 _id: result._id,
-//                 adminTag: result.adminTag,
-//                 request: {
-//                     type: 'GET',
-//                     url: 'http://localhost:3000/adminTagTb/' + result.adminTag
-//                 }
-//             }
-//         });
-//     })
-//     .catch(err => {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
+router.post('/', (req, res, next) => {
+    const adminTagTb = new AdminTagTb({
+        _id: new mongoose.Types.ObjectId(),
+        adminTag: req.body.adminTag
+    });
+    adminTagTb.save()
+    .then(result => {
+        console.log(result);
+        res.status(201).json({
+            message: 'Created adminTagTb successfully',
+            createdAdminTagId: {
+                _id: result._id,
+                adminTag: result.adminTag,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/adminTagTb/' + result.adminTag
+                }
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+});
 
-// 관리자 해시태그 추가 - 보류
-router.patch('/:userId', (req, res, next) => {
-    const updateOps = {};
-    for(const ops of req.body) {
-        updateOps[ops.propName] = ops.value
-    }
-    UserTb.update({userId : req.params.userId}, { $set: updateOps })
+// 관리자 해시태그 추가
+router.patch('/insert/:newAdminTag', (req, res, next) => {
+    AdminTagTb.update({ 'adminTag.regionTag': '서울특별시' }, { $push: { 'adminTag.regionTag': req.params.newAdminTag } })
     .exec()
     .then(result => {
-        res.status(201).json({
-            message: 'UserTb updated',
+        res.status(200).json({
+            message: 'adminTagTb insert',
             request: {
-                type: 'GET',
-                url: 'http://localhost:3000/userTb' + userId
+                value: req.params.newAdminTag,
+                request: {
+                    type: 'Insert',
+                    url: 'http://localhost:3000/adminTag/insert' + req.params.newAdminTag,
+                }
             }
         });
     }).catch(err => {
@@ -97,18 +96,15 @@ router.patch('/:userId', (req, res, next) => {
 });
 
 // 관리자 해시태그 삭제 - 보류
-router.delete('/:userId', (req, res, next) => {
-    UserTb.remove({userId : req.params.userId})
-    // const id = req.params.productId;
-    // UserTb.remove({_id: id})
+router.delete('/delete/:newAdminTag', (req, res, next) => {
+    AdminTagTb.update({ 'adminTag.regionTag': '서울특별시' }, { $pull: { 'adminTag.regionTag': req.params.newAdminTag } })
     .exec()
     .then(result => {
         res.status(200).json({
-            message: 'UserTb deleted',
+            value: req.params.newAdminTag,
             request: {
-                type: 'POST',
-                url: 'http://localhost:3000/userTb/',
-                // body: { name: 'String', price: 'Number' }
+                type: 'Delete',
+                url: 'http://localhost:3000/adminTag/delete' + req.params.newAdminTag,
             }
         })
     }).catch(err => {

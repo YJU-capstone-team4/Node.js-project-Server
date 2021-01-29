@@ -8,6 +8,7 @@ const userTbSchema = new Schema({
   social: String,
   nickname: String,
   photoUrl: String,
+  shareCount: Number,
   memo: { type:String, default: '' },
   folders: [
     {
