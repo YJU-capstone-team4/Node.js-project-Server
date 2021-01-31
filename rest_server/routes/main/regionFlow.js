@@ -44,7 +44,22 @@ router.get('/regionFlow/region/:regionTag', (req, res, next) => {
     ShareFlowTb.find({"adminTag.regionTag" : req.params.regionTag})
     .exec()
     .then(docs => {
-        res.status(200).json(docs);
+        res.status(200).json({
+            count: docs.length,
+            shareFlowTb: docs.map(doc => {
+                return {
+                    _id: doc._id,
+                    shareTitle: doc.shareTitle,
+                    shareThumbnail: doc.shareThumbnail,
+                    adminTag: doc.adminTag,
+                    userTags: doc.userTags,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/regionFlow/'
+                    }
+                }
+            })
+        });
     })
     .catch(err => {
         res.status(500).json({
