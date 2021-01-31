@@ -62,6 +62,19 @@ app.use('/attractionCrawlingTb', attractionCrawlingTbRouter);
 app.use('/attractionTb', attractionTbRouter);
 app.use('/shareFlowTb', shareFlowTbRouter);
 
+// 메인 api
+const region = require('./routes/main/region');
+const regionYtb = require('./routes/main/regionYtb');
+const regionFlow = require('./routes/main/regionFlow');
+
+app.use(region);
+app.use(regionYtb);
+app.use(regionFlow);
+
+// 지도 api
+const map = require('./routes/map/map');
+app.use(map);
+
 // 포트 연결
 app.listen(PORT, function(){
   console.log('server on! http://localhost:'+PORT);
