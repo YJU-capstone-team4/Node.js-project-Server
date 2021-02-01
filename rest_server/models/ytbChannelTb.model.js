@@ -10,6 +10,8 @@ const ytbChannelTbSchema = new Schema({
   ytbSubscribe: Number,
   ytbSubIncrease: Number,
   ytbHits: Number,
+  ytbRank: Number,
+  ytbRankIncrease: Number,
   video: [
     {
       ytbVideoName: String,
@@ -19,6 +21,8 @@ const ytbChannelTbSchema = new Schema({
       storeId: String,
       hits: Number,
       hitsIncrease: Number,
+      Rank: Number,
+      RankIncrease: Number,
       uploadDate: Date
     }
   ]

@@ -20,6 +20,8 @@ router.get('/', (req, res, next) => {
                     ytbLinkAddress: doc.ytbLinkAddress,
                     ytbSubscribe: doc.ytbSubscribe,
                     ytbHits: doc.ytbHits,
+                    ytbRank: doc.ytbRank,
+                    ytbRankIncrease: doc.ytbRankIncrease,
                     video: doc.video,
                     request: {
                         type: 'GET',
@@ -104,6 +106,8 @@ router.post('/', (req, res, next) => {
         ytbLinkAddress: req.body.ytbLinkAddress,
         ytbSubscribe: req.body.ytbSubscribe,
         ytbHits: req.body.ytbHits,
+        ytbRank: req.body.ytbRank,
+        ytbRankIncrease: req.body.ytbRankIncrease,
         video: req.body.video,
       });
       ytbChannelTb.save()
@@ -118,6 +122,8 @@ router.post('/', (req, res, next) => {
                 ytbLinkAddress: result.ytbLinkAddress,
                 ytbSubscribe: result.ytbSubscribe,
                 ytbHits: result.ytbHits,
+                ytbRank: result.ytbRank,
+                ytbRankIncrease: result.ytbRankIncrease,
                 video: result.video,
             },
             request: {

@@ -215,6 +215,8 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
         ytbSubscribe: ytbReq[0].ytbSubscribe,
         ytbSubIncrease: 0,
         ytbHits: ytbReq[0].ytbHits,
+        ytbRank: ytbReq[0].ytbRank,
+        ytbRankIncrease: ytbReq[0].ytbRankIncrease,
         video: []
     });
     ytbChannelTb.save()
@@ -230,6 +232,8 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
                 ytbSubscribe: result.ytbSubscribe,
                 ytbSubIncrease: 0,
                 ytbHits: result.ytbHits,
+                ytbRank: result.ytbRank,
+                ytbRankIncrease: result.ytbRankIncrease,
                 video: result.video
             },
             request: {
@@ -250,7 +254,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         ytbChannel: ytbReq[0].ytbChannel,
         ytbProfile: ytbReq[0].ytbProfile,
-        videoCount: 0,
+        videoCount: ytbReq[0].videoCount,
         video: []
     });
     ytbCrawlingTb.save()
@@ -262,7 +266,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
                 _id: result._id,
                 ytbChannel: result.ytbChannel,
                 ytbProfile: result.ytbProfile,
-                videoCount: 0,
+                videoCount: result.videoCount,
                 video: result.video
             },
             request: {
