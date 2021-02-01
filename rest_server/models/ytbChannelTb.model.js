@@ -12,6 +12,7 @@ const ytbChannelTbSchema = new Schema({
   ytbHits: Number,
   ytbRank: Number,
   ytbRankIncrease: Number,
+  likeCount: Number,
   video: [
     {
       ytbVideoName: String,

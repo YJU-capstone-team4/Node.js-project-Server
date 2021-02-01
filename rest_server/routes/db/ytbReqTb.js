@@ -217,6 +217,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
         ytbHits: ytbReq[0].ytbHits,
         ytbRank: ytbReq[0].ytbRank,
         ytbRankIncrease: ytbReq[0].ytbRankIncrease,
+        likeCount: ytbReq[0].likeCount,
         video: []
     });
     ytbChannelTb.save()
@@ -234,6 +235,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
                 ytbHits: result.ytbHits,
                 ytbRank: result.ytbRank,
                 ytbRankIncrease: result.ytbRankIncrease,
+                likeCount: result.likeCount,
                 video: result.video
             },
             request: {
