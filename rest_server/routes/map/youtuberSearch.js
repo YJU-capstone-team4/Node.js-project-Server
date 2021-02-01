@@ -20,10 +20,6 @@ router.get('/map/youtuberSearch/:youtuber', (req, res, next) => {
                         ytbProfile: doc.ytbProfile,
                         ytbSubscribe: doc.ytbSubscribe,
                         video: doc.video.length,
-                        request: {
-                            type: 'GET',
-                            url: 'http://localhost:3000/map/youtubeSearch/' + doc.youtuber
-                        }
                     }
                 })
             });
@@ -51,10 +47,6 @@ router.get('/map/youtuberSearch/youtuber/:youtuberId', (req, res, next) => {
                     return {
                         _id: doc._id,
                         video: doc.video.ytbStoreTbId,
-                        request: {
-                            type: 'GET',
-                            url: 'http://localhost:3000/map/youtuberSearch/youtuber/' + doc.youtuberId
-                        }
                     }
                 })
             });

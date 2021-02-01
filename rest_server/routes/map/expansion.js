@@ -17,10 +17,6 @@ router.get('/', (req, res, next) => {
                 return {
                     _id: doc._id,
                     location: doc.storeInfo.location,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/ytbStoreTb/' + doc._id
-                    }
                 }
             })
         });

@@ -53,10 +53,6 @@ router.get('/regionFlow/region/:regionTag', (req, res, next) => {
                     shareThumbnail: doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/regionFlow/'
-                    }
                 }
             })
         });

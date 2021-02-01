@@ -11,10 +11,6 @@ router.get('/region', (req, res, next) => {
                 return {
                     _id: doc._id,
                     adminTag: doc.adminTag.regionTag,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/region/' + doc.AdminTag
-                    }
                 }
             })
         };

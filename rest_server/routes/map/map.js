@@ -15,10 +15,6 @@ router.get('/map', (req, res, next) => {
                 return {
                     _id: doc._id,
                     location: doc.storeInfo.location,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/map'
-                    }
                 }
             })
         });
@@ -46,10 +42,6 @@ router.post('/', (req, res, next) => {
                 _id: result._id,
                 ytbStoreTbInfo: result.ytbStoreTbInfo,
                 regionTag: result.regionTag
-            },
-            request: {
-                type: 'POST',
-                url: 'http://localhost:3000/ytbStoreTb/' + result._id
             }
         });
     })
