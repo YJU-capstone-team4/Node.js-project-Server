@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const YtbStoreTb = require("../../models/ytbStoreTb.model")
 const YtbChannelTb = require("../../models/ytbChannelTb.model")
 
-router.get('/map', (req, res, next) => {
-    YtbStoreTb.find()
+router.get('/map/store/:storeId', (req, res, next) => {
+    YtbStoreTb.find({"_id": req.params.storeId})
     .select()
     .exec()
     .then(docs => {
@@ -15,7 +15,8 @@ router.get('/map', (req, res, next) => {
             ytbStoreTb: docs.map(doc => {
                 return {
                     _id: doc._id,
-                    location: doc.storeInfo.location,
+                    storeName: doc.storeInfo.storeName,
+                    storeAddress:doc.storeInfo.storeAddress,
                 }
             })
         });
@@ -28,9 +29,8 @@ router.get('/map', (req, res, next) => {
     });
 });
 
-
-router.get('/map/youtuber', (req, res, next) => {
-    YtbChannelTb.find()
+router.get('/storeYoutuber/:store_id', (req, res, next) => {
+    YtbChannelTb.find({"video.ytbStoreTbId" : req.params.store_id})
     .select()
     .populate('video.ytbStoreTbId')
     .exec()
@@ -41,7 +41,7 @@ router.get('/map/youtuber', (req, res, next) => {
                 return {
                     _id: doc._id,
                     ytbChannel: doc.ytbChannel,
-                    ytbProfile: doc.ytbProfile,
+                    video: doc.video,
                 }
             })
         });
@@ -52,7 +52,7 @@ router.get('/map/youtuber', (req, res, next) => {
             error: err
         });
     });
+
+    
 });
-
-
 module.exports = router;

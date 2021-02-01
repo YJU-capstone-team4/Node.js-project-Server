@@ -61,7 +61,6 @@ app.use('/ytbChannelTb', ytbChannelTbRouter);
 app.use('/attractionCrawlingTb', attractionCrawlingTbRouter);
 app.use('/attractionTb', attractionTbRouter);
 app.use('/shareFlowTb', shareFlowTbRouter);
-
 // 메인 api
 const region = require('./routes/main/region');
 const regionYtb = require('./routes/main/regionYtb');
@@ -73,7 +72,14 @@ app.use(regionFlow);
 
 // 지도 api
 const map = require('./routes/map/map');
+const youtuberSearch = require('./routes/map/youtuberSearch');
+const store = require('./routes/map/store');
+const storeDetail = require('./routes/map/storeDetail')
+
 app.use(map);
+app.use(youtuberSearch);
+app.use(store);
+app.use(storeDetail);
 
 // 포트 연결
 app.listen(PORT, function(){
