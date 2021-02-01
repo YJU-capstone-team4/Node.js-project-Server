@@ -23,6 +23,7 @@ router.get('/', (req, res, next) => {
                     ytbLinkAddress: doc.ytbLinkAddress,
                     ytbSubscribe: doc.ytbSubscribe,
                     ytbHits: doc.ytbHits,
+                    videoCount: doc.videoCount,
                     userTbId: doc.userTbId,
                     userId: doc.userId,
                     request: {
@@ -162,6 +163,7 @@ router.post('/', (req, res, next) => {
         ytbLinkAddress: req.body.ytbLinkAddress,
         ytbSubscribe: req.body.ytbSubscribe,
         ytbHits: req.body.ytbHits,
+        videoCount: req.body.videoCount,
         userTbId: req.body.userTbId,
         userId: req.body.userId,
     });
@@ -177,6 +179,7 @@ router.post('/', (req, res, next) => {
                 ytbLinkAddress: result.ytbLinkAddress,
                 ytbSubscribe: result.ytbSubscribe,
                 ytbHits: result.ytbHits,
+                videoCount: result.videoCount,
                 userTbId: result.userTbId,
                 userId: result.userId,
                 request: {
