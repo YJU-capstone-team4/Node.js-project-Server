@@ -42,9 +42,10 @@ router.get('/regionYtb/region/:regionTag', async (req, res, next) => {
           }).exec()
 
         // let ids = docs.map(doc => doc.id);
-        let ids = ''
+        let ids = []
         docs.forEach(doc => {
-            ids = doc.id;
+            ids.push(doc.id);
+
         });
 
         await YtbChannelTb.find({
@@ -61,10 +62,6 @@ router.get('/regionYtb/region/:regionTag', async (req, res, next) => {
                         _id: doc._id,
                         ytbChannel: doc.ytbChannel,
                         ytbProfile: doc.ytbProfile,
-                        request: {
-                            type: 'GET',
-                            url: 'http://localhost:3000/regionYtb'
-                        }
                     }
                 })
             })
