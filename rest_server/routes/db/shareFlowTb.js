@@ -28,7 +28,7 @@ router.get('/', (req, res, next) => {
                     userTags: doc.userTags,
                     shareDate: doc.shareDate,
                     updateDate: doc.updateDate,
-                    likeup: doc.likeup,
+                    likeCount: doc.likeCount,
                     hits: doc.hits,
                     request: {
                         type: 'GET',
@@ -100,7 +100,7 @@ router.post('/', (req, res, next) => {
         userTags: req.body.userTags,
         shareDate: req.body.shareDate,
         updateDate: req.body.updateDate,
-        likeup: req.body.likeup,
+        likeCount: req.body.likeCount,
         hits: req.body.hits,
       });
       shareFlowTb.save()
@@ -119,7 +119,7 @@ router.post('/', (req, res, next) => {
                 userTags: result.userTags,
                 shareDate: result.shareDate,
                 updateDate: result.updateDate,
-                likeup: result.likeup,
+                likeCount: result.likeCount,
                 hits: result.hits,
             },
             request: {

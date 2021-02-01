@@ -9,6 +9,7 @@ const ytbReqTbSchema = new Schema({
   ytbLinkAddress: String,
   ytbSubscribe: Number,
   ytbHits: Number,
+  videoCount: Number,
   userTbId: { type: mongoose.Schema.Types.ObjectId, ref: "userTb", required: true },
   userId: String
 }, {

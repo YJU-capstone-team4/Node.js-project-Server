@@ -8,7 +8,6 @@ const userTbSchema = new Schema({
   social: String,
   nickname: String,
   photoUrl: String,
-  shareCount: Number,
   likeYoutuber: Array,
   likeFlows: Array,
   memo: { type:String, default: '' },

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const YtbReqTb = require("../../models/ytbReqTb.model")
 const UserTb = require("../../models/userTb.model")
 const YtbChannelTb = require("../../models/ytbChannelTb.model")
+const YtbCrawlingTb = require("../../models/ytbCrawlingTb.model")
 
 router.get('/', (req, res, next) => {
     YtbReqTb.find()
@@ -22,6 +23,7 @@ router.get('/', (req, res, next) => {
                     ytbLinkAddress: doc.ytbLinkAddress,
                     ytbSubscribe: doc.ytbSubscribe,
                     ytbHits: doc.ytbHits,
+                    videoCount: doc.videoCount,
                     userTbId: doc.userTbId,
                     userId: doc.userId,
                     request: {
@@ -152,11 +154,8 @@ router.get('/:userId', async (req, res, next) => {
     }
 });
 
-// 신청 유튜버 승인 시 - 보류
-router.post('/cetification/:youtuber', (req, res, next) => {
-    YtbReqTb.find({ 'ytbChannel' : req.params.youtuber })
-    
-
+// ytbReqTb 데이터 저장
+router.post('/', (req, res, next) => {
     const ytbReqTb = new YtbReqTb({
         _id: new mongoose.Types.ObjectId(),
         ytbChannel: req.body.ytbChannel,
@@ -164,27 +163,29 @@ router.post('/cetification/:youtuber', (req, res, next) => {
         ytbLinkAddress: req.body.ytbLinkAddress,
         ytbSubscribe: req.body.ytbSubscribe,
         ytbHits: req.body.ytbHits,
+        videoCount: req.body.videoCount,
         userTbId: req.body.userTbId,
-        userId: req.body.userId
+        userId: req.body.userId,
     });
     ytbReqTb.save()
     .then(result => {
         console.log(result);
         res.status(201).json({
-            message: 'ytbReqTb stored',
-            createdYtbReqTbTb: {
+            message: 'Created ytbReqTb successfully',
+            createdUserId: {
                 _id: result._id,
                 ytbChannel: result.ytbChannel,
                 ytbProfile: result.ytbProfile,
                 ytbLinkAddress: result.ytbLinkAddress,
                 ytbSubscribe: result.ytbSubscribe,
                 ytbHits: result.ytbHits,
+                videoCount: result.videoCount,
                 userTbId: result.userTbId,
-                userId: result.userId
-            },
-            request: {
-                type: 'POST',
-                url: 'http://localhost:3000/ytbReqTb/' + result._id
+                userId: result.userId,
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/ytbReqTb/' + result.userId
+                }
             }
         });
     })
@@ -196,45 +197,92 @@ router.post('/cetification/:youtuber', (req, res, next) => {
     });
 });
 
-// 신청 유튜버 승인 시 - ytbChannelTb에 입력
-router.put('/:youtuber', (req, res, next) => {
+// 신청 유튜버 승인 시
+router.put('/recognize/:youtuber', async (req, res, next) => {
+    // ytbReqTb에서 승인 시 데이터 변수에 저장
+    const ytbReq = await YtbReqTb.find({ 'ytbChannel' : req.params.youtuber });
+    console.log(ytbReq[0]);
+    
+    // 변수에 담은 뒤 신청 유튜버에서 삭제
+    await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
+
+    // ytbChannelTb에 입력
     const ytbChannelTb = new YtbChannelTb({
-      _id: new mongoose.Types.ObjectId(),
-      ytbChannel: req.body.ytbChannel,
-      ytbProfile: req.body.ytbProfile,
-      ytbLinkAddress: req.body.ytbLinkAddress,
-      ytbSubscribe: req.body.ytbSubscribe,
-      ytbHits: req.body.ytbHits,
-      userTbId: req.body.userTbId,
-      userId: req.body.userId
+        _id: new mongoose.Types.ObjectId(),
+        ytbChannel: ytbReq[0].ytbChannel,
+        ytbProfile: ytbReq[0].ytbProfile,
+        ytbLinkAddress: ytbReq[0].ytbLinkAddress,
+        ytbSubscribe: ytbReq[0].ytbSubscribe,
+        ytbSubIncrease: 0,
+        ytbHits: ytbReq[0].ytbHits,
+        ytbRank: ytbReq[0].ytbRank,
+        ytbRankIncrease: ytbReq[0].ytbRankIncrease,
+        likeCount: ytbReq[0].likeCount,
+        video: []
     });
-    ytbReqTb.save()
+    ytbChannelTb.save()
     .then(result => {
-      console.log(result);
-      res.status(201).json({
-          message: 'ytbReqTb stored',
-          createdYtbReqTbTb: {
-              _id: result._id,
-              ytbChannel: result.ytbChannel,
-              ytbProfile: result.ytbProfile,
-              ytbLinkAddress: result.ytbLinkAddress,
-              ytbSubscribe: result.ytbSubscribe,
-              ytbHits: result.ytbHits,
-              userTbId: result.userTbId,
-              userId: result.userId
-          },
-          request: {
-              type: 'POST',
-              url: 'http://localhost:3000/ytbReqTb/' + result._id
-          }
-      });
-  })
-  .catch(err => {
-      console.log(err);
-      res.status(500).json({
-          error: err
-      });
-  });
+        // console.log(result);
+        res.status(201).json({
+            message: 'ytbReqTb -> ytbChannelTb stored',
+            createdYtbReqTbTb: {
+                _id: result._id,
+                ytbChannel: result.ytbChannel,
+                ytbProfile: result.ytbProfile,
+                ytbLinkAddress: result.ytbLinkAddress,
+                ytbSubscribe: result.ytbSubscribe,
+                ytbSubIncrease: 0,
+                ytbHits: result.ytbHits,
+                ytbRank: result.ytbRank,
+                ytbRankIncrease: result.ytbRankIncrease,
+                likeCount: result.likeCount,
+                video: result.video
+            },
+            request: {
+                type: 'PUT',
+                url: 'http://localhost:3000/ytbChannelTb/' + result._id
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+
+    // ytbCrawling으로 이동
+    const ytbCrawlingTb = new YtbCrawlingTb({
+        _id: new mongoose.Types.ObjectId(),
+        ytbChannel: ytbReq[0].ytbChannel,
+        ytbProfile: ytbReq[0].ytbProfile,
+        videoCount: ytbReq[0].videoCount,
+        video: []
+    });
+    ytbCrawlingTb.save()
+    .then(result => {
+        // console.log(result);
+        res.status(201).json({
+            message: 'ytbReqTb -> ytbCrawlingTb stored',
+            createdYtbReqTbTb: {
+                _id: result._id,
+                ytbChannel: result.ytbChannel,
+                ytbProfile: result.ytbProfile,
+                videoCount: result.videoCount,
+                video: result.video
+            },
+            request: {
+                type: 'PUT',
+                url: 'http://localhost:3000/ytbCrawlingTb/' + result._id
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 });
 
 module.exports = router;

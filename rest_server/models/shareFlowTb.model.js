@@ -16,7 +16,7 @@ const shareFlowTbSchema = new Schema({
   userTags: Array,
   shareDate: Date,
   updateDate: Date,
-  likeUp: Number,
+  likeCount: Number,
   hits: Number
 }, {
   versionKey: false,
