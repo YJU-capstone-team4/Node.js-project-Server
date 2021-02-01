@@ -49,6 +49,7 @@ const ytbChannelTbRouter = require('./routes/db/ytbChannelTb');
 const attractionCrawlingTbRouter = require('./routes/db/attractionCrawlingTb');
 const attractionTbRouter = require('./routes/db/attractionTb');
 const shareFlowTbRouter = require('./routes/db/shareFlowTb');
+const searchTbRouter = require('./routes/db/searchTb');
 
 app.use('/userTb', userTbRouter);
 app.use('/adminTb', adminTbRouter);
@@ -61,6 +62,7 @@ app.use('/ytbChannelTb', ytbChannelTbRouter);
 app.use('/attractionCrawlingTb', attractionCrawlingTbRouter);
 app.use('/attractionTb', attractionTbRouter);
 app.use('/shareFlowTb', shareFlowTbRouter);
+app.use('/searchTb', searchTbRouter);
 
 // 포트 연결
 app.listen(PORT, function(){
