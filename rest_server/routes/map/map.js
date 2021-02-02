@@ -15,6 +15,7 @@ router.get('/map', (req, res, next) => {
             ytbStoreTb: docs.map(doc => {
                 return {
                     _id: doc._id,
+                    storeName: doc.storeInfo.storeName,
                     location: doc.storeInfo.location,
                 }
             })

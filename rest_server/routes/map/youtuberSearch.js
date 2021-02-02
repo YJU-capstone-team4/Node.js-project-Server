@@ -37,50 +37,23 @@ router.get('/map/youtuberSearch/:youtuber', (req, res, next) => {
 });
 
 // 검색한 유튜버가 방문한 맛집
-router.get('/map/youtuberSearch/youtuber/:Id', async (req, res, next) => {
-    try {
-        const docs = await YtbChannelTb.find({
-            "_id": req.params.Id
-          }, {
-              "_id": 0
-          })
-          .populate('video.ytbStoreTbId')
-          .exec()
-
-          console.log(docs.video);
-          docs.video.forEach(doc => {
-            console.log(0)
-
-        });
-
-        
-    //    process.exit(1)
-
-        let ids = []
-        docs.video.forEach(doc => {
-            ids.push(docs.video.ytbStoreTbId);
-
-        });
-        console.log(ids);
-
-        await ytbStoreTb.find({
-              '_id': {$in:ids}
-          })
-          .exec()
-          .then(docs => {
-            res.status(200).json({
-                ytbStoreTb: docs.map(doc => {
-                    return {
-                        _id: doc._id,
-                    }
-                })
-            })
-        }) 
-    } catch(e) {
+router.get('/map/youtuberSearch/youtuber/:Id', (req, res, next) => {
+    YtbChannelTb.find({'_id' : req.params.Id})
+    .populate({ path: 'video.ytbStoreTbId', select : 'storeInfo.location storeInfo.storeName'})
+    .select('video.ytbStoreTbId')
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            docs
+        }); 
+    })
+    .catch(err => {
         res.status(500).json({
-            error: e
+            error: err
         });
-    }
+    });
+
 });
+
 
 module.exports = router;

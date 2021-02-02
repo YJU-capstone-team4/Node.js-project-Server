@@ -30,28 +30,38 @@ router.get('/map/store/:storeId', (req, res, next) => {
 });
 
 router.get('/storeYoutuber/:store_id', (req, res, next) => {
-    YtbChannelTb.find({"video.ytbStoreTbId" : req.params.store_id})
-    .select()
-    .populate('video.ytbStoreTbId')
+
+    YtbChannelTb.find(
+        {"video.storeId" : req.params.store_id}, {
+            '_id':0,
+            'video': {
+                "$elemMatch": {
+                'storeId':req.params.store_id
+                }
+            }
+        })
+    .select('_id')
+    .select('ytbChannel')
     .exec()
     .then(docs => {
         res.status(200).json({
-            count: docs.length,
-            ytbChannelTb: docs.map(doc => {
+            YtbChannelTb: docs.map(doc => {
                 return {
                     _id: doc._id,
                     ytbChannel: doc.ytbChannel,
-                    video: doc.video,
+                    ytbThumbnail: doc.video[0].ytbThumbnail,
                 }
             })
-        });
-        
+        })
     })
     .catch(err => {
         res.status(500).json({
             error: err
         });
     });
+        
+    
+
 
     
 });

@@ -18,10 +18,6 @@ router.get('/regionYtb', (req, res, next) => {
                     _id: doc._id,
                     ytbChannel: doc.ytbChannel,
                     ytbProfile: doc.ytbProfile,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/regionYtb'
-                    }
                 }
             })
         });
