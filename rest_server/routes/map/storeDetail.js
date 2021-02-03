@@ -77,11 +77,13 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
      }
 });
 
-
 router.get('/storeDetail/attraction/:lat&:lng', (req, res, next) => {
+    const latTmp = 1;
+    const lngTmp = 0.5;
+
     AttractionTb.find()
-    .where('attractionInfo.location.lat').gt(req.params.lat-5).lt(req.params.lat+5)
-    .where('attractionInfo.location.lat').gt(req.params.lng-5).lt(req.params.lng+5)
+    .where('attractionInfo.location.lat').gte(req.params.lat*1-latTmp).lte(req.params.lat*1+latTmp)
+    .where('attractionInfo.location.lng').gte(req.params.lng*1-lngTmp).lte(req.params.lng*1+lngTmp)
     .select()
     .populate('adminTagTbId')
     .exec()
@@ -91,8 +93,8 @@ router.get('/storeDetail/attraction/:lat&:lng', (req, res, next) => {
             attractionTb: docs.map(doc => {
                 return {
                     _id: doc._id,
-                    attractionInfo: doc.attractionInfo,
-                    regionTag: doc.regionTag,
+                    attractionName:doc.attractionInfo.attractionName,
+                    location: doc.attractionInfo.location
                 }
             })
         });

@@ -82,6 +82,12 @@ app.use(youtuberSearch);
 app.use(store);
 app.use(storeDetail);
 
+// flow api
+const flowSearch = require('./routes/flow/flowSearch');
+
+
+app.use(flowSearch);
+
 
 // 포트 연결
 app.listen(PORT, function(){
