@@ -7,26 +7,28 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTagTb = require('../../models/userTagTb.model');
 
 router.get('/flowSearch', (req, res, next) => {
-  AdminTagTb.find()
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            adminTagTbs: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    adminTag: doc.adminTag,
-                }
-            })
-        };
-        res.status(200).json(response);
-    }).catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
+    AdminTagTb.find()
+      .exec()
+      .then(docs => {
+          const response = {
+              count: docs.length,
+              adminTagTb: docs.map(doc => {
+                  return {
+                      _id: doc._id,
+                      //adminTag: doc.adminTag,
+                      seasonTag: doc.adminTag.seasonTag,
+                      regionTag: doc.adminTag.regionTag
+                  }
+              })
+          };
+          res.status(200).json(response);
+      }).catch(err => {
+          console.log(err);
+          res.status(500).json({
+              error: err
+          });
+      });
+  });
 
 // shareFlowTb에서 아이디로 검색
 router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
