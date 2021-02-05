@@ -7,7 +7,7 @@ const YtbChannelTb = require("../../models/ytbChannelTb.model");
 const ytbStoreTb = require("../../models/ytbStoreTb.model");
 
 // 유튜버 채널명으로 검색 결과
-router.get('/youtuberSearch/:youtuber', (req, res, next) => {
+router.get('/map/youtuberSearch/:youtuber', (req, res, next) => {
     YtbChannelTb.find({"ytbChannel" : {$regex:req.params.youtuber}})
     .populate('video.ytbStoreTbId')
     .exec()

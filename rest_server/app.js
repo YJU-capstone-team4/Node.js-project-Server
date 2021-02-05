@@ -86,9 +86,11 @@ app.use(storeDetail);
 
 // flow api
 const flowSearch = require('./routes/flow/flowSearch');
+const userFlow = require('./routes/flow/userFlow');
 
 
 app.use(flowSearch);
+app.use(userFlow);
 
 
 // 포트 연결
