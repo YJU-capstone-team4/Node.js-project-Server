@@ -1,10 +1,15 @@
 require('dotenv').config();
-const express   = require('express');
-const app       = express();
-const passport  = require('passport');
-const session   = require('express-session');
-const mongoose  = require('mongoose');
-const cors      = require('cors');
+const express       = require('express');
+const app           = express();
+const passport      = require('passport');
+const session       = require('express-session');
+const mongoose      = require('mongoose');
+const cors          = require('cors');
+
+// 관리자 로컬 로그인용
+const LocalStrategy = require('passport-local').Strategy;
+const cookieSession = require('cookie-session');
+const flash         = require('connect-flash');
 
 const PORT = 3000;
 
@@ -21,11 +26,20 @@ connection.once('open', () => {
 app.set('view engine', 'ejs');
 app.use(session({secret:'MySecret', resave: false, saveUninitialized:true}));
 
+// 관리자 로그인용 쿠키-세션 세팅
+app.use(cookieSession({
+  keys: ['node_yun'],
+  cookie: {
+    maxAge: 1000 * 60 * 60 // 유효기간 1시간
+  }
+}));
+app.use(flash());
+
 // passport 세팅
 app.use(passport.initialize());
 app.use(passport.session());
 
- app.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.json({
         success: true,
     });
@@ -38,6 +52,7 @@ app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
+const loginRouter = require('./routes/db/login');
 const userTbRouter = require('./routes/db/userTb');
 const adminTbRouter = require('./routes/db/adminTb');
 const adminTagTbRouter = require('./routes/db/adminTagTb');
@@ -51,6 +66,7 @@ const attractionTbRouter = require('./routes/db/attractionTb');
 const shareFlowTbRouter = require('./routes/db/shareFlowTb');
 const searchTbRouter = require('./routes/db/searchTb');
 
+app.use('/login', loginRouter);
 app.use('/userTb', userTbRouter);
 app.use('/adminTb', adminTbRouter);
 app.use('/adminTagTb', adminTagTbRouter);
