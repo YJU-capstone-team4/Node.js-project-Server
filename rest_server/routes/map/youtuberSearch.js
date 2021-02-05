@@ -38,13 +38,14 @@ router.get('/youtuberSearch/:youtuber', (req, res, next) => {
 
 // 검색한 유튜버가 방문한 맛집
 router.get('/map/youtuberSearch/youtuber/:Id', (req, res, next) => {
-    YtbChannelTb.find({'_id' : req.params.Id})
+    YtbChannelTb.findOne({'_id' : req.params.Id})
     .populate({ path: 'video.ytbStoreTbId', select : 'storeInfo.location storeInfo.storeName'})
     .select('video.ytbStoreTbId')
     .exec()
     .then(docs => {
         res.status(200).json({
-            docs
+            YtbChannelTb: docs.video
+
         }); 
     })
     .catch(err => {
