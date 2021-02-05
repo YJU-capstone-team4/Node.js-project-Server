@@ -51,14 +51,21 @@ router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
 // 동선 검색 - 해시태그 검색
 router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
     UserTagTb.find({'userTag': {$regex:req.params.user_tag}})
-    // .select("name price _id")
     .exec()
     .then(docs => {
         const response = {
             userTagTbs: docs.map(doc => {
+                let tag = []
+                
+                doc.userTag.forEach(element => {
+
+                    if(element.includes(req.params.user_tag))
+                        tag.push(element);
+                });
+
                 return {
                     _id: doc._id,
-                    userTag: doc.userTag
+                    userTag: tag
                 }
             })
         };
@@ -69,6 +76,25 @@ router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
             error: err
         });
     });
+});
+
+// 동선 검색
+router.get('/flowSearch/flow/:user_tag', (req, res, next) => {
+    console.log(req.body.adminTag);
+    // ShareFlowTb.find({userId : req.params.user_tag})
+    // ShareFlowTb.find()
+    // .exec()
+    // .then(docs => {
+    //     res.status(200).json({
+    //         shareFlowCount: docs.length,
+    //         docs
+    //     });
+    // })
+    // .catch(err => {
+    //     res.status(500).json({
+    //         error: err
+    //     });
+    // });
 });
 
 module.exports = router;

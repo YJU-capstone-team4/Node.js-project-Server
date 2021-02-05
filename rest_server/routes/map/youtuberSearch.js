@@ -43,6 +43,7 @@ router.get('/map/youtuberSearch/youtuber/:Id', (req, res, next) => {
     .select('video.ytbStoreTbId')
     .exec()
     .then(docs => {
+        console.log(docs.video[0].ytbStoreTbId.storeInfo)
         res.status(200).json({
             YtbChannelTb: docs.video
 
