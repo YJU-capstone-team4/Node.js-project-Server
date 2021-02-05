@@ -65,8 +65,8 @@ router.post('/', (req, res, next) => {
     });
 });
 
-router.get('/:userId', (req, res, next) => {
-    AdminTb.findOne({userId : req.params.userId})
+router.get('/:adminId', (req, res, next) => {
+    AdminTb.findOne({userId : req.params.adminId})
     // .select('name price _id')
     .exec()
     .then(doc => {
@@ -90,110 +90,99 @@ router.get('/:userId', (req, res, next) => {
     });
 });
 
-router.patch('/:adminId', (req, res, next) => {
-    const updateOps = {};
-    for(const ops of req.body) {
-        updateOps[ops.propName] = ops.value
-    }
-    AdminTb.update({userId : req.params.userId}, { $set: updateOps })
+router.post('/login', (req, res, next) => {
+
+    // function sendPost(action, params) {
+
+    //     var form = document.createElement('form');
+    //     form.setAttribute('method', 'post');
+    //     form.setAttribute('action', action);
+    //     document.charset = "utf-8";
+    
+    //     for ( var key in params) {
+    //         var hiddenField = document.createElement('input');
+    //         hiddenField.setAttribute('type', 'hidden');
+    //         hiddenField.setAttribute('name', key);
+    //         hiddenField.setAttribute('value', params[key]);
+    //         form.appendChild(hiddenField);
+    
+    //     }
+    
+    //     document.body.appendChild(form);
+    
+    //     form.submit();
+    
+    // }
+
+    // ---------------------------------
+
+    AdminTb.findOne({userId : req.params.adminId})
+    // .select('name price _id')
     .exec()
-    .then(result => {
-        res.status(201).json({
-            message: 'AdeminTb updated',
-            request: {
-                type: 'GET',
-                url: 'http://localhost:3000/adminTb' + userId
-            }
-        });
+    .then(doc => {
+        console.log("From database", doc);
+        if (doc) {
+            res.status(200).json({
+                adminTb: doc,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/adminTb'
+                }
+            });
+        } else {
+            res.status(404)
+            .json({
+                message: "No valid entry found for userId"
+            })
+        }
     }).catch(err => {
         console.log(err);
-        res.status(500).json({
-            error: err
-        });
     });
 });
 
-router.delete('/:userId', (req, res, next) => {
-    AdminTb.remove({userId : req.params.userId})
-    // const id = req.params.productId;
-    // UserTb.remove({_id: id})
-    .exec()
-    .then(result => {
-        res.status(200).json({
-            message: 'AdminTb deleted',
-            request: {
-                type: 'POST',
-                url: 'http://localhost:3000/adminTb/',
-                // body: { name: 'String', price: 'Number' }
-            }
-        })
-    }).catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
+// router.patch('/:adminId', (req, res, next) => {
+//     const updateOps = {};
+//     for(const ops of req.body) {
+//         updateOps[ops.propName] = ops.value
+//     }
+//     AdminTb.update({userId : req.params.userId}, { $set: updateOps })
+//     .exec()
+//     .then(result => {
+//         res.status(201).json({
+//             message: 'AdeminTb updated',
+//             request: {
+//                 type: 'GET',
+//                 url: 'http://localhost:3000/adminTb' + userId
+//             }
+//         });
+//     }).catch(err => {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
+
+// router.delete('/:userId', (req, res, next) => {
+//     AdminTb.remove({userId : req.params.userId})
+//     // const id = req.params.productId;
+//     // UserTb.remove({_id: id})
+//     .exec()
+//     .then(result => {
+//         res.status(200).json({
+//             message: 'AdminTb deleted',
+//             request: {
+//                 type: 'POST',
+//                 url: 'http://localhost:3000/adminTb/',
+//                 // body: { name: 'String', price: 'Number' }
+//             }
+//         })
+//     }).catch(err => {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
 
 module.exports = router;
-// -----------------------------------------------
-
-// const router = require('express').Router();
-// let AdminTb = require('../models/adminTb.model');
-
-// // 전체 호출
-// router.route('/').get((req, res) => {
-//   AdminTb.find()
-//     .then(adminTb => res.json(adminTb))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// // document 추가
-// router.route('/add').post((req, res) => {
-//   const userId = req.body.userId;
-//   const password = req.body.password;
-//   const nickname = req.body.nickname;
-
-//   const newAdminTb = new AdminTb({
-//     userId,
-//     password,
-//     nickname,
-//   });
-
-//   newAdminTb.save()
-//   .then(() => res.json('AdminTb added!'))
-//   .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// // userId로 document 전체 가져오기
-// router.route('/:userId').get((req, res) => {
-//   // AdminTb.findById(req.params.id)
-//   AdminTb.findOne({userId: req.params.userId})
-//     .then(adminTb => res.json(adminTb))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// // userId로 document 전체 삭제
-// router.route('/:id').delete((req, res) => {
-//   // AdminTb.findByIdAndDelete(req.params.id)
-//   AdminTb.findOneAndDelete({userId: req.params.userId})
-//     .then(() => res.json('AdminTb deleted.'))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// // id로 document 수정
-// router.route('/update/:userId').post((req, res) => {
-//   AdminTb.findById(req.params.userId)
-//     .then(userTb => {
-//       adminTb.userId = req.body.userId;
-//       adminTb.password = req.body.password;
-//       adminTb.nickname = req.body.nickname;
-
-//       adminTb.save()
-//         .then(() => res.json('AdminTb updated!'))
-//         .catch(err => res.status(400).json('Error: ' + err));
-//     })
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// module.exports = router;

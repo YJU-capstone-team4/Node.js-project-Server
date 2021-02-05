@@ -182,6 +182,33 @@ router.get('/folder/:folderId', (req, res, next) => {
     });
 });
 
+// to find store in forder
+router.get('/store/:storeId', (req, res, next) => {
+    UserTb.find({
+        "folders.stores.storeId": req.params.storeId
+    },{
+        "_id": 0,
+        "folders": {
+            "$elemMatch": {
+            "stores.storeId": req.params.storeId
+            }
+        }
+    })
+    .populate('folders.stores.ytbStoreTbId')
+    .populate('folders.stores.attractionTbId')
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            docs
+        }); 
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
 // 유저 수정 - 관리자에서는 사용 안함
 router.patch('/:userId', (req, res, next) => {
     const updateOps = {};

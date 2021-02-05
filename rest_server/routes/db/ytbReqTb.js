@@ -198,9 +198,97 @@ router.post('/', (req, res, next) => {
 });
 
 // 신청 유튜버 승인 시
+// router.put('/recognize/:youtuber', async (req, res, next) => {
+//     // ytbReqTb에서 승인 시 데이터 변수에 저장
+//     const ytbReq = await YtbReqTb.find({ 'ytbChannel' : req.params.youtuber });
+//     console.log(ytbReq[0]);
+    
+//     // 변수에 담은 뒤 신청 유튜버에서 삭제
+//     await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
+
+//     // ytbChannelTb에 입력
+//     const ytbChannelTb = new YtbChannelTb({
+//         _id: new mongoose.Types.ObjectId(),
+//         ytbChannel: ytbReq[0].ytbChannel,
+//         ytbProfile: ytbReq[0].ytbProfile,
+//         ytbLinkAddress: ytbReq[0].ytbLinkAddress,
+//         ytbSubscribe: ytbReq[0].ytbSubscribe,
+//         ytbSubIncrease: 0,
+//         ytbHits: ytbReq[0].ytbHits,
+//         ytbRank: ytbReq[0].ytbRank,
+//         ytbRankIncrease: ytbReq[0].ytbRankIncrease,
+//         likeCount: ytbReq[0].likeCount,
+//         video: []
+//     });
+//     ytbChannelTb.save()
+//     .then(result => {
+//         // console.log(result);
+//         res.status(201).json({
+//             message: 'ytbReqTb -> ytbChannelTb stored',
+//             createdYtbReqTbTb: {
+//                 _id: result._id,
+//                 ytbChannel: result.ytbChannel,
+//                 ytbProfile: result.ytbProfile,
+//                 ytbLinkAddress: result.ytbLinkAddress,
+//                 ytbSubscribe: result.ytbSubscribe,
+//                 ytbSubIncrease: 0,
+//                 ytbHits: result.ytbHits,
+//                 ytbRank: result.ytbRank,
+//                 ytbRankIncrease: result.ytbRankIncrease,
+//                 likeCount: result.likeCount,
+//                 video: result.video
+//             },
+//             request: {
+//                 type: 'PUT',
+//                 url: 'http://localhost:3000/ytbChannelTb/' + result._id
+//             }
+//         });
+//     })
+//     .catch(err => {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+
+//     // ytbCrawling으로 이동
+//     const ytbCrawlingTb = new YtbCrawlingTb({
+//         _id: new mongoose.Types.ObjectId(),
+//         ytbChannel: ytbReq[0].ytbChannel,
+//         ytbProfile: ytbReq[0].ytbProfile,
+//         videoCount: ytbReq[0].videoCount,
+//         video: []
+//     });
+//     ytbCrawlingTb.save()
+//     .then(result => {
+//         // console.log(result);
+//         res.status(201).json({
+//             message: 'ytbReqTb -> ytbCrawlingTb stored',
+//             createdYtbReqTbTb: {
+//                 _id: result._id,
+//                 ytbChannel: result.ytbChannel,
+//                 ytbProfile: result.ytbProfile,
+//                 videoCount: result.videoCount,
+//                 video: result.video
+//             },
+//             request: {
+//                 type: 'PUT',
+//                 url: 'http://localhost:3000/ytbCrawlingTb/' + result._id
+//             }
+//         });
+//     })
+//     .catch(err => {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
+
+// 신청 유튜버 승인 시 2
 router.put('/recognize/:youtuber', async (req, res, next) => {
     // ytbReqTb에서 승인 시 데이터 변수에 저장
-    const ytbReq = await YtbReqTb.find({ 'ytbChannel' : req.params.youtuber });
+    const ytbReq = await YtbReqTb.findOne({ 'ytbChannel' : req.params.youtuber });
     console.log(ytbReq[0]);
     
     // 변수에 담은 뒤 신청 유튜버에서 삭제
@@ -209,15 +297,15 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     // ytbChannelTb에 입력
     const ytbChannelTb = new YtbChannelTb({
         _id: new mongoose.Types.ObjectId(),
-        ytbChannel: ytbReq[0].ytbChannel,
-        ytbProfile: ytbReq[0].ytbProfile,
-        ytbLinkAddress: ytbReq[0].ytbLinkAddress,
-        ytbSubscribe: ytbReq[0].ytbSubscribe,
+        ytbChannel: ytbReq.ytbChannel,
+        ytbProfile: ytbReq.ytbProfile,
+        ytbLinkAddress: ytbReq.ytbLinkAddress,
+        ytbSubscribe: ytbReq.ytbSubscribe,
         ytbSubIncrease: 0,
-        ytbHits: ytbReq[0].ytbHits,
-        ytbRank: ytbReq[0].ytbRank,
-        ytbRankIncrease: ytbReq[0].ytbRankIncrease,
-        likeCount: ytbReq[0].likeCount,
+        ytbHits: ytbReq.ytbHits,
+        ytbRank: ytbReq.ytbRank,
+        ytbRankIncrease: ytbReq.ytbRankIncrease,
+        likeCount: ytbReq.likeCount,
         video: []
     });
     ytbChannelTb.save()
@@ -254,9 +342,9 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     // ytbCrawling으로 이동
     const ytbCrawlingTb = new YtbCrawlingTb({
         _id: new mongoose.Types.ObjectId(),
-        ytbChannel: ytbReq[0].ytbChannel,
-        ytbProfile: ytbReq[0].ytbProfile,
-        videoCount: ytbReq[0].videoCount,
+        ytbChannel: ytbReq.ytbChannel,
+        ytbProfile: ytbReq.ytbProfile,
+        videoCount: ytbReq.videoCount,
         video: []
     });
     ytbCrawlingTb.save()
