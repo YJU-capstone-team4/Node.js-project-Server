@@ -18,7 +18,6 @@ router.get('/regionYtb', (req, res, next) => {
                     _id: doc._id,
                     ytbChannel: doc.ytbChannel,
                     ytbProfile: doc.ytbProfile,
-                    ytbSubscribe: doc.ytbSubscribe
                 }
             })
         });
@@ -51,6 +50,7 @@ router.get('/regionYtb/region/:regionTag', async (req, res, next) => {
           .populate({
               path: 'video.ytbStoreTbId'
           })
+          .sort({'ytbSubscribe': -1, 'ytbHits': -1})
           .exec()
           .then(docs => {
             res.status(200).json({
@@ -59,7 +59,8 @@ router.get('/regionYtb/region/:regionTag', async (req, res, next) => {
                         _id: doc._id,
                         ytbChannel: doc.ytbChannel,
                         ytbProfile: doc.ytbProfile,
-                        ytbSubscribe: doc.ytbSubscribe
+                        ytbSubscribe: doc.ytbSubscribe,
+                        storeCount: doc.video.length
                     }
                 })
             })
