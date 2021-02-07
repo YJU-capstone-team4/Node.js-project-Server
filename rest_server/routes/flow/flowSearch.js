@@ -79,7 +79,7 @@ router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
 });
 
 // 동선 검색
-router.get('/flowSearch/flow/:user_tag', (req, res, next) => {
+router.post('/flowSearch/flow/', (req, res, next) => {
     console.log(req.body.adminTag);
     // ShareFlowTb.find({userId : req.params.user_tag})
     // ShareFlowTb.find()
