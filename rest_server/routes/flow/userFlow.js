@@ -8,6 +8,7 @@ const UserTb = require('../../models/userTb.model');
 // 로그인 확인
 const authenticateUser = (req, res, next) => {
 	if (req.isAuthenticated()) {
+        //console.log(req.user.userId);
 	  next();
 	} else {
 	  res.status(301).redirect('/login');
@@ -16,6 +17,7 @@ const authenticateUser = (req, res, next) => {
 
 // 유저가 등록한 동선 폴더 리스트
 router.get('/userFlow/folderList/:user_id',authenticateUser, (req, res, next) => {
+    //console.log(req.params.user_id)
     UserTb.find({userId : req.params.user_id})
     .select('folders._id')
     .select('folders.folderTitle')
@@ -51,10 +53,10 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
     })
     .select('stores')
     .populate({path :'folders.stores.ytbStoreTbId',
-                select: 'storeInfo', 
+                select: 'storeInfo.location storeInfo.storeName storeInfo.storeAddress', 
                 'ytbStoreTbId': {$ne: null}})
     .populate({path : 'folders.stores.attractionTbId',
-                select: 'attractionInfo', 
+                select: 'attractionInfo.location attractionInfo.attractionName attractionInfo.attractionAddress', 
                 'attractionTbId': {$ne: null}})
     .exec()
     .then(docs => {

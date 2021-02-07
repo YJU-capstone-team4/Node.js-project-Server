@@ -46,9 +46,11 @@ passport.use( new GoogleStrategy(
     console.log(newUser);
 
    // user가 db에 없다면 새로 저장하기
-    User.findOne({memo : googleID}).then((user) => {
+    User.find({userId : googleID}).then((user) => {
       if(!user){
+        console.log(user);
         new User(newUser).save().then((createdUser) => {
+          
           console.log('User: ', createdUser);
           done(null, createdUser);
         })
