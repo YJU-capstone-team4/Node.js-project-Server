@@ -3,41 +3,52 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const UserTb = require('../../models/userTb.model');
+const algo = require("./algo")
 
-router.get('/', (req, res, next) => {
-  UserTb.find()
-    .populate('folders.stores.ytbStoreTbId')
-    .populate('folders.stores.attractionTbId')
-    // .select("name price _id")  
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            userTbs: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    userId: doc.userId,
-                    social: doc.social,
-                    nickname: doc.nickname,
-                    photoUrl: doc.photoUrl,
-                    memo: doc.memo,
-                    likeYoutuber: doc.likeYoutuber,
-                    likeFlows: doc.likeFlows,
-                    folders: doc.folders,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/userTb/' + doc.userId
-                    }
-                }
-            })
-        };
-        res.status(200).json(response);
-    }).catch(err => {
-        console.log(err);
+// router.get('/', (req, res, next) => {
+//   UserTb.find()
+//     .populate('folders.stores.ytbStoreTbId')
+//     .populate('folders.stores.attractionTbId')
+//     // .select("name price _id")  
+//     .exec()
+//     .then(docs => {
+//         const response = {
+//             count: docs.length,
+//             userTbs: docs.map(doc => {
+//                 return {
+//                     _id: doc._id,
+//                     userId: doc.userId,
+//                     social: doc.social,
+//                     nickname: doc.nickname,
+//                     photoUrl: doc.photoUrl,
+//                     memo: doc.memo,
+//                     likeYoutuber: doc.likeYoutuber,
+//                     likeFlows: doc.likeFlows,
+//                     folders: doc.folders,
+//                     request: {
+//                         type: 'GET',
+//                         url: 'http://localhost:3000/userTb/' + doc.userId
+//                     }
+//                 }
+//             })
+//         };
+//         res.status(200).json(response);
+//     }).catch(err => {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
+
+router.get('/', async (req, res, next) => {
+    try {
+        algo.pagination(req, res, UserTb)
+    } catch (err) {
         res.status(500).json({
-            error: err
-        });
-    });
+            error : err
+        })
+    }
 });
 
 router.post('/', (req, res, next) => {
@@ -83,79 +94,111 @@ router.post('/', (req, res, next) => {
 });
 
 // userId로 값 찾기
+// router.get('/id/:userId', (req, res, next) => {
+//     UserTb.find({userId : req.params.userId})
+//     .exec()
+//     .then(doc => {
+//         if (doc) {
+//             res.status(200).json({
+//                 userTb: doc,
+//                 request: {
+//                     type: 'GET',
+//                     url: 'http://localhost:3000/userTb/id'
+//                 }
+//             });
+//         } else {
+//             res.status(404)
+//             .json({
+//                 message: "No valid entry found for userId"
+//             })
+//         }
+//     }).catch(err => {
+//         console.log(err);
+//     });
+// });
+
+// userId로 값 찾기
 router.get('/id/:userId', (req, res, next) => {
-    UserTb.find({userId : req.params.userId})
-    .exec()
-    .then(doc => {
-        // console.log("From database", doc);
-        if (doc) {
-            res.status(200).json({
-                userTb: doc,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/userTb/id'
-                }
-            });
-        } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for userId"
-            })
-        }
-    }).catch(err => {
-        console.log(err);
-    });
+    try {
+        algo.paginationSearch(req, res, UserTb, 'userId', req.params.userId)
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
 });
 
 // 닉네임으로 값 찾기
+// router.get('/nickname/:nickname', (req, res, next) => {
+//     UserTb.find({nickname : req.params.nickname})
+//     .exec()
+//     .then(doc => {
+//         if (doc) {
+//             res.status(200).json({
+//                 userTb: doc,
+//                 request: {
+//                     type: 'GET',
+//                     url: 'http://localhost:3000/userTb/nickname'
+//                 }
+//             });
+//         } else {
+//             res.status(404)
+//             .json({
+//                 message: "No valid entry found for userId"
+//             })
+//         }
+//     }).catch(err => {
+//         console.log(err);
+//     });
+// });
+
+// 닉네임으로 값 찾기
 router.get('/nickname/:nickname', (req, res, next) => {
-    UserTb.find({nickname : req.params.nickname})
-    .exec()
-    .then(doc => {
-        if (doc) {
-            res.status(200).json({
-                userTb: doc,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/userTb/nickname'
-                }
-            });
-        } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for userId"
-            })
-        }
-    }).catch(err => {
-        console.log(err);
-    });
+    try {
+        algo.paginationSearch(req, res, UserTb, 'nickname', req.params.nickname)
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
 });
 
 // memo로 값 찾기
+// router.get('/memo/:memo', (req, res, next) => {
+//     UserTb.find({memo : req.params.memo})
+//     .exec()
+//     .then(doc => {
+//         if (doc) {
+//             res.status(200).json({
+//                 userTb: doc,
+//                 request: {
+//                     type: 'GET',
+//                     url: 'http://localhost:3000/userTb/memo'
+//                 }
+//             });
+//         } else {
+//             res.status(404)
+//             .json({
+//                 message: "No valid entry found for userId"
+//             })
+//         }
+//     }).catch(err => {
+//         console.log(err);
+//     });
+// });
+
+// memo로 값 찾기
 router.get('/memo/:memo', (req, res, next) => {
-    UserTb.find({memo : req.params.memo})
-    .exec()
-    .then(doc => {
-        if (doc) {
-            res.status(200).json({
-                userTb: doc,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/userTb/memo'
-                }
-            });
-        } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for userId"
-            })
-        }
-    }).catch(err => {
-        console.log(err);
-    });
+    try {
+        algo.paginationSearch(req, res, UserTb, 'memo', req.params.memo)
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
 });
 
-// to find foler
+// to find folder
 router.get('/folder/:folderId', (req, res, next) => {
     UserTb.find({
         "folders._id": req.params.folderId

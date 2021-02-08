@@ -44,10 +44,11 @@ exports.pagination = pagination;
 
 // pagination 함수 - 검색
 async function paginationSearch(req, res, Collection, where, searchValue) {
-    const { page = 1, limit = 10 } = req.query;
-    const whole = await Collection.find();        // shareFlowTb 전체 값
     var query = {}
     query[where] = { $regex : searchValue };    // $regex : like
+    
+    const { page = 1, limit = 10 } = req.query;
+    const whole = await Collection.find( query );        // shareFlowTb 전체 값
 
     // 페이지네이션을 위한 몽고DB 쿼리
     const collection = await Collection.find( query )
