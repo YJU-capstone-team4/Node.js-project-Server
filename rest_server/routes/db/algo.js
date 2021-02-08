@@ -54,6 +54,10 @@ async function paginationSearch(req, res, Collection, where, searchValue) {
     .limit(limit * 1)
     .skip((page-1) * limit);
 
+    // 데이터가 없을 때 에러 표시
+    if (collection.length == 0)
+        res.status(404).json({ error : searchValue + "is not founded" })
+
     // 페이지 그룹
     const pageCount = 5;                          // 페이지 그룹에 보일 페이지 수
     var pageGroup = Math.ceil(page/pageCount);    // 현재 페이지 그룹 위치
