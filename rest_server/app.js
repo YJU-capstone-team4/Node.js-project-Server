@@ -1,12 +1,17 @@
 require('dotenv').config();
-const express   = require('express');
-const app       = express();
-const passport  = require('passport');
-const session   = require('express-session');
-const mongoose  = require('mongoose');
-const cors      = require('cors');
+const express       = require('express');
+const app           = express();
+const passport      = require('passport');
+const session       = require('express-session');
+const mongoose      = require('mongoose');
+const cors          = require('cors');
 
 const PORT = 3000;
+
+// 관리자용 로그인
+const LocalStrategy = require('passport-local').Strategy
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({extended:false}))
 
 // DB 연결
 mongoose.connect(process.env.ATLAS_URI, 
@@ -25,7 +30,7 @@ app.use(session({secret:'MySecret', resave: false, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
- app.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.json({
         success: true,
     });
@@ -38,6 +43,7 @@ app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
+const loginRouter = require('./routes/db/passport');
 const userTbRouter = require('./routes/db/userTb');
 const adminTbRouter = require('./routes/db/adminTb');
 const adminTagTbRouter = require('./routes/db/adminTagTb');
@@ -51,6 +57,7 @@ const attractionTbRouter = require('./routes/db/attractionTb');
 const shareFlowTbRouter = require('./routes/db/shareFlowTb');
 const searchTbRouter = require('./routes/db/searchTb');
 
+app.use('/login', loginRouter);
 app.use('/userTb', userTbRouter);
 app.use('/adminTb', adminTbRouter);
 app.use('/adminTagTb', adminTagTbRouter);
@@ -87,13 +94,14 @@ app.use(storeDetail);
 // flow api
 const flowSearch = require('./routes/flow/flowSearch');
 const userFlow = require('./routes/flow/userFlow');
+const shareFlow = require('./routes/flow/shareFlow');
 
 
 app.use(flowSearch);
 app.use(userFlow);
+app.use(shareFlow);
 
-  
 // 포트 연결
 app.listen(PORT, function(){
-  console.log('server on! http://localhost:'+PORT);
+  console.log('server on! http://localhost:'+ PORT);
 });
