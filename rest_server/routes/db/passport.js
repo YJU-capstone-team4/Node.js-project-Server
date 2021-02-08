@@ -81,3 +81,18 @@ module.exports = () => {
 // passport.deserializeUser((user, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
 //   done(null, user); // 여기의 user가 req.user가 됨
 // });
+
+
+
+// app.js
+// const adminPassport = require('./routes/db/passport')
+
+// app.post('/admin/login', passport.authenticate('local', {
+//   failureRedirect: '/login', failureFlash: true
+// }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
+//   function (req, res) {
+//     // res.redirect('/home');
+//     res.json({
+//       success: true,
+//     });
+// });

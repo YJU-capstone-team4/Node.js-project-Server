@@ -36,24 +36,6 @@ app.get('/', (req, res) => {
     });
 });
 
-const adminPassport = require('./routes/db/passport')
-
-// app.post('/admin/login', (req, res) => {
-//   res.json({
-//       success: true,
-//   });
-// });
-
-app.post('/admin/login', passport.authenticate('local', {
-  failureRedirect: '/login', failureFlash: true
-}), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
-  function (req, res) {
-    // res.redirect('/home');
-    res.json({
-      success: true,
-    });
-});
-
 // // 로그인 라우트
 // app.use('/', require('./routes/main'));
 // app.use('/auth', require('./routes/auth'));
