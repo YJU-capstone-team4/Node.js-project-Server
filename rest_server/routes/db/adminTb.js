@@ -90,56 +90,6 @@ router.get('/:adminId', (req, res, next) => {
     });
 });
 
-router.post('/login', (req, res, next) => {
-
-    // function sendPost(action, params) {
-
-    //     var form = document.createElement('form');
-    //     form.setAttribute('method', 'post');
-    //     form.setAttribute('action', action);
-    //     document.charset = "utf-8";
-    
-    //     for ( var key in params) {
-    //         var hiddenField = document.createElement('input');
-    //         hiddenField.setAttribute('type', 'hidden');
-    //         hiddenField.setAttribute('name', key);
-    //         hiddenField.setAttribute('value', params[key]);
-    //         form.appendChild(hiddenField);
-    
-    //     }
-    
-    //     document.body.appendChild(form);
-    
-    //     form.submit();
-    
-    // }
-
-    // ---------------------------------
-
-    AdminTb.findOne({userId : req.params.adminId})
-    // .select('name price _id')
-    .exec()
-    .then(doc => {
-        console.log("From database", doc);
-        if (doc) {
-            res.status(200).json({
-                adminTb: doc,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/adminTb'
-                }
-            });
-        } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for userId"
-            })
-        }
-    }).catch(err => {
-        console.log(err);
-    });
-});
-
 // router.patch('/:adminId', (req, res, next) => {
 //     const updateOps = {};
 //     for(const ops of req.body) {

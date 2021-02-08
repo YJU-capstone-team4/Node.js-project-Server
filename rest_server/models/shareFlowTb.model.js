@@ -8,7 +8,7 @@ const shareFlowTbSchema = new Schema({
   userId: String,
   shareTitle: String,
   shareThumbnail: String,
-  folderTitle: String,
+  folderId: { type: mongoose.Schema.Types.ObjectId, ref: 'userTb' },
   adminTag: {
     seasonTag: String,
     regionTag: Array,

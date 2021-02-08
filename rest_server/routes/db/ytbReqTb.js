@@ -289,7 +289,6 @@ router.post('/', (req, res, next) => {
 router.put('/recognize/:youtuber', async (req, res, next) => {
     // ytbReqTb에서 승인 시 데이터 변수에 저장
     const ytbReq = await YtbReqTb.findOne({ 'ytbChannel' : req.params.youtuber });
-    console.log(ytbReq[0]);
     
     // 변수에 담은 뒤 신청 유튜버에서 삭제
     await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
