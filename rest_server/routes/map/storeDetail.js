@@ -8,20 +8,15 @@ const AttractionTb = require("../../models/attractionTb.model");
 const UserTb = require('../../models/userTb.model');
 
 router.get('/storeDetail/store/:store_id', (req, res, next) => {
-    YtbStoreTb.find({_id: req.params.store_id})
+    YtbStoreTb.findOne({_id: req.params.store_id})
     .select()
     .exec()
     .then(docs => {
         res.status(200).json({
-            count: docs.length,
-            ytbStoreTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    storeName: doc.storeInfo.storeName,
-                    storeAddress:doc.storeInfo.storeAddress,
-                    location: doc.storeInfo.location,
-                }
-            })
+            _id: docs._id,
+            storeName: docs.storeInfo.storeName,
+            storeAddress:docs.storeInfo.storeAddress,
+            location: docs.storeInfo.location,
         });
         
     })
