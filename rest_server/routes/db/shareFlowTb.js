@@ -122,19 +122,26 @@ router.get('/', async (req, res, next) => {
 
 // shareFlowTb에서 제목으로 검색 - 페이지네이션 적용
 router.get('/title/:flowTitle', async (req, res, next) => {
-    try {
-        const { page = 1, limit = 10 } = req.query;
-        const shareFlowTb = await ShareFlowTb.find({shareTitle : req.params.flowTitle})
-        .limit(limit * 1)
-        .skip((page-1) * limit);
+    // try {
+    //     const { page = 1, limit = 10 } = req.query;
+    //     const shareFlowTb = await ShareFlowTb.find({shareTitle : req.params.flowTitle})
+    //     .limit(limit * 1)
+    //     .skip((page-1) * limit);
 
-        // 데이터가 없을 때 에러 표시
-        if (shareFlowTb.length == 0)
-            res.status(404).json({ error : req.params.flowTitle + "is not founded" })
+    //     // 데이터가 없을 때 에러 표시
+    //     if (shareFlowTb.length == 0)
+    //         res.status(404).json({ error : req.params.flowTitle + "is not founded" })
         
-        res.status(200).json({ total: shareFlowTb.length, // 전체 값 숫자
-            shareFlowTb
-        })
+    //     res.status(200).json({ total: shareFlowTb.length, // 전체 값 숫자
+    //         shareFlowTb
+    //     })
+    // } catch (err) {
+    //     res.status(500).json({
+    //         error : err
+    //     })
+    // }
+    try {
+        algo.paginationSearch(req, res, ShareFlowTb, 'shareTitle', req.params.flowTitle)
     } catch (err) {
         res.status(500).json({
             error : err
@@ -158,12 +165,19 @@ router.get('/title/:flowTitle', async (req, res, next) => {
 
 // shareFlowTb에서 아이디로 검색 - 페이지 네이션 적용
 router.get('/id/:userId', async (req, res, next) => {
+    // try {
+    //     const {page = 1, limit = 10} = req.query;
+    //     const shareFlowTb = await ShareFlowTb.find({userId : req.params.userId})
+    //     .limit(limit * 1)
+    //     .skip((page-1) * limit);
+    //     res.status(200).json({ total: shareFlowTb.length, shareFlowTb })
+    // } catch (err) {
+    //     res.status(500).json({
+    //         error : err
+    //     })
+    // }
     try {
-        const {page = 1, limit = 10} = req.query;
-        const shareFlowTb = await ShareFlowTb.find({userId : req.params.userId})
-        .limit(limit * 1)
-        .skip((page-1) * limit);
-        res.status(200).json({ total: shareFlowTb.length, shareFlowTb })
+        algo.paginationSearch(req, res, ShareFlowTb, 'userId', req.params.userId)
     } catch (err) {
         res.status(500).json({
             error : err
@@ -187,12 +201,19 @@ router.get('/id/:userId', async (req, res, next) => {
 
 // shareFlowTb에서 지역으로 검색 - 페이지네이션 적용
 router.get('/region/:regionTag', async (req, res, next) => {
+    // try {
+    //     const {page = 1, limit = 10} = req.query;
+    //     const shareFlowTb = await ShareFlowTb.find({"adminTag.regionTag" : req.params.regionTag})
+    //     .limit(limit * 1)
+    //     .skip((page-1) * limit);
+    //     res.status(200).json({ total: shareFlowTb.length, shareFlowTb })
+    // } catch (err) {
+    //     res.status(500).json({
+    //         error : err
+    //     })
+    // }
     try {
-        const {page = 1, limit = 10} = req.query;
-        const shareFlowTb = await ShareFlowTb.find({"adminTag.regionTag" : req.params.regionTag})
-        .limit(limit * 1)
-        .skip((page-1) * limit);
-        res.status(200).json({ total: shareFlowTb.length, shareFlowTb })
+        algo.paginationSearch(req, res, ShareFlowTb, 'adminTag.regionTag', req.params.regionTag)
     } catch (err) {
         res.status(500).json({
             error : err
@@ -207,7 +228,7 @@ router.post('/', (req, res, next) => {
         userId: req.body.userId,
         shareTitle: req.body.shareTitle,
         shareThumbnail: req.body.shareThumbnail,
-        folderTitle: req.body.folderTitle,
+        folderId: req.body.folderId,
         adminTag: req.body.adminTag,
         userTags: req.body.userTags,
         shareDate: req.body.shareDate,
@@ -226,7 +247,7 @@ router.post('/', (req, res, next) => {
                 userId: result.userId,
                 shareTitle: result.shareTitle,
                 shareThumbnail: result.shareThumbnail,
-                folderTitle: result.folderTitle,
+                folderId: result.folderId,
                 adminTag: result.adminTag,
                 userTags: result.userTags,
                 shareDate: result.shareDate,
