@@ -11,15 +11,15 @@ const { route } = require('../db/userTb');
 router.get('/shareFlow/folderList/:user_id', (req, res, next) => {
 
     const docs = ShareFlowTb.find({userId : req.params.user_id})
-    .select('folderTitle')
+    .select('folderId')
     .exec();
 
     //console.log(req.params.user_id)
     UserTb.find({userId : req.params.user_id})
-    .where('folders.folderTitle')
-    .ne(docs.folderTitle)
+    .where('folders.folderId')
+    .ne(docs.folderId)
     .select('folders._id')
-    .select('folders.folderTitle')
+    .select('folders.folderId')
     .exec()
     .then(doc => {
         // console.log("From database", doc);
@@ -43,26 +43,23 @@ router.get('/shareFlow/folderList/:user_id', (req, res, next) => {
 
 router.post('/shareFlow/folder', (req, res, next) => {
     // 로그인 검사 후 필요한 유저정보 반환
-    const userInfo = UserTb.findOne({userId : req.params.user_id})
+    const userInfo = UserTb.findOne({userId : req.body.user_id})
     .exec()
 
-    console.log(userInfo[0]._id);
-    console.log(userInfo[0].userId);
-    process.exit(1)
     // shareFlowTb에 들어갈 내용 저장
     const shareFlowTb = new ShareFlowTb({
       _id: new mongoose.Types.ObjectId(),
-      userTbId: req.body.userTbId,
-      userId: req.body.userId,
+      userTbId: userInfo[0].userTbId,
+      userId: userInfo[0].userId,
       shareTitle: req.body.shareTitle,
       shareThumbnail: req.body.shareThumbnail,
-      folderTitle: req.body.folderTitle,
+      folderId: req.body.folderId,
       adminTag: req.body.adminTag,
       userTags: req.body.userTags,
       shareDate: req.body.shareDate,
       updateDate: req.body.updateDate,
-      likeCount: req.body.likeCount,
-      hits: req.body.hits,
+      likeCount: 0,
+      hits: 0,
     });
     shareFlowTb.save()
     .then(result => {
@@ -75,7 +72,6 @@ router.post('/shareFlow/folder', (req, res, next) => {
               userId: result.userId,
               shareTitle: result.shareTitle,
               shareThumbnail: result.shareThumbnail,
-              folderTitle: result.folderTitle,
               adminTag: result.adminTag,
               userTags: result.userTags,
               shareDate: result.shareDate,
