@@ -32,7 +32,7 @@ router.get('/flowSearch', (req, res, next) => {
 
 // shareFlowTb에서 아이디로 검색
 router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
-    ShareFlowTb.find({userId : req.params.user_id})
+    ShareFlowTb.find({userId : req.params.userId})
     .exec()
     .then(docs => {
         res.status(200).json({
@@ -51,20 +51,56 @@ router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
 // 동선 검색 - 해시태그 검색
 router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
     UserTagTb.find({'userTag': {$regex:req.params.user_tag}})
-    // .select("name price _id")
     .exec()
     .then(docs => {
         const response = {
             userTagTbs: docs.map(doc => {
+                let tag = []
+                
+                doc.userTag.forEach(element => {
+
+                    if(element.includes(req.params.user_tag))
+                        tag.push(element);
+                });
+
                 return {
                     _id: doc._id,
-                    userTag: doc.userTag
+                    userTag: tag
                 }
             })
         };
         res.status(200).json(response);
     }).catch(err => {
         console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
+// 동선 검색
+router.post('/flowSearch/flow/', (req, res, next) => {
+    //JSON.stringify()
+    ShareFlowTb.find()
+    .where('adminTag.regionTag').in(req.body.regionTag)
+     .where('adminTag.seasonTag').in(req.body.seasonTag)
+    .where('userTags').in(req.body.userTag)
+    //ShareFlowTb.find()
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            count: docs.length,
+            shareFlowTb: docs.map(doc => {
+                return {
+                _id: doc._id,
+                shareTitle: doc.shareTitle,
+                shareThumbnail: doc.shareThumbnail,
+                adminTag: doc.adminTag,
+                userTags: doc.userTags,
+            }})
+        })
+    })
+    .catch(err => {
         res.status(500).json({
             error: err
         });

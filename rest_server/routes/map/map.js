@@ -43,6 +43,8 @@ router.get('/map/youtuber', (req, res, next) => {
                     _id: doc._id,
                     ytbChannel: doc.ytbChannel,
                     ytbProfile: doc.ytbProfile,
+                    ytbSubscribe: doc.ytbSubscribe,
+                    storeCount: doc.video.length
                 }
             })
         });

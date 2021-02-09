@@ -6,19 +6,16 @@ const YtbStoreTb = require("../../models/ytbStoreTb.model")
 const YtbChannelTb = require("../../models/ytbChannelTb.model")
 
 router.get('/map/store/:storeId', (req, res, next) => {
-    YtbStoreTb.find({"_id": req.params.storeId})
-    .select()
+    YtbStoreTb.findOne({"_id": req.params.storeId})
     .exec()
     .then(docs => {
         res.status(200).json({
-            count: docs.length,
-            ytbStoreTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    storeName: doc.storeInfo.storeName,
-                    storeAddress:doc.storeInfo.storeAddress,
-                }
-            })
+
+            _id: docs._id,
+            storeName: docs.storeInfo.storeName,
+            storeAddress:docs.storeInfo.storeAddress,
+            location: docs.storeInfo.location,
+
         });
         
     })
@@ -42,16 +39,21 @@ router.get('/storeYoutuber/:store_id', (req, res, next) => {
         })
     .select('_id')
     .select('ytbChannel')
+    .select('ytbProfile')
+    .select('ytbSubscribe')
     .exec()
     .then(docs => {
         res.status(200).json({
-            YtbChannelTb: docs.map(doc => {
+            ytbChannelTb: docs.map(doc => {
                 return {
-                    _id: doc._id,
-                    ytbChannel: doc.ytbChannel,
-                    ytbThumbnail: doc.video[0].ytbThumbnail,
-                }
-            })
+        _id: doc._id,
+        ytbChannel: doc.ytbChannel,
+        ytbProfile: doc.ytbProfile,
+        ytbSubscribe: doc.ytbSubscribe,
+        ytbThumbnail: doc.video[0].ytbThumbnail,
+        videoId: doc.video[0]._id
+    }
+})
         })
     })
     .catch(err => {

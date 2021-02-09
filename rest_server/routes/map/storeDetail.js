@@ -7,31 +7,6 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const AttractionTb = require("../../models/attractionTb.model");
 const UserTb = require('../../models/userTb.model');
 
-router.get('/storeDetail/store/:store_id', (req, res, next) => {
-    YtbStoreTb.find({_id: req.params.store_id})
-    .select()
-    .exec()
-    .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            ytbStoreTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    storeName: doc.storeInfo.storeName,
-                    storeAddress:doc.storeInfo.storeAddress,
-                    location: doc.storeInfo.location,
-                }
-            })
-        });
-        
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
-});
-
 router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
     try {
         const docs = await UserTb.find({
@@ -48,12 +23,12 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
 
             let ids = []
             docs.forEach(doc => {
-                ids.push(doc.folders[0].folderTitle);
+                ids.push(doc.folders[0]._id);
     
             });
 
             await ShareFlowTb.find({
-                'folderTitle': {$in:ids}
+                'folderId': {$in:ids}
             })
             .exec()
             .then(docs => {

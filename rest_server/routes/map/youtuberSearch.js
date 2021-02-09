@@ -7,7 +7,7 @@ const YtbChannelTb = require("../../models/ytbChannelTb.model");
 const ytbStoreTb = require("../../models/ytbStoreTb.model");
 
 // 유튜버 채널명으로 검색 결과
-router.get('/map/youtuberSearch/:youtuber', (req, res, next) => {
+router.get('/youtuberSearch/:youtuber', (req, res, next) => {
     YtbChannelTb.find({"ytbChannel" : {$regex:req.params.youtuber}})
     .populate('video.ytbStoreTbId')
     .exec()
@@ -38,13 +38,15 @@ router.get('/map/youtuberSearch/:youtuber', (req, res, next) => {
 
 // 검색한 유튜버가 방문한 맛집
 router.get('/map/youtuberSearch/youtuber/:Id', (req, res, next) => {
-    YtbChannelTb.find({'_id' : req.params.Id})
+    YtbChannelTb.findOne({'_id' : req.params.Id})
     .populate({ path: 'video.ytbStoreTbId', select : 'storeInfo.location storeInfo.storeName'})
     .select('video.ytbStoreTbId')
     .exec()
     .then(docs => {
+        console.log(docs.video[0].ytbStoreTbId.storeInfo)
         res.status(200).json({
-            docs
+            YtbChannelTb: docs.video
+
         }); 
     })
     .catch(err => {
