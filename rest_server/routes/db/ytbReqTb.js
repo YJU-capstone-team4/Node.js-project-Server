@@ -308,35 +308,6 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
         video: []
     });
     ytbChannelTb.save()
-    .then(result => {
-        // console.log(result);
-        res.status(201).json({
-            message: 'ytbReqTb -> ytbChannelTb stored',
-            createdYtbReqTbTb: {
-                _id: result._id,
-                ytbChannel: result.ytbChannel,
-                ytbProfile: result.ytbProfile,
-                ytbLinkAddress: result.ytbLinkAddress,
-                ytbSubscribe: result.ytbSubscribe,
-                ytbSubIncrease: 0,
-                ytbHits: result.ytbHits,
-                ytbRank: result.ytbRank,
-                ytbRankIncrease: result.ytbRankIncrease,
-                likeCount: result.likeCount,
-                video: result.video
-            },
-            request: {
-                type: 'PUT',
-                url: 'http://localhost:3000/ytbChannelTb/' + result._id
-            }
-        });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
 
     // ytbCrawling으로 이동
     const ytbCrawlingTb = new YtbCrawlingTb({
@@ -350,18 +321,9 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     .then(result => {
         // console.log(result);
         res.status(201).json({
-            message: 'ytbReqTb -> ytbCrawlingTb stored',
-            createdYtbReqTbTb: {
-                _id: result._id,
-                ytbChannel: result.ytbChannel,
-                ytbProfile: result.ytbProfile,
-                videoCount: result.videoCount,
-                video: result.video
-            },
-            request: {
-                type: 'PUT',
-                url: 'http://localhost:3000/ytbCrawlingTb/' + result._id
-            }
+            message1: 'ytbReqTb -> ytbChannelTb stored',
+            message2: 'ytbReqTb -> ytbCrawlingTb stored',
+            status: 'Success'
         });
     })
     .catch(err => {

@@ -28,9 +28,9 @@ async function pagination(req, res, Collection) {
         prev = null;
 
     res.status(200).json({
-        total: whole.length,        // 전체 개수
-        current: collection.length,// 현재 페이지 개수
-        totalPage : totalPage,      // 전체 페이지 숫자
+        total: whole.length,        // 전체 Document 갯수
+        current: collection.length, // 현재 페이지의 Document 갯수
+        totalPage : totalPage,      // 전체 페이지 갯수
         page: page,                 // 현재 페이지
         first: first,               // 화면에 보여질 페이지 맨 앞 숫자
         last: last,                 // 화면에 보여질 페이지 맨 뒤 숫자
@@ -44,10 +44,11 @@ exports.pagination = pagination;
 
 // pagination 함수 - 검색
 async function paginationSearch(req, res, Collection, where, searchValue) {
-    const { page = 1, limit = 10 } = req.query;
-    const whole = await Collection.find();        // shareFlowTb 전체 값
     var query = {}
     query[where] = { $regex : searchValue };    // $regex : like
+    
+    const { page = 1, limit = 10 } = req.query;
+    const whole = await Collection.find( query );        // shareFlowTb 전체 값
 
     // 페이지네이션을 위한 몽고DB 쿼리
     const collection = await Collection.find( query )
@@ -78,9 +79,9 @@ async function paginationSearch(req, res, Collection, where, searchValue) {
         prev = null;
 
     res.status(200).json({
-        total: whole.length,        // 전체 개수
-        current: collection.length,// 현재 페이지 개수
-        totalPage : totalPage,      // 전체 페이지 숫자
+        total: whole.length,        // 전체 Document 갯수
+        current: collection.length, // 현재 페이지의 Document 갯수
+        totalPage : totalPage,      // 전체 페이지 갯수
         page: page,                 // 현재 페이지
         first: first,               // 화면에 보여질 페이지 맨 앞 숫자
         last: last,                 // 화면에 보여질 페이지 맨 뒤 숫자

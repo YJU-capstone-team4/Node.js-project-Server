@@ -42,7 +42,7 @@ router.get('/', (req, res, next) => {
 
 // 유튜버 채널명으로 검색
 router.get('/:channerId', (req, res, next) => {
-    YtbChannelTb.find({ytbChannel : req.params.channerId})
+    YtbChannelTb.find( { ytbChannel : { $regex : req.params.channerId } } )
     // .populate({
     //     path: 'ytbStoreTbId',
     //     match: {
@@ -55,11 +55,7 @@ router.get('/:channerId', (req, res, next) => {
         console.log("From database", doc);
         if (doc) {
             res.status(200).json({
-                userTb: doc,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/ytbChannelTb/' + req.params.channerId
-                }
+                doc
             });
         } else {
             res.status(404)
@@ -74,7 +70,7 @@ router.get('/:channerId', (req, res, next) => {
 
 // 유튜버 클릭 시 해당 유튜버 영상들 반환
 router.get('/show/:channerId', (req, res, next) => {
-    YtbChannelTb.find({ytbChannel : req.params.channerId})
+    YtbChannelTb.find( { ytbChannel : req.params.channerId } )
     .populate('video.ytbStoreTbId')
     .select('video')
     .exec()
@@ -82,11 +78,7 @@ router.get('/show/:channerId', (req, res, next) => {
         console.log("From database", doc);
         if (doc) {
             res.status(200).json({
-                userTb: doc,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/ytbChannelTb/show/' + req.params.channerId
-                }
+                doc
             });
         } else {
             res.status(404)
