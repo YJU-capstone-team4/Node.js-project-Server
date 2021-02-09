@@ -57,19 +57,19 @@ const attractionTbRouter = require('./routes/db/attractionTb');
 const shareFlowTbRouter = require('./routes/db/shareFlowTb');
 const searchTbRouter = require('./routes/db/searchTb');
 
-app.use('/login', loginRouter);
-app.use('/userTb', userTbRouter);
-app.use('/adminTb', adminTbRouter);
-app.use('/adminTagTb', adminTagTbRouter);
-app.use('/userTagTb', userTagTbRouter);
-app.use('/ytbReqTb', ytbReqTbRouter);
-app.use('/ytbCrawlingTb', ytbCrawlingTbRouter);
-app.use('/ytbStoreTb', ytbStoreTbRouter);
-app.use('/ytbChannelTb', ytbChannelTbRouter);
-app.use('/attractionCrawlingTb', attractionCrawlingTbRouter);
-app.use('/attractionTb', attractionTbRouter);
-app.use('/shareFlowTb', shareFlowTbRouter);
-app.use('/searchTb', searchTbRouter);
+app.use('/admin/login', loginRouter);
+app.use('/admin/userTb', userTbRouter);
+app.use('/admin/adminTb', adminTbRouter);
+app.use('/admin/adminTagTb', adminTagTbRouter);
+app.use('/admin/userTagTb', userTagTbRouter);
+app.use('/admin/ytbReqTb', ytbReqTbRouter);
+app.use('/admin/ytbCrawlingTb', ytbCrawlingTbRouter);
+app.use('/admin/ytbStoreTb', ytbStoreTbRouter);
+app.use('/admin/ytbChannelTb', ytbChannelTbRouter);
+app.use('/admin/attractionCrawlingTb', attractionCrawlingTbRouter);
+app.use('/admin/attractionTb', attractionTbRouter);
+app.use('/admin/shareFlowTb', shareFlowTbRouter);
+app.use('/admin/searchTb', searchTbRouter);
 
 // 메인 api
 const region = require('./routes/main/region');

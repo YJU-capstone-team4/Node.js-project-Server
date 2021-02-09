@@ -79,9 +79,9 @@ async function paginationSearch(req, res, Collection, where, searchValue) {
         prev = null;
 
     res.status(200).json({
-        total: whole.length,        // 전체 개수
-        current: collection.length,// 현재 페이지 개수
-        totalPage : totalPage,      // 전체 페이지 숫자
+        total: whole.length,        // 전체 Document 갯수
+        current: collection.length, // 현재 페이지의 Document 갯수
+        totalPage : totalPage,      // 전체 페이지 갯수
         page: page,                 // 현재 페이지
         first: first,               // 화면에 보여질 페이지 맨 앞 숫자
         last: last,                 // 화면에 보여질 페이지 맨 뒤 숫자

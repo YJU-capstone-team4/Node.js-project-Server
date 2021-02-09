@@ -42,7 +42,7 @@ router.get('/', (req, res, next) => {
 
 // 유튜버 채널명으로 검색
 router.get('/:channerId', (req, res, next) => {
-    YtbChannelTb.find({ytbChannel : req.params.channerId})
+    YtbChannelTb.find( { ytbChannel : { $regex : req.params.channerId } } )
     // .populate({
     //     path: 'ytbStoreTbId',
     //     match: {
@@ -74,7 +74,7 @@ router.get('/:channerId', (req, res, next) => {
 
 // 유튜버 클릭 시 해당 유튜버 영상들 반환
 router.get('/show/:channerId', (req, res, next) => {
-    YtbChannelTb.find({ytbChannel : req.params.channerId})
+    YtbChannelTb.find( { ytbChannel : { $regex : req.params.channerId } } )
     .populate('video.ytbStoreTbId')
     .select('video')
     .exec()
