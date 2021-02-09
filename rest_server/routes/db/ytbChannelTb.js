@@ -52,11 +52,8 @@ router.get('/:channerId', (req, res, next) => {
     .populate('video.ytbStoreTbId')
     .exec()
     .then(doc => {
-        console.log("From database", doc);
         if (doc) {
-            res.status(200).json({
-                doc
-            });
+            res.status(200).json(doc);
         } else {
             res.status(404)
             .json({
@@ -70,23 +67,22 @@ router.get('/:channerId', (req, res, next) => {
 
 // 유튜버 클릭 시 해당 유튜버 영상들 반환
 router.get('/show/:channerId', (req, res, next) => {
-    YtbChannelTb.find( { ytbChannel : req.params.channerId } )
+    YtbChannelTb.findOne( { ytbChannel : req.params.channerId } )
     .populate('video.ytbStoreTbId')
     .select('video')
     .exec()
     .then(doc => {
-        console.log("From database", doc);
         if (doc) {
-            res.status(200).json({
-                doc
-            });
+            res.status(200).json(doc);
         } else {
             res.status(404)
             .json({
                 message: "No valid entry found for object Id"
             })
         }
-    }).catch(err => {
+        // res.status(200).json(docs);
+    })
+    .catch(err => {
         console.log(err);
     });
 });

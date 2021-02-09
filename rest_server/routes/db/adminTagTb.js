@@ -7,20 +7,7 @@ router.get('/', (req, res, next) => {
   AdminTagTb.find()
     .exec()
     .then(docs => {
-        const response = {
-            count: docs.length,
-            adminTagTbs: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    adminTag: doc.adminTag,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/adminTag/' + doc.adminTag
-                    }
-                }
-            })
-        };
-        res.status(200).json(response);
+        res.status(200).json(docs);
     }).catch(err => {
         console.log(err);
         res.status(500).json({
