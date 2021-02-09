@@ -23,12 +23,12 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
 
             let ids = []
             docs.forEach(doc => {
-                ids.push(doc.folders[0].folderTitle);
+                ids.push(doc.folders[0]._id);
     
             });
 
             await ShareFlowTb.find({
-                'folderTitle': {$in:ids}
+                'folderId': {$in:ids}
             })
             .exec()
             .then(docs => {
