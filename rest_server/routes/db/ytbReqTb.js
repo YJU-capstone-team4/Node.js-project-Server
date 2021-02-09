@@ -319,11 +319,12 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     });
     ytbCrawlingTb.save()
     .then(result => {
-        // console.log(result);
         res.status(201).json({
-            message1: 'ytbReqTb -> ytbChannelTb stored',
-            message2: 'ytbReqTb -> ytbCrawlingTb stored',
-            status: 'Success'
+            // message1: 'ytbReqTb -> ytbChannelTb stored',
+            // message2: 'ytbReqTb -> ytbCrawlingTb stored',
+            // status: 'Success',
+            ytbChannel: ytbReq.ytbChannel,
+            videoCount: ytbReq.videoCount
         });
     })
     .catch(err => {

@@ -33,6 +33,50 @@ router.get('/', (req, res, next) => {
     });
 });
 
+
+router.get('/', (req, res, next) => {
+    YtbCrawlingTb.find()
+    // .select("name price _id") 
+    .exec()
+    .then(docs => {
+        const response = {
+            count: docs.length,
+            ytbCrawlingTb: docs.map(doc => {
+                return {
+                    _id: doc._id,
+                    ytbChannel: doc.ytbChannel,
+                    ytbProfile: doc.ytbProfile,
+                    videoCount: doc.videoCount,
+                    video: doc.video,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
+                    }
+                }
+            })
+        };
+        res.status(200).json(response);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+
+
+    // try {
+    //     const {page = 1, limit = 10} = req.query;
+    //     const shareFlowTb = await ShareFlowTb.find({userId : req.params.userId})
+    //     .limit(limit * 1)
+    //     .skip((page-1) * limit);
+    //     res.status(200).json({ total: shareFlowTb.length, shareFlowTb })
+    // } catch (err) {
+    //     res.status(500).json({
+    //         error : err
+    //     })
+    // }
+});
+
 router.post('/', (req, res, next) => {
     const ytbCrawlingTb = new YtbCrawlingTb({
       _id: new mongoose.Types.ObjectId(),
