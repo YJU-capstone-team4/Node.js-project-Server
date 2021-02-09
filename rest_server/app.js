@@ -34,9 +34,9 @@ app.get('/', (req, res) => {
     res.json({
         success: true,
     });
-});
+ });
 
-// // 로그인 라우트
+// 로그인 라우트
 // app.use('/', require('./routes/main'));
 // app.use('/auth', require('./routes/auth'));
 
@@ -93,8 +93,13 @@ app.use(storeDetail);
 
 // flow api
 const flowSearch = require('./routes/flow/flowSearch');
+const userFlow = require('./routes/flow/userFlow');
+const shareFlow = require('./routes/flow/shareFlow');
+
 
 app.use(flowSearch);
+app.use(userFlow);
+app.use(shareFlow);
 
 // 포트 연결
 app.listen(PORT, function(){
