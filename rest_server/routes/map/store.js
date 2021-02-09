@@ -40,6 +40,7 @@ router.get('/storeYoutuber/:store_id', (req, res, next) => {
     .select('_id')
     .select('ytbChannel')
     .select('ytbProfile')
+    .select('ytbSubscribe')
     .exec()
     .then(docs => {
         res.status(200).json({
@@ -48,6 +49,7 @@ router.get('/storeYoutuber/:store_id', (req, res, next) => {
         _id: doc._id,
         ytbChannel: doc.ytbChannel,
         ytbProfile: doc.ytbProfile,
+        ytbSubscribe: doc.ytbSubscribe,
         ytbThumbnail: doc.video[0].ytbThumbnail,
         videoId: doc.video[0]._id
     }
