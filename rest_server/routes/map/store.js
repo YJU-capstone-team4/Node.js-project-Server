@@ -49,6 +49,7 @@ router.get('/storeYoutuber/:store_id', (req, res, next) => {
         ytbChannel: doc.ytbChannel,
         ytbProfile: doc.ytbProfile,
         ytbThumbnail: doc.video[0].ytbThumbnail,
+        videoId: doc.video[0]._id
     }
 })
         })
