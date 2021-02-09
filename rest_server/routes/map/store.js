@@ -14,6 +14,7 @@ router.get('/map/store/:storeId', (req, res, next) => {
             _id: docs._id,
             storeName: docs.storeInfo.storeName,
             storeAddress:docs.storeInfo.storeAddress,
+            location: docs.storeInfo.location,
 
         });
         

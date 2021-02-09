@@ -7,26 +7,6 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const AttractionTb = require("../../models/attractionTb.model");
 const UserTb = require('../../models/userTb.model');
 
-router.get('/storeDetail/store/:store_id', (req, res, next) => {
-    YtbStoreTb.findOne({_id: req.params.store_id})
-    .select()
-    .exec()
-    .then(docs => {
-        res.status(200).json({
-            _id: docs._id,
-            storeName: docs.storeInfo.storeName,
-            storeAddress:docs.storeInfo.storeAddress,
-            location: docs.storeInfo.location,
-        });
-        
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
-});
-
 router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
     try {
         const docs = await UserTb.find({
