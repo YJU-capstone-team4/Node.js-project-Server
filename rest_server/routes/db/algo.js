@@ -55,10 +55,6 @@ async function paginationSearch(req, res, Collection, where, searchValue) {
     .limit(limit * 1)
     .skip((page-1) * limit);
 
-    // 데이터가 없을 때 에러 표시
-    if (collection.length == 0)
-        res.status(404).json({ error : searchValue + "is not founded" })
-
     // 페이지 그룹
     const pageCount = 5;                          // 페이지 그룹에 보일 페이지 수
     var pageGroup = Math.ceil(page/pageCount);    // 현재 페이지 그룹 위치
@@ -78,17 +74,22 @@ async function paginationSearch(req, res, Collection, where, searchValue) {
     if (prev < 1)
         prev = null;
 
-    res.status(200).json({
-        total: whole.length,        // 전체 Document 갯수
-        current: collection.length, // 현재 페이지의 Document 갯수
-        totalPage : totalPage,      // 전체 페이지 갯수
-        page: page,                 // 현재 페이지
-        first: first,               // 화면에 보여질 페이지 맨 앞 숫자
-        last: last,                 // 화면에 보여질 페이지 맨 뒤 숫자
-        next: next,                 // 다음 버튼
-        prev: prev,                 // 이전 버튼
-        collection
-    })
+    // 데이터가 없을 때 에러 표시
+    if (collection.length == 0)
+        res.status(404).json({ error : searchValue + "is not founded" })
+    else {
+        res.status(200).json({
+            total: whole.length,        // 전체 Document 갯수
+            current: collection.length, // 현재 페이지의 Document 갯수
+            totalPage : totalPage,      // 전체 페이지 갯수
+            page: page,                 // 현재 페이지
+            first: first,               // 화면에 보여질 페이지 맨 앞 숫자
+            last: last,                 // 화면에 보여질 페이지 맨 뒤 숫자
+            next: next,                 // 다음 버튼
+            prev: prev,                 // 이전 버튼
+            collection
+        })
+    }
 }
 
 exports.paginationSearch = paginationSearch;

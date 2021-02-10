@@ -13,6 +13,26 @@ const LocalStrategy = require('passport-local').Strategy
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:false}))
 
+// 관리자용 소켓
+// const server = app.listen(1000, () => {
+//   console.log('socket listening on port 1000!');
+// });
+// const io = require('socket.io')(server);
+
+// io.on('connection', (socket) => {
+
+//   socket.on('event1', (msg) => {
+//     console.log(msg)
+//   }); // Get message from the browser.
+
+//   socket.emit('event2', 'message here'); // Send a message to browser.
+// });
+
+// test
+// app.get('/test', function(req, res) {
+//   res.send('<h1>hello world</h1>')
+// })
+
 // DB 연결
 mongoose.connect(process.env.ATLAS_URI, 
 { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });

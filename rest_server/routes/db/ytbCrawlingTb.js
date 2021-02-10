@@ -3,78 +3,78 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
-router.get('/', (req, res, next) => {
-  YtbCrawlingTb.find()
-    // .select("name price _id") 
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            ytbCrawlingTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    ytbChannel: doc.ytbChannel,
-                    ytbProfile: doc.ytbProfile,
-                    videoCount: doc.videoCount,
-                    video: doc.video,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
-                    }
-                }
-            })
-        };
-        res.status(200).json(response);
-    }).catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
+
+// router.get('/', (req, res, next) => {
+//   YtbCrawlingTb.find()
+//     .exec()
+//     .then(docs => {
+//         const response = {
+//             count: docs.length,
+//             ytbCrawlingTb: docs.map(doc => {
+//                 return {
+//                     _id: doc._id,
+//                     ytbChannel: doc.ytbChannel,
+//                     ytbProfile: doc.ytbProfile,
+//                     videoCount: doc.videoCount,
+//                     video: doc.video,
+//                     request: {
+//                         type: 'GET',
+//                         url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
+//                     }
+//                 }
+//             })
+//         };
+//         res.status(200).json(response);
+//     }).catch(err => {
+//         console.log(err);
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
 
 
-router.get('/', (req, res, next) => {
-    YtbCrawlingTb.find()
-    // .select("name price _id") 
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            ytbCrawlingTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    ytbChannel: doc.ytbChannel,
-                    ytbProfile: doc.ytbProfile,
-                    videoCount: doc.videoCount,
-                    video: doc.video,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
-                    }
-                }
-            })
-        };
-        res.status(200).json(response);
-    }).catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-
-
-    // try {
-    //     const {page = 1, limit = 10} = req.query;
-    //     const shareFlowTb = await ShareFlowTb.find({userId : req.params.userId})
-    //     .limit(limit * 1)
-    //     .skip((page-1) * limit);
-    //     res.status(200).json({ total: shareFlowTb.length, shareFlowTb })
-    // } catch (err) {
+router.get('/', async (req, res, next) => {
+    // YtbCrawlingTb.find()
+    // .exec()
+    // .then(docs => {
+    //     const response = {
+    //         count: docs.length,
+    //         ytbCrawlingTb: docs.map(doc => {
+    //             return {
+    //                 _id: doc._id,
+    //                 ytbChannel: doc.ytbChannel,
+    //                 ytbProfile: doc.ytbProfile,
+    //                 videoCount: doc.videoCount,
+    //                 video: doc.video,
+    //                 request: {
+    //                     type: 'GET',
+    //                     url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
+    //                 }
+    //             }
+    //         })
+    //     };
+    //     res.status(200).json(response);
+    // }).catch(err => {
+    //     console.log(err);
     //     res.status(500).json({
-    //         error : err
-    //     })
-    // }
+    //         error: err
+    //     });
+    // });
+
+
+    try {
+        // var dataCrawling = await YtbCrawlingTb.find({ 'video.status' : { $in : '에러' } } )
+        var errCrawling = await YtbCrawlingTb.find({
+            'video.status' : { $in : '에러' }
+        })
+        // var errCrawling = await YtbCrawlingTb.find({ 'video.status' : { $in : '에러' } } )
+        res.status(200).json({ total: errCrawling.length, errCrawling })
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
 });
 
 router.post('/', (req, res, next) => {

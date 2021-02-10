@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 
 const AdminTagTb = require('../../models/adminTagTb.model');
 router.get('/', (req, res, next) => {
-  AdminTagTb.find()
+  AdminTagTb.findOne( { 'adminTag.seasonTag' : { $in : '봄' } } )
     .exec()
     .then(docs => {
+        console.log('hihi')
         res.status(200).json(docs);
     }).catch(err => {
         console.log(err);
@@ -82,7 +83,7 @@ router.patch('/insert/:newAdminTag', (req, res, next) => {
     });
 });
 
-// 관리자 해시태그 삭제 - 보류
+// 관리자 해시태그 삭제
 router.delete('/delete/:newAdminTag', (req, res, next) => {
     AdminTagTb.update({ 'adminTag.regionTag': '서울특별시' }, { $pull: { 'adminTag.regionTag': req.params.newAdminTag } })
     .exec()
