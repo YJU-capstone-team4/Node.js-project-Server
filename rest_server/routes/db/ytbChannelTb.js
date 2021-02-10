@@ -80,7 +80,6 @@ router.get('/show/:channerId', (req, res, next) => {
                 message: "No valid entry found for object Id"
             })
         }
-        // res.status(200).json(docs);
     })
     .catch(err => {
         console.log(err);

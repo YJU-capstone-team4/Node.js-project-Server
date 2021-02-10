@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const AdminTagTb = require('../../models/adminTagTb.model');
 router.get('/', (req, res, next) => {
-  AdminTagTb.find()
+  AdminTagTb.findOne( { 'adminTag.seasonTag' : { $in : '봄' } } )
     .exec()
     .then(docs => {
         res.status(200).json(docs);
