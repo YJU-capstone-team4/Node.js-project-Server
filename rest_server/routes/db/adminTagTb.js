@@ -7,6 +7,7 @@ router.get('/', (req, res, next) => {
   AdminTagTb.findOne( { 'adminTag.seasonTag' : { $in : '봄' } } )
     .exec()
     .then(docs => {
+        console.log('hihi')
         res.status(200).json(docs);
     }).catch(err => {
         console.log(err);
