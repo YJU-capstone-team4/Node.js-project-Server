@@ -82,7 +82,7 @@ router.patch('/insert/:newAdminTag', (req, res, next) => {
     });
 });
 
-// 관리자 해시태그 삭제 - 보류
+// 관리자 해시태그 삭제
 router.delete('/delete/:newAdminTag', (req, res, next) => {
     AdminTagTb.update({ 'adminTag.regionTag': '서울특별시' }, { $pull: { 'adminTag.regionTag': req.params.newAdminTag } })
     .exec()
