@@ -32,7 +32,7 @@ router.get('/flowSearch', (req, res, next) => {
 
 // shareFlowTb에서 아이디로 검색
 router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
-    ShareFlowTb.find({userId : req.params.userId})
+    ShareFlowTb.find({userId : req.params.user_id})
     .exec()
     .then(docs => {
         res.status(200).json({

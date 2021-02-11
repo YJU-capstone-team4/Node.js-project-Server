@@ -40,13 +40,19 @@ passport.use( new GoogleStrategy(
       social: profile.provider,
       nickname: profile.displayName,
       photoUrl: profile.photos[0].value,
-      memo: accessToken
+      memo: '',
+      likeYoutuber: [],
+      likeFlows: [],
+      folders: [{
+        folderTitle: "default",
+        createDate: new Date(),
+        updateDate: null,
+        stores: []
+      }]
     };
 
-    console.log(newUser);
-
    // user가 db에 없다면 새로 저장하기
-    User.find({userId : googleID}).then((user) => {
+    User.findOne({userId : googleID}).then((user) => {
       if(!user){
         console.log(user);
         new User(newUser).save().then((createdUser) => {

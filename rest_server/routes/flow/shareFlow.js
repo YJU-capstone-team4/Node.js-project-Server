@@ -7,86 +7,52 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTb = require('../../models/userTb.model');
 const { route } = require('../db/userTb');
 
-// // 유저가 등록한 동선 폴더 리스트(공유한 폴더 제외)
-router.get('/shareFlow/folderList/:user_id', (req, res, next) => {
-
-    const docs = ShareFlowTb.find({userId : req.params.user_id})
-    .select('folderId')
-    .exec();
-
-    //console.log(req.params.user_id)
-    UserTb.find({userId : req.params.user_id})
-    .where('folders.folderId')
-    .ne(docs.folderId)
-    .select('folders._id')
-    .select('folders.folderId')
-    .exec()
-    .then(doc => {
-        // console.log("From database", doc);
-        if (doc) {
-            res.status(200).json({
-                userTb: doc,
-            });
-        } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for userId"
-            })
-        }
-    }).catch(err => {
-        console.log(err);
-    });
-});
-
 
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
 
-router.post('/shareFlow/folder', (req, res, next) => {
-    // 로그인 검사 후 필요한 유저정보 반환
-    const userInfo = UserTb.findOne({userId : req.body.user_id})
-    .exec()
+router.post('/shareFlow/folder', async (req, res, next) => {
+    try {
+        // 로그인 검사 후 필요한 유저정보 반환
+        const userInfo = await UserTb.find({userId : req.body.user_id})
+        .exec()
 
-    // shareFlowTb에 들어갈 내용 저장
-    const shareFlowTb = new ShareFlowTb({
-      _id: new mongoose.Types.ObjectId(),
-      userTbId: userInfo[0].userTbId,
-      userId: userInfo[0].userId,
-      shareTitle: req.body.shareTitle,
-      shareThumbnail: req.body.shareThumbnail,
-      folderId: req.body.folderId,
-      adminTag: req.body.adminTag,
-      userTags: req.body.userTags,
-      shareDate: req.body.shareDate,
-      updateDate: req.body.updateDate,
-      likeCount: 0,
-      hits: 0,
+        //process.exit(0)
+        // shareFlowTb에 들어갈 내용 저장
+        const shareFlowTb = new ShareFlowTb({
+            _id: new mongoose.Types.ObjectId(),
+            userTbId: userInfo[0]._id,
+            userId: req.body.user_id,
+            shareTitle: req.body.shareTitle,
+            shareThumbnail: req.body.shareThumbnail,
+            folderId: req.body.folderId,
+            adminTag: req.body.adminTag,
+            userTags: req.body.userTags,
+            shareDate: req.body.shareDate,
+            updateDate: req.body.updateDate,
+            likeCount: 0,
+            hits: 0,
+        });
+        ShareFlowTb(shareFlowTb).save()
+        .then(result => {
+        console.log(result);
+        res.status(201).json({
+            result
+
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
     });
-    shareFlowTb.save()
-    .then(result => {
-      console.log(result);
-      res.status(201).json({
-          message: 'shareFlowTb stored',
-          createdShareFlowTb: {
-              _id: result._id,
-              userTbId: result.userTbId,
-              userId: result.userId,
-              shareTitle: result.shareTitle,
-              shareThumbnail: result.shareThumbnail,
-              adminTag: result.adminTag,
-              userTags: result.userTags,
-              shareDate: result.shareDate,
-              updateDate: result.updateDate,
-              likeCount: result.likeCount,
-              hits: result.hits,
-          },
-      });
-  })
-  .catch(err => {
-      console.log(err);
-      res.status(500).json({
-          error: err
-      });
-  });
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
 });
 
 // 동선 제목, 썸네일 수정 후 성공 여부 반환
