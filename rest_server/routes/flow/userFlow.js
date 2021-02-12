@@ -227,7 +227,6 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
 //});
 
 // 유저 폴더 만들기
-
 router.put('/userFlow/make', async (req, res, next) => {
     try {
         const user = await UserTb
@@ -263,6 +262,103 @@ router.put('/userFlow/make', async (req, res, next) => {
     }
 });
 
+// 유저 폴더 지우기
+router.delete('/userFlow/delete', async (req, res, next) => {
+    try {
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+            let index = 0
+            let tmp = 0
+            user.folders.forEach(element => {
+                if(element._id == req.body.folder_id) {
+                    index = tmp;
+                }
+                tmp++;
+            });
+
+            user.folders.splice(index,1);
+
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json({
+                    doc
+                })
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
+// 즐겨찾기 한 가게 폴더에 추가
+router.post('/favorite', async (req, res, next) => {
+    try {
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+            let index = 0
+            let tmp = 0
+            user.folders.forEach(element => {
+                if(element._id == req.body.folder_id) {
+                    index = tmp;
+                }
+                tmp++;
+            });
+            let inpuStore = null
+            if(req.body.store_id != null) {
+                inputStore = {
+                    'ytbStoreTbId': req.body.store_id,
+                    'attractionTbId': null,
+                    'storeId': req.body.store_id,
+                    'typeStore': req.body.typeStore
+                }
+            } else {
+                inpuStore = {
+                    'ytbStoreTbId': null,
+                    'attractionTbId': req.body.attraction_id,
+                    'storeId': req.body.attraction_id,
+                    'typeStore': req.body.typeStore
+                }
+            }
+
+            user.folders[index].stores.push(inputStore);
+
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json({
+                    doc
+                })
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
 
 
 module.exports = router;
