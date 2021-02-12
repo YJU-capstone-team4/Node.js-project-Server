@@ -84,145 +84,64 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
 });
 
 // 선택한 폴더 내의 stores 순서 바꿀 때
-// router.put('/userFlow/folder', async (req, res, next) => {
-//     try {
-        //console.log(req.body.folderId)
+router.put('/userFlow/folder', async (req, res, next) => {
+    try {
+        console.log(req.body.folderId)
 
-        // 원래 폴더의 store 순서 가져오기
-        // const stores = await UserTb.findOne({
-        //     "folders._id": req.body.folderId
-        // },{
-        //     "_id": 0,
-        //     "folders": {
-        //         "$elemMatch": {
-        //         "_id": req.body.folderId
-        //         }
-        //     }
-        // })
-        // .exec()
+        // user 정보 검색
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.userId
+            })
+            .exec()
 
-        // 바뀐 store 순서대로 정렬
-        // let changeStores = []
-        // let i = 0; 
-        // stores.folders[0].stores.forEach(element => {
-        //     changeStores[req.body.storeIds[i]] = element;
-        //     i++;
-        // })
-        // console.log(changeStores)
+            let index = 0
+            let tmp = 0
+            user.folders.forEach(element => {
+                if(element._id == req.body.folderId) {
+                    index = tmp;
+                }
+                tmp++;
+            });
 
-        //let query = 
-        // {
-        //     "_id": 0,
-        //     "folders": {
-        //         "$elemMatch": {
-        //         "_id": req.body.folderId
-        //         }
-        //     }
-        // }
-    //     mongoose.set('useFindAndModify', false);
-    //     // 바뀐 store 배열로 update 해주기
-    //     await UserTb
-    //     .findOneAndUpdate({
-    //         "_id": '5fc4de021bd7047198cb4a29'
-    //     }, 
-    //            {
-    //             "userId": "Chips",
-    //             "social": "Google",
-    //             "nickname": "Mag",
-    //             "memo": "",
-    //             "likeYoutuber": [
-    //             ],
-    //             "likeFlows": [
-    //             ],
-    //             "folders": [
-    //                 {
-    //                     "_id": "5fb797b5af3c922f9490fa9c",
-    //                     "stores": [  {
-    //                         _id: '5fb797beaf3c922f9490fab0',
-    //                         ytbStoreTbId: null,
-    //                         attractionTbId: '5fb7880d2c709478800b2aa5',
-    //                         storeId: '5fb7880d2c709478800b2aa5',
-    //                         typeStore: '카페'
-    //                       },
-    //                       {
-    //                         _id: '5fb797beaf3c922f9490faaf',
-    //                         ytbStoreTbId: '5fb7638df89ca73168b311ad',
-    //                         attractionTbId: null,
-    //                         storeId: '5fb7638df89ca73168b311ad',
-    //                         typeStore: '맛집'
-    //                       },
-    //                       {
-    //                         _id: '5fb797beaf3c922f9490faae',
-    //                         ytbStoreTbId: '5fb76388f89ca73168b311ac',
-    //                         attractionTbId: null,
-    //                         storeId: '5fb76388f89ca73168b311ac',
-    //                         typeStore: '맛집'
-    //                       },
-    //                       {
-    //                         _id: '5fb797beaf3c922f9490faad',
-    //                         ytbStoreTbId: null,
-    //                         attractionTbId: '5fb787f52c709478800b2aa2',
-    //                         storeId: '5fb787f52c709478800b2aa2',
-    //                         typeStore: '관광지'
-    //                       },
-    //                       {
-    //                         _id: '5fb797beaf3c922f9490faac',
-    //                         ytbStoreTbId: '5fb76382f89ca73168b311ab',
-    //                         attractionTbId: null,
-    //                         storeId: '5fb76382f89ca73168b311ab',
-    //                         typeStore: '맛집'
-    //                       }]
-    //                 }
-    //             ]
-    //         })
-        
-    //     //{$set: {'folders[0].stores': changeStores}},
+
+        //바뀐 store 순서대로 정렬
+        let changeStores = []
+        let i = 0; 
+        user.folders[index].stores.forEach(element => {
+            changeStores[req.body.storeIds[i]] = element;
+            i++;
+        })
+
+        user.folders[index].stores = changeStores;
 
         
-    //     .exec()
-    //     //, 
-    //     // .updateOne(
-    //     //     {
-    //     //         "folders.stores": stores
-    //     //     },
-    //     // {$set: {'folders[0].stores': changeStores}})
-    //     // .exec()
-    //     .then(doc => {
-    //         res.status(200).json(doc)
-    //     })
-    //     .catch(err => {
-    //         res.status(500).json({
-    //             error: err
-    //         });
-    //     });
-    // } catch(e) {
-    //     res.status(500).json({
-    //         error: e
-    //     });
-    // } 
 
-//     await UserTb
-//     .updateOne(
-//         {"folders.stores": stores}
-//     , {'folders.stores': changeStores}, {new: true})
-//     .exec()
-//     .then(doc => {
-//         res.status(200).json(doc)
-//     })
-//     .catch(err => {
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// } catch(e) {
-//     res.status(500).json({
-//         error: e
-//     });
-// } 
-//});
+        mongoose.set('useFindAndModify', false);
+        // 바뀐 store 배열로 update 해주기
+        await UserTb
+        .findOneAndUpdate({
+            "userId": req.body.userId
+        }, user)
+        .exec()
+        .then(doc => {
+            res.status(200).json(doc)
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+    } 
+
+});
 
     //process.exit(0);
-    // 배열(storeId) 입력 받은 순서 대로 새로운 배열에 객체 저장
+    //배열(storeId) 입력 받은 순서 대로 새로운 배열에 객체 저장
 
 //});
 
@@ -303,6 +222,40 @@ router.delete('/userFlow/delete', async (req, res, next) => {
     }
 });
 
+// // 즐겨찾기에 상태 검사
+// router.get('./favoriteStore', async (req, res, next) => {
+//     try {
+//         const user = await UserTb
+//             .findOne({
+//                 "userId": req.body.user_id
+//             })
+//             .exec()
+
+//             let index = 0
+//             let tmp = 0
+//             user.folders.forEach(element => {
+//                 if(element._id == req.body.folder_id) {
+//                     index = tmp;
+//                 }
+//                 tmp++;
+//             });
+
+//             // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
+//             user.folders[index].forEach(element => {
+//                 if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
+//                     res.status(500).json( {
+//                         message : "이미 존재 하는 id 값입니다."
+//                     })
+//                 }
+//             })
+
+//     }catch(e) {
+//         res.status(500).json({
+//             error: e
+//         });
+
+//     }
+// })
 // 즐겨찾기 한 가게 폴더에 추가
 router.post('/favorite', async (req, res, next) => {
     try {
@@ -320,17 +273,27 @@ router.post('/favorite', async (req, res, next) => {
                 }
                 tmp++;
             });
+
+            // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
+            user.folders[index].forEach(element => {
+                if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
+                    res.status(500).json( {
+                        message : "이미 존재 하는 id 값입니다."
+                    })
+                }
+            })
+
             let inpuStore = null
-            if(req.body.store_id != null) {
+            if(req.body.store_id != null && req.body.attraction_id == null) {
                 inputStore = {
                     'ytbStoreTbId': req.body.store_id,
-                    'attractionTbId': null,
+                    'attractionTbId': req.body.attraction_id,
                     'storeId': req.body.store_id,
                     'typeStore': req.body.typeStore
                 }
             } else {
                 inpuStore = {
-                    'ytbStoreTbId': null,
+                    'ytbStoreTbId': req.body.store_id,
                     'attractionTbId': req.body.attraction_id,
                     'storeId': req.body.attraction_id,
                     'typeStore': req.body.typeStore
