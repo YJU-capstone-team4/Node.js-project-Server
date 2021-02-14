@@ -274,31 +274,23 @@ router.post('/favorite', async (req, res, next) => {
                 tmp++;
             });
 
-            // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
-            user.folders[index].forEach(element => {
-                if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
-                    res.status(500).json( {
-                        message : "이미 존재 하는 id 값입니다."
-                    })
-                }
-            })
+            // // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
+            // user.folders[index].forEach(element => {
+            //     if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
+            //         res.status(500).json( {
+            //             message : "이미 존재 하는 id 값입니다."
+            //         })
+            //     }
+            // })
 
             let inpuStore = null
-            if(req.body.store_id != null && req.body.attraction_id == null) {
+
                 inputStore = {
                     'ytbStoreTbId': req.body.store_id,
                     'attractionTbId': req.body.attraction_id,
                     'storeId': req.body.store_id,
                     'typeStore': req.body.typeStore
                 }
-            } else {
-                inpuStore = {
-                    'ytbStoreTbId': req.body.store_id,
-                    'attractionTbId': req.body.attraction_id,
-                    'storeId': req.body.attraction_id,
-                    'typeStore': req.body.typeStore
-                }
-            }
 
             user.folders[index].stores.push(inputStore);
 
@@ -323,5 +315,67 @@ router.post('/favorite', async (req, res, next) => {
     }
 });
 
+
+// 즐겨찾기 삭제
+router.delete('/favorite', async (req, res, next) => {
+    try {
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+            let index = 0
+            let tmp = 0
+            user.folders.forEach(element => {
+                if(element._id == req.body.folder_id) {
+                    index = tmp;
+                }
+                tmp++;
+            });
+            console.log(user.folders[index]);
+            // // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
+            // user.folders[index].forEach(element => {
+            //     if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
+            //         res.status(500).json( {
+            //             message : "이미 존재 하는 id 값입니다."
+            //         })
+            //     }
+            // })
+
+            // let inpuStore = null
+            let i = 0
+            tmp = 0
+            user.folders[index].stores.forEach(element => {
+                if(element._id == req.body.store_id) {
+                    i = tmp;
+                }
+                tmp++;
+            });
+
+            user.folders[index].stores.splice(i,1)
+
+            // user.folders[index].stores.push(inputStore);
+
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json({
+                    doc
+                })
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
 
 module.exports = router;
