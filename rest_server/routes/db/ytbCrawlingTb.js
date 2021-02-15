@@ -35,41 +35,90 @@ const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
 
 
 router.get('/', async (req, res, next) => {
-    // YtbCrawlingTb.find()
-    // .exec()
-    // .then(docs => {
-    //     const response = {
-    //         count: docs.length,
-    //         ytbCrawlingTb: docs.map(doc => {
-    //             return {
-    //                 _id: doc._id,
-    //                 ytbChannel: doc.ytbChannel,
-    //                 ytbProfile: doc.ytbProfile,
-    //                 videoCount: doc.videoCount,
-    //                 video: doc.video,
-    //                 request: {
-    //                     type: 'GET',
-    //                     url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
-    //                 }
-    //             }
-    //         })
-    //     };
-    //     res.status(200).json(response);
-    // }).catch(err => {
-    //     console.log(err);
-    //     res.status(500).json({
-    //         error: err
-    //     });
-    // });
-
-
     try {
-        // var dataCrawling = await YtbCrawlingTb.find({ 'video.status' : { $in : '에러' } } )
-        var errCrawling = await YtbCrawlingTb.find({
-            'video.status' : { $in : '에러' }
+        var totalCount = 0;
+        var errCount = 0;
+        var completeCount = 0;
+
+        // 크롤링 대기 데이터 목록
+        var totalCrawling = await YtbCrawlingTb.aggregate([
+            {
+              "$set": {
+                "video": {
+                  "$filter": {
+                    "input": "$video",
+                    "as": "v",
+                    "cond": {"$eq": ["$$v.status",""]}
+                  }
+                }
+              }
+            }
+        ])
+        
+        // status가 에러인 유튜버들 및 영상들
+        // var errCrawling = await YtbCrawlingTb.find({
+        //     'video.status' : { $in : '에러' }
+        // }, 
+        // {
+        //     'ytbChannel': true,
+        //     'ytbProfile': true,
+        //     'videoCount': true,
+        //     'video' : {
+        //         $elemMatch : {
+        //             'status': { $in : '에러' }
+        //         }
+        //     }
+        // } )
+
+        var errCrawling = await YtbCrawlingTb.aggregate([
+            {
+              "$set": {
+                "video": {
+                  "$filter": {
+                    "input": "$video",
+                    "as": "v",
+                    "cond": {"$eq": ["$$v.status","에러"]}
+                  }
+                }
+              }
+            }
+        ])
+
+        // status가 완료인 유튜버들 및 영상들
+        var completeCrawling = await YtbCrawlingTb.aggregate([
+            {
+              "$set": {
+                "video": {
+                  "$filter": {
+                    "input": "$video",
+                    "as": "v",
+                    "cond": {"$eq": ["$$v.status","완료"]}
+                  }
+                }
+              }
+            }
+        ])
+
+        // status가 ''인 video 갯수 세기
+        for (var i = 0; i < totalCrawling.length; i++)
+            totalCount += totalCrawling[i].video.length
+
+        // status가 에러인 video 갯수 세기
+        for (var i = 0; i < errCrawling.length; i++)
+            errCount += errCrawling[i].video.length
+        
+        // status가 완료인 video 갯수 세기
+        for (var i = 0; i < completeCrawling.length; i++)
+            completeCount += completeCrawling[i].video.length
+
+        res.status(200).json({
+            totalTotal: totalCount,
+            errTotal: errCount,
+            completeTotal: completeCount,
+            totalCrawling,
+            errCrawling,
+            completeCrawling
         })
-        // var errCrawling = await YtbCrawlingTb.find({ 'video.status' : { $in : '에러' } } )
-        res.status(200).json({ total: errCrawling.length, errCrawling })
     } catch (err) {
         res.status(500).json({
             error : err

@@ -16,6 +16,7 @@ router.get('/', (req, res, next) => {
                     userId: doc.userId,
                     password: doc.password,
                     nickname: doc.nickname,
+                    loginToken: doc.loginToken,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:3000/adminTb/' + doc.userId
@@ -38,7 +39,7 @@ router.post('/', (req, res, next) => {
         userId: req.body.userId,
         password: req.body.password,
         nickname: req.body.nickname,
-        memo: req.body.memo
+        loginToken: req.body.loginToken
     });
     adminTb.save()
     .then(result => {
@@ -50,6 +51,7 @@ router.post('/', (req, res, next) => {
                 userId: result.userId,
                 password: result.password,
                 nickname: result.nickname,
+                loginToken: result.loginToken,
                 request: {
                     type: 'GET',
                     url: 'http://localhost:3000/products/' + result._id
