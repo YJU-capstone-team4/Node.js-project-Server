@@ -61,6 +61,7 @@ router.post('/', (req, res, next) => {
         memo: req.body.memo,
         likeYoutuber: req.body.likeYoutuber,
         likeFlows: req.body.likeFlows,
+        loginToken: req.body.loginToken,
         folders: req.body.folders
     });
     userTb.save()
@@ -77,6 +78,7 @@ router.post('/', (req, res, next) => {
                 memo: result.memo,
                 likeYoutuber: result.likeYoutuber,
                 likeFlows: result.likeFlows,
+                loginToken: req.body.loginToken,
                 folders: result.folders,
                 request: {
                     type: 'GET',
