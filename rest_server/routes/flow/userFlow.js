@@ -8,17 +8,16 @@ const { response } = require('express');
 
 
 // 로그인 확인
-const authenticateUser = (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
 	if (req.isAuthenticated()) {
-        //console.log(req.user.userId);
-	  next();
+	  res.status(200);
 	} else {
-	  res.status(301).redirect('/login');
+	  res.status(301);
 	}
   };
 
 // 유저가 등록한 동선 폴더 리스트
-router.get('/folderList/:user_id', async (req, res, next) => {
+router.get('/folderList/:user_id',authenticateUser, async (req, res, next) => {
     try {
         // 공유 동선
         const shareFlow = await ShareFlowTb.find({userId : req.params.user_id})
