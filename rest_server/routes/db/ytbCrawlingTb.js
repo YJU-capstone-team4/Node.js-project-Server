@@ -3,45 +3,16 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
-
-// router.get('/', (req, res, next) => {
-//   YtbCrawlingTb.find()
-//     .exec()
-//     .then(docs => {
-//         const response = {
-//             count: docs.length,
-//             ytbCrawlingTb: docs.map(doc => {
-//                 return {
-//                     _id: doc._id,
-//                     ytbChannel: doc.ytbChannel,
-//                     ytbProfile: doc.ytbProfile,
-//                     videoCount: doc.videoCount,
-//                     video: doc.video,
-//                     request: {
-//                         type: 'GET',
-//                         url: 'http://localhost:3000/ytbCrawlingTb/' + doc._id
-//                     }
-//                 }
-//             })
-//         };
-//         res.status(200).json(response);
-//     }).catch(err => {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
-
+const algo = require("./algo")
 
 router.get('/', async (req, res, next) => {
     try {
-        var totalCount = 0;
+        var normalCount = 0;
         var errCount = 0;
         var completeCount = 0;
 
         // 크롤링 대기 데이터 목록
-        var totalCrawling = await YtbCrawlingTb.aggregate([
+        var normalCrawling = await YtbCrawlingTb.aggregate([
             {
               "$set": {
                 "video": {
@@ -54,21 +25,6 @@ router.get('/', async (req, res, next) => {
               }
             }
         ])
-        
-        // status가 에러인 유튜버들 및 영상들
-        // var errCrawling = await YtbCrawlingTb.find({
-        //     'video.status' : { $in : '에러' }
-        // }, 
-        // {
-        //     'ytbChannel': true,
-        //     'ytbProfile': true,
-        //     'videoCount': true,
-        //     'video' : {
-        //         $elemMatch : {
-        //             'status': { $in : '에러' }
-        //         }
-        //     }
-        // } )
 
         var errCrawling = await YtbCrawlingTb.aggregate([
             {
@@ -100,8 +56,8 @@ router.get('/', async (req, res, next) => {
         ])
 
         // status가 ''인 video 갯수 세기
-        for (var i = 0; i < totalCrawling.length; i++)
-            totalCount += totalCrawling[i].video.length
+        for (var i = 0; i < normalCrawling.length; i++)
+            normalCount += normalCrawling[i].video.length
 
         // status가 에러인 video 갯수 세기
         for (var i = 0; i < errCrawling.length; i++)
@@ -112,12 +68,58 @@ router.get('/', async (req, res, next) => {
             completeCount += completeCrawling[i].video.length
 
         res.status(200).json({
-            totalTotal: totalCount,
+            normalTotal: normalCount,
             errTotal: errCount,
             completeTotal: completeCount,
-            totalCrawling,
+            normalCrawling,
             errCrawling,
             completeCrawling
+        })
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
+});
+
+router.get('/error/:channelId', async (req, res, next) => {
+    try {
+        var errCount = 0;
+
+        // 에러가 발생한 자료들
+        var errCrawling = await YtbCrawlingTb.aggregate([
+            {
+              "$set": {
+                "video": {
+                  "$filter": {
+                    "input": "$video",
+                    "as": "v",
+                    "cond": {"$eq": ["$$v.status","에러"]}
+                  }
+                }
+              }
+            }
+        ])
+
+        var more = await YtbCrawlingTb.findOne({
+            "ytbChannel": req.params.channelId
+        },{
+            "_id": 0,
+            "video": {
+                "$elemMatch": {
+                    "status": '에러'
+                }
+            }
+        })
+
+        // status가 에러인 video 갯수 세기
+        for (var i = 0; i < errCrawling.length; i++)
+            errCount += errCrawling[i].video.length
+
+        res.status(200).json({
+            errTotal: errCount,
+            left: errCrawling,
+            right: more
         })
     } catch (err) {
         res.status(500).json({
@@ -131,12 +133,11 @@ router.post('/', (req, res, next) => {
       _id: new mongoose.Types.ObjectId(),
       ytbChannel: req.body.ytbChannel,
       ytbProfile: req.body.ytbProfile,
-      videoCount: doc.videoCount,
+      videoCount: req.body.videoCount,
       video: req.body.video,
     });
     ytbCrawlingTb.save()
     .then(result => {
-        console.log(result);
         res.status(201).json({
             message: 'Created ytbCrawlingTb successfully',
             createdYtbCrawlingTbId: {
@@ -144,6 +145,7 @@ router.post('/', (req, res, next) => {
                 ytbChannel: result.ytbChannel,
                 ytbProfile: result.ytbProfile,
                 video: result.video,
+                videoCount: result.videoCount,
                 request: {
                     type: 'GET',
                     url: 'http://localhost:3000/attractionCrawlingTb/' + result._id
