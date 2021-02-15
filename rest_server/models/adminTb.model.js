@@ -6,7 +6,8 @@ const adminTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   userId: String,
   password: String,
-  nickname: String
+  nickname: String,
+  loginToken: String
 }, {
   versionKey: false,
   collection: "adminTb"

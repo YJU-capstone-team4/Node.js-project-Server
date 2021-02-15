@@ -10,6 +10,7 @@ const userTbSchema = new Schema({
   photoUrl: String,
   likeYoutuber: Array,
   likeFlows: Array,
+  loginToken: String,
   memo: { type:String, default: '' },
   folders: [
     {
