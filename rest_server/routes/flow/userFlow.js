@@ -68,7 +68,6 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
 
         console.log(docs);
         res.status(200).json({
-            //folderTitle : docs[0].folders[0].folderTitle,
             stores : docs.folders[0].stores
             
             
@@ -124,7 +123,7 @@ router.put('/userFlow/folder', async (req, res, next) => {
         }, user)
         .exec()
         .then(doc => {
-            res.status(200).json(doc)
+            res.status(201).json("success")
         })
         .catch(err => {
             res.status(500).json({
@@ -139,13 +138,9 @@ router.put('/userFlow/folder', async (req, res, next) => {
 
 });
 
-    //process.exit(0);
-    //배열(storeId) 입력 받은 순서 대로 새로운 배열에 객체 저장
-
-//});
 
 // 유저 폴더 만들기
-router.put('/userFlow/make', async (req, res, next) => {
+router.post('/userFlow', async (req, res, next) => {
     try {
         const user = await UserTb
             .findOne({
@@ -179,7 +174,7 @@ router.put('/userFlow/make', async (req, res, next) => {
 });
 
 // 유저 폴더 지우기
-router.delete('/userFlow/delete', async (req, res, next) => {
+router.delete('/userFlow', async (req, res, next) => {
     try {
         const user = await UserTb
             .findOne({
@@ -217,40 +212,6 @@ router.delete('/userFlow/delete', async (req, res, next) => {
     }
 });
 
-// // 즐겨찾기에 상태 검사
-// router.get('./favoriteStore', async (req, res, next) => {
-//     try {
-//         const user = await UserTb
-//             .findOne({
-//                 "userId": req.body.user_id
-//             })
-//             .exec()
-
-//             let index = 0
-//             let tmp = 0
-//             user.folders.forEach(element => {
-//                 if(element._id == req.body.folder_id) {
-//                     index = tmp;
-//                 }
-//                 tmp++;
-//             });
-
-//             // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
-//             user.folders[index].forEach(element => {
-//                 if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
-//                     res.status(500).json( {
-//                         message : "이미 존재 하는 id 값입니다."
-//                     })
-//                 }
-//             })
-
-//     }catch(e) {
-//         res.status(500).json({
-//             error: e
-//         });
-
-//     }
-// })
 // 즐겨찾기 한 가게 폴더에 추가
 router.post('/favorite', async (req, res, next) => {
     try {
@@ -268,15 +229,6 @@ router.post('/favorite', async (req, res, next) => {
                 }
                 tmp++;
             });
-
-            // // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
-            // user.folders[index].forEach(element => {
-            //     if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
-            //         res.status(500).json( {
-            //             message : "이미 존재 하는 id 값입니다."
-            //         })
-            //     }
-            // })
 
             let inpuStore = null
 
@@ -296,9 +248,7 @@ router.post('/favorite', async (req, res, next) => {
             }, user)
             .exec()
             .then(doc => {
-                res.status(201).json({
-                    doc
-                })
+                res.status(201).json("success")
             })
 
 
@@ -329,16 +279,7 @@ router.delete('/favorite', async (req, res, next) => {
                 tmp++;
             });
             console.log(user.folders[index]);
-            // // 폴더 안에 가게 관련 값이 존재하는지 유무 판단
-            // user.folders[index].forEach(element => {
-            //     if(element.storeId == req.body.store_id || element.storeId == req.body.attraction_id) {
-            //         res.status(500).json( {
-            //             message : "이미 존재 하는 id 값입니다."
-            //         })
-            //     }
-            // })
 
-            // let inpuStore = null
             let i = 0
             tmp = 0
             user.folders[index].stores.forEach(element => {
@@ -350,8 +291,6 @@ router.delete('/favorite', async (req, res, next) => {
 
             user.folders[index].stores.splice(i,1)
 
-            // user.folders[index].stores.push(inputStore);
-
             mongoose.set('useFindAndModify', false);
             await UserTb
             .findOneAndUpdate({
@@ -359,9 +298,7 @@ router.delete('/favorite', async (req, res, next) => {
             }, user)
             .exec()
             .then(doc => {
-                res.status(201).json({
-                    doc
-                })
+                res.status(201).json("success")
             })
 
 
