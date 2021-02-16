@@ -16,8 +16,7 @@ const authenticateUser = async (req, res, next) => {
 	}
   };
 
-// 유저가 등록한 동선 폴더 리스트
-router.get('/folderList/:user_id',authenticateUser, async (req, res, next) => {
+  router.get('/userFlow/:user_id', async (req, res, next) => {
     try {
         // 공유 동선
         const shareFlow = await ShareFlowTb.find({userId : req.params.user_id})
@@ -34,10 +33,11 @@ router.get('/folderList/:user_id',authenticateUser, async (req, res, next) => {
         .select('folders.folderTitle')
         .exec()
 
-       return res.status(200).json({
+       return res.status(200).json( {           
            shareFlow,
-           userFlow
-       })
+        userFlow}
+
+       )
         
     } catch(e) {
         res.status(500).json({
