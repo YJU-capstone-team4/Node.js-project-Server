@@ -166,9 +166,7 @@ router.put('/userFlow/make', async (req, res, next) => {
             }, user)
             .exec()
             .then(doc => {
-                res.status(201).json({
-                    doc
-                })
+                res.status(201).json("success")
             })
 
 
@@ -207,9 +205,7 @@ router.delete('/userFlow/delete', async (req, res, next) => {
             }, user)
             .exec()
             .then(doc => {
-                res.status(201).json({
-                    doc
-                })
+                res.status(201).json("success")
             })
 
 
