@@ -5,26 +5,15 @@ const mongoose = require('mongoose');
 const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
 const algo = require("./algo")
 
-router.get('/', async (req, res, next) => {
+// 데이터 수집 페이지 메인
+router.get('/socket', async (req, res, next) => {
     try {
         var normalCount = 0;
         var errCount = 0;
         var completeCount = 0;
 
         // 크롤링 대기 데이터 목록
-        var normalCrawling = await YtbCrawlingTb.aggregate([
-            {
-              "$set": {
-                "video": {
-                  "$filter": {
-                    "input": "$video",
-                    "as": "v",
-                    "cond": {"$eq": ["$$v.status",""]}
-                  }
-                }
-              }
-            }
-        ])
+        var normalCrawling = await YtbCrawlingTb.find()
 
         var errCrawling = await YtbCrawlingTb.aggregate([
             {
@@ -82,8 +71,8 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// 에러 해결 메인 페이지
-router.get('/error/:channelId', async (req, res, next) => {
+// 에러 해결 메인 페이지 - 좌측
+router.get('/error', async (req, res, next) => {
     try {
         var errCount = 0;
 
@@ -102,6 +91,24 @@ router.get('/error/:channelId', async (req, res, next) => {
             }
         ])
 
+        // status가 에러인 video 갯수 세기
+        for (var i = 0; i < errCrawling.length; i++)
+            errCount += errCrawling[i].video.length
+
+        res.status(200).json({
+            errTotal: errCount,
+            errCrawling
+        })
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
+});
+
+// 에러 해결 메인 페이지 - 우측
+router.get('/error/:channelId', async (req, res, next) => {
+    try {
         var more = await YtbCrawlingTb.findOne({
             "ytbChannel": req.params.channelId
         },{
@@ -113,15 +120,7 @@ router.get('/error/:channelId', async (req, res, next) => {
             }
         })
 
-        // status가 에러인 video 갯수 세기
-        for (var i = 0; i < errCrawling.length; i++)
-            errCount += errCrawling[i].video.length
-
-        res.status(200).json({
-            errTotal: errCount,
-            left: errCrawling,
-            right: more
-        })
+        res.status(200).json(more)
     } catch (err) {
         res.status(500).json({
             error : err
@@ -145,8 +144,8 @@ router.delete('/video/delete/:channelId/:videoId', (req, res, next) => {
     });
 });
 
-// 크롤링 서버 주소 전달
-router.put('/address/search/result/:addressId', async (req, res, next) => {
+// < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
+router.put('/address/search/:addressId', async (req, res, next) => {
     try {
         console.log(req.params.addressId)
 
@@ -158,6 +157,32 @@ router.put('/address/search/result/:addressId', async (req, res, next) => {
             error : err
         })
     }
+});
+
+// < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
+router.put('/address/search/result/:addressId', async (req, res, next) => {
+    try {
+        // let crawlingFlatform = req.query.crawlingFlatform;
+        // let crawlingLocation = {
+        //     "lat" : req.query.lat,
+        //     "lgt" : req.query.lgt
+        // };
+        // let crawlingStore = req.query.crawlingStore;
+
+        res.status(200).json(req.body)
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
+});
+
+// 3사 주소, 위도&경도, 가게 이름 저장
+router.post('/save/video/:channelId/:videoId', (req, res, next) => {
+    console.log(req.params)
+    console.log(req.query)
+    console.log(req.body)
+    res.status(200).json();
 });
 
 // 크롤링 데이터 생성용
