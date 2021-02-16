@@ -7,6 +7,19 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTb = require('../../models/userTb.model');
 const UserTagTb = require('../../models/userTagTb.model');
 const { route } = require('../db/userTb');
+const moment  = require('moment-timezone');
+
+function getCurrentDate(){
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var today = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    var milliseconds = date.getMilliseconds();
+    return new Date(Date.UTC(year, month, today, hours, minutes, seconds, milliseconds));
+}
 
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
 router.post('/shareFlow/folder', async (req, res, next) => {
@@ -27,19 +40,32 @@ router.post('/shareFlow/folder', async (req, res, next) => {
             folderId: req.body.folderId,
             adminTag: req.body.adminTag,
             userTags: req.body.userTags,
-            shareDate: new Date(),
+            shareDate: getCurrentDate(new Date()),
             updateDate: null,
             likeCount: 0,
             hits: 0,
         });
-        // ShareFlowTb(shareFlowTb).save()
-        // .exec()
+        ShareFlowTb(shareFlowTb).save()
+        .exec()
+
         // 해시 태그 저장
-        req.body.userTags.forEach(element => {
-            UserTagTb({userTag: element, userCount: 1}).save().exec()
+        req.body.userTags.forEach(async element =>  {
+
+            await UserTagTb.findOne({'userTag': element})
+            .exec()
             .then(doc => {
-                res.status(201).json("success");
-            });
+                if(!doc) {
+                    let tmp = new UserTagTb({
+                        _id: new mongoose.Types.ObjectId(),
+                        userTag: element,
+                        userCount: 1
+                    })
+                    UserTagTb(tmp).save().exec()
+                }else {
+                    UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': 1}})
+                }
+            })
+
         })
     }
     catch(e) {
@@ -51,32 +77,105 @@ router.post('/shareFlow/folder', async (req, res, next) => {
 });
 
 // 공유 동선 수정
-router.put('/shareFlow/folder', (req, res, next) => {
-    mongoose.set('useFindAndModify', false);
-    ShareFlowTb.findByIdAndUpdate(req.body.shareFlowId)
-    .exec()
-    .then(doc => {
-        res.status(200).json({
-            doc
+router.put('/shareFlow/folder', async (req, res, next) => {
+    try{
+        // 공유 동선 폴더 수정
+        const shareFlow = await ShareFlowTb.findOne({ _id : req.body.shareFlowId })
+        .exec()
+
+        
+        // 해시태그 수정
+        let newTag = [];
+        let disappearTag = [];
+        // 새로 추가된 해시태그 검색
+        req.body.userTags.forEach(async element => {
+            let tmp = await shareFlow.userTags.includes(element)
+
+            if(!tmp) {
+                await UserTagTb.findOne({'userTag': element})
+                .exec()
+                .then(doc => {
+                    if(!doc) {
+                        let tmp = new UserTagTb({
+                            _id: new mongoose.Types.ObjectId(),
+                            userTag: element,
+                            userCount: 1
+                        })
+                        UserTagTb(tmp).save().exec()
+                    }else {
+                        UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': 1}})
+                    }
+                })
+            }
         })
-    })
+        // 없어진 해시태그 검색
+        shareFlow.userTags.forEach(async element => {
+            let tmp = await req.body.userTags.includes(element)
+
+            if(!tmp) {
+                UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': -1}})
+            }
+        })
+        shareFlow.shareTitle = req.body.shareTitle;
+        shareFlow.shareThumbnail = req.body.shareThumbnail;
+        shareFlow.adminTag = req.body.adminTag;
+        shareFlow.userTags = req.body.userTags;
+
+        shareFlow.updateDate = getCurrentDate(new Date())
+
+        mongoose.set('useFindAndModify', false);
+        await ShareFlowTb.findOneAndUpdate({ _id : req.body.shareFlowId }, shareFlow)
+        .exec()
+        .then(doc => {
+            res.status(201).json("success")
+        });
+
+        // 해시태그 수정
+        
+    } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+
 })
 
 // 공유 동선 삭제
-router.delete('/shareFlow/folder', (req, res, next) => {
-    mongoose.set('useFindAndModify', false);
-    ShareFlowTb.findByIdAndRemove(req.body.shareFlowId)
-    .exec()
-    .then(doc => {
-        res.status(200).json({
-            doc
+router.delete('/shareFlow/folder', async(req, res, next) => {
+    try {
+        const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
+        // 해시태그 삭제
+        // 
+        const userTag = await UserTagTb.find().exec();
+        userTag.forEach(userTag => {
+            shareFlow.userTags.forEach(tmp => {
+                if(tmp == userTag) {
+                    UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': -1}})
+                }
+            })
+                
         })
-    })
-    // ShareFlowTb.findOneAndRemove({'shareTitle':req.body.shareTitle})
-    // .exec()
-    // .then(doc => {
-    //     res.status(200)
-    // })
+        console.log(userTag[0].userCount)
+        console.log(userTag)
+        // UserTagTb.updateOne(userTag);
+    
+    
+        mongoose.set('useFindAndModify', false);
+        // 공유 동선 삭제
+        await ShareFlowTb.findByIdAndRemove(req.body.shareFlowId)
+        .exec() 
+        .then(doc => {
+            res.status(200).json("success")
+        })
+    
+    } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+
 })
 
 // 동선 좋아요 추가

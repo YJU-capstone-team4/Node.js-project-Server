@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const AdminTagTb = require('../../models/adminTagTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTagTb = require('../../models/userTagTb.model');
+const UserTb = require('../../models/userTb.model');
 
 router.get('/flowSearch', (req, res, next) => {
     AdminTagTb.find()
@@ -79,13 +80,12 @@ router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
 });
 
 // 동선 검색
-router.post('/flowSearch/flow/', (req, res, next) => {
-    //JSON.stringify()
-    ShareFlowTb.find()
+router.post('/flowSearch/flow/', async (req, res, next) => {
+    // 해시태그로 검색
+    await ShareFlowTb.find()
     .where('adminTag.regionTag').in(req.body.regionTag)
      .where('adminTag.seasonTag').in(req.body.seasonTag)
     .where('userTags').in(req.body.userTag)
-    //ShareFlowTb.find()
     .exec()
     .then(docs => {
         res.status(200).json({
@@ -105,6 +105,56 @@ router.post('/flowSearch/flow/', (req, res, next) => {
             error: err
         });
     });
+
+    // 타이틀로 검색
+    await ShareFlowTb.find({'shareTitle': {$regex:req.body.shareTitle}})
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            count: docs.length,
+            shareFlowTb: docs.map(doc => {
+                return {
+                _id: doc._id,
+                shareTitle: doc.shareTitle,
+                shareThumbnail: doc.shareThumbnail,
+                adminTag: doc.adminTag,
+                userTags: doc.userTags,
+            }})
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+    // Nickname으로 검색
+    const user = await UserTb.find({'nickname': req.body.nickname})
+    .select('userId')
+    .exec();
+
+    await ShareFlowTb.find({'userId': user.userId})
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            count: docs.length,
+            shareFlowTb: docs.map(doc => {
+                return {
+                _id: doc._id,
+                shareTitle: doc.shareTitle,
+                shareThumbnail: doc.shareThumbnail,
+                adminTag: doc.adminTag,
+                userTags: doc.userTags,
+            }})
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+
 });
 
 module.exports = router;
