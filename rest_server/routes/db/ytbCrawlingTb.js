@@ -56,14 +56,14 @@ router.get('/socket', async (req, res, next) => {
         for (var i = 0; i < completeCrawling.length; i++)
             completeCount += completeCrawling[i].video.length
 
-        res.status(200).json({
-            normalTotal: normalCount,
-            errTotal: errCount,
-            completeTotal: completeCount,
-            normalCrawling,
-            errCrawling,
-            completeCrawling
-        })
+        res.status(200).json([
+            // normalTotal: normalCount,
+            // errTotal: errCount,
+            // completeTotal: completeCount,
+            { normalCrawling },
+            { errCrawling },
+            { completeCrawling }
+        ])
     } catch (err) {
         res.status(500).json({
             error : err
@@ -177,12 +177,39 @@ router.put('/address/search/result/:addressId', async (req, res, next) => {
     }
 });
 
-// 3사 주소, 위도&경도, 가게 이름 저장
-router.post('/save/video/:channelId/:videoId', (req, res, next) => {
+// router.post('/save/video/:channelId', (req, res, next) => {
+//     const updateOps = {};
+//     for(const ops of req.body) {
+//         updateOps[ops.propName] = ops.value
+//     }
+//     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, { $set: updateOps })
+//     .exec()
+//     .then(result => {
+//         res.status(201).json(result);
+//     }).catch(err => {
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
+
+// 3사 주소, 위도&경도, 가게 이름 저장 - 수정 중
+router.post('/save/video/:channelId', (req, res, next) => {
     console.log(req.params)
-    console.log(req.query)
     console.log(req.body)
-    res.status(200).json();
+
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
+    { $set: req.body })
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            result
+        })
+    }).catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
 });
 
 // 크롤링 데이터 생성용
