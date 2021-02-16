@@ -82,6 +82,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+// 에러 해결 메인 페이지
 router.get('/error/:channelId', async (req, res, next) => {
     try {
         var errCount = 0;
@@ -128,6 +129,38 @@ router.get('/error/:channelId', async (req, res, next) => {
     }
 });
 
+// 삭제 버튼 클릭 시 배열 안 해당 영상 삭제
+router.delete('/video/delete/:channelId/:videoId', (req, res, next) => {
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
+    { $pull: { 'video' : { '_id' : req.params.videoId } } })
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            result
+        })
+    }).catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
+// 크롤링 서버 주소 전달
+router.put('/address/search/result/:addressId', async (req, res, next) => {
+    try {
+        console.log(req.params.addressId)
+
+        res.status(200).json({
+            data : req.params.addressId
+        })
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
+});
+
+// 크롤링 데이터 생성용
 router.post('/', (req, res, next) => {
     const ytbCrawlingTb = new YtbCrawlingTb({
       _id: new mongoose.Types.ObjectId(),
