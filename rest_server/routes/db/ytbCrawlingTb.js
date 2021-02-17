@@ -227,21 +227,76 @@ router.put('/address/search/result/:addressId', async (req, res, next) => {
 //         });
 //     });
 // });
+
+// router.post('/save/video/:channelId', (req, res, next) => {
+//     YtbCrawlingTb.updateOne({ 'ytbChannel': req.params.channelId }, 
+//     { $set: req.body })
+//     .exec()
+//     .then(result => {
+//         res.status(200).json({
+//             result
+//         })
+//     }).catch(err => {
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
+
 router.post('/save/video/:channelId', (req, res, next) => {
-    console.log(req.body)
-    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
-    { $set: req.body })
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    { $pull: { 'video': { '_id' : req.body.video[0]._id } } }
+    )
+    .exec()
+    .then().catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    { $push : req.body }
+    )
     .exec()
     .then(result => {
-        res.status(200).json({
-            result
-        })
+        res.status(200).json('success to save')
     }).catch(err => {
         res.status(500).json({
             error: err
         });
     });
 });
+
+// router.post("/save/video/:channelId", async (req, res, next) => {
+//     try {
+//         let result = await YtbCrawlingTb.find({ ytbChannel: req.params.channelId });
+//         req.body.video.forEach((body) => {
+//             for (var i = 0; i < result[0].video.length; i++) {            
+//                 if (result[0].video[i]._id == body._id) {
+//                     console.log("result : " + result[0].video[i]._id)
+//                     console.log("body : " + body._id)
+//                     console.log(body.storeInfo.location.lng)
+
+//                     result[0].video[i].status = body.status;
+//                     // result[0].video[i].storeInfo.storeName = body.storeInfo.storeName;
+//                     // result[0].video[i].storeInfo.storeAddress = body.storeInfo.storeAddress;
+//                     // result[0].video[i].storeInfo.location.lat = body.storeInfo.location.lat;
+//                     // result[0].video[i].storeInfo.location.lng = body.storeInfo.location.lng;
+//                     // break;
+//                 }
+//             }
+//       });
+//       await result.save();
+  
+//       res.status(200).json({
+//         result
+//       });
+//     } catch (err) {
+//       res.status(500).json({
+//         err
+//       });
+//     }
+// });
 
 // 크롤링 데이터 생성용
 router.post('/', (req, res, next) => {
