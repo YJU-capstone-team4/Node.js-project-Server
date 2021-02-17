@@ -121,6 +121,11 @@ app.use(flowSearch);
 app.use(userFlow);
 app.use(shareFlow);
 
+// 유튜버 상세 페이지
+const youtuber = require('./routes/youtuber/youtube');
+
+app.use(youtuber);
+
 // 포트 연결
 app.listen(PORT, function(){
   console.log('server on! http://localhost:'+ PORT);
