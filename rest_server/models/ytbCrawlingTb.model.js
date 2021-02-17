@@ -15,13 +15,15 @@ const ytbCrawlingTbSchema = new Schema({
       hits: Number,
       uploadDate: Date,
       more: Array,
+      regionTag: String,
       storeInfo: {
         storeName: String,
         storeAddress: String,
         location: {
           lat: Number,
           lng: Number,
-        }
+        },
+        typeStore: String
       },
       status: String
     }
