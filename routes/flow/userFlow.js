@@ -16,6 +16,8 @@ const authenticateUser = async (req, res, next) => {
 	}
   };
 
+
+
   router.get('/userFlow/:user_id', async (req, res, next) => {
     try {
         // 공유 동선
@@ -84,6 +86,7 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
 // 선택한 폴더 내의 stores 순서 바꿀 때
 router.put('/userFlow/folder', async (req, res, next) => {
     try {
+        req.body.userId = "payment"
         // user 정보 검색
         const user = await UserTb
             .findOne({
