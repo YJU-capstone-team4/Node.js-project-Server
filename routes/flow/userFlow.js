@@ -16,8 +16,11 @@ const authenticateUser = async (req, res, next) => {
 	}
   };
 
-  router.get('/userFlow/:user_id', async (req, res, next) => {
+
+
+  router.get('/userFlow/', async (req, res, next) => {
     try {
+        req.params.user_id='payment'
         // 공유 동선
         const shareFlow = await ShareFlowTb.find({userId : req.params.user_id})
         .select('folderId')
@@ -84,15 +87,13 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
 // 선택한 폴더 내의 stores 순서 바꿀 때
 router.put('/userFlow/folder', async (req, res, next) => {
     try {
-        console.log(req.body.folderId)
-
+        req.body.userId = "payment"
         // user 정보 검색
         const user = await UserTb
             .findOne({
                 "userId": req.body.userId
             })
             .exec()
-
             let index = 0
             let tmp = 0
             user.folders.forEach(element => {
@@ -101,19 +102,15 @@ router.put('/userFlow/folder', async (req, res, next) => {
                 }
                 tmp++;
             });
-
+            console.log(user.folders[0].stores)
 
         //바뀐 store 순서대로 정렬
-        let changeStores = []
-        let i = 0; 
+        let changeStores = [] 
         user.folders[index].stores.forEach(element => {
-            changeStores[req.body.storeIds[i]] = element;
-            i++;
+            changeStores[req.body.storeIds.indexOf(element.storeId)] = element;
+
         })
-
         user.folders[index].stores = changeStores;
-
-        
 
         mongoose.set('useFindAndModify', false);
         // 바뀐 store 배열로 update 해주기
@@ -142,6 +139,7 @@ router.put('/userFlow/folder', async (req, res, next) => {
 // 유저 폴더 만들기
 router.post('/userFlow', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment'
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id
@@ -176,6 +174,7 @@ router.post('/userFlow', async (req, res, next) => {
 // 유저 폴더 지우기
 router.delete('/userFlow', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment'
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id
@@ -215,6 +214,7 @@ router.delete('/userFlow', async (req, res, next) => {
 // 즐겨찾기 한 가게 폴더에 추가
 router.post('/favorite', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment';
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id
@@ -264,6 +264,7 @@ router.post('/favorite', async (req, res, next) => {
 // 즐겨찾기 삭제
 router.delete('/favorite', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment'
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id

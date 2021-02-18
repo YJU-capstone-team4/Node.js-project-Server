@@ -32,7 +32,8 @@ router.get('/flowSearch', (req, res, next) => {
   });
 
 // shareFlowTb에서 아이디로 검색
-router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
+router.get('/flowSearch/shareFlow', (req, res, next) => {
+    req.params.user_id = "payment"
     ShareFlowTb.find({userId : req.params.user_id})
     .exec()
     .then(docs => {
@@ -81,78 +82,115 @@ router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
 
 // 동선 검색
 router.post('/flowSearch/flow/', async (req, res, next) => {
-    // 해시태그로 검색
-    await ShareFlowTb.find()
-    .where('adminTag.regionTag').in(req.body.regionTag)
-     .where('adminTag.seasonTag').in(req.body.seasonTag)
-    .where('userTags').in(req.body.userTag)
-    .exec()
-    .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            shareFlowTb: docs.map(doc => {
-                return {
-                _id: doc._id,
-                shareTitle: doc.shareTitle,
-                shareThumbnail: doc.shareThumbnail,
-                adminTag: doc.adminTag,
-                userTags: doc.userTags,
-            }})
-        })
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
 
-    // 타이틀로 검색
-    await ShareFlowTb.find({'shareTitle': {$regex:req.body.shareTitle}})
-    .exec()
-    .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            shareFlowTb: docs.map(doc => {
-                return {
-                _id: doc._id,
-                shareTitle: doc.shareTitle,
-                shareThumbnail: doc.shareThumbnail,
-                adminTag: doc.adminTag,
-                userTags: doc.userTags,
-            }})
-        })
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
+    if(req.body.option == "tag") {
+        // 해시태그로 검색
+        if(req.body.userTag.length == 0) {
+            await ShareFlowTb.find()
+            .where('adminTag.regionTag').in(req.body.regionTag)
+            .where('adminTag.seasonTag').in(req.body.seasonTag)
+            .exec()
+            .then(docs => {
+                res.status(200).json({
+                    count: docs.length,
+                    shareFlowTb: docs.map(doc => {
+                        return {
+                        _id: doc._id,
+                        shareTitle: doc.shareTitle,
+                        shareThumbnail: doc.shareThumbnail,
+                        adminTag: doc.adminTag,
+                        userTags: doc.userTags,
+                    }})
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
 
-    // Nickname으로 검색
-    const user = await UserTb.find({'nickname': req.body.nickname})
-    .select('userId')
-    .exec();
+        } else {
 
-    await ShareFlowTb.find({'userId': user.userId})
-    .exec()
-    .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            shareFlowTb: docs.map(doc => {
-                return {
-                _id: doc._id,
-                shareTitle: doc.shareTitle,
-                shareThumbnail: doc.shareThumbnail,
-                adminTag: doc.adminTag,
-                userTags: doc.userTags,
-            }})
+            await ShareFlowTb.find()
+            .where('adminTag.regionTag').in(req.body.regionTag)
+            .where('adminTag.seasonTag').in(req.body.seasonTag)
+            .where('userTags').in(req.body.userTag)
+            .exec()
+            .then(docs => {
+                res.status(200).json({
+                    count: docs.length,
+                    shareFlowTb: docs.map(doc => {
+                        return {
+                        _id: doc._id,
+                        shareTitle: doc.shareTitle,
+                        shareThumbnail: doc.shareThumbnail,
+                        adminTag: doc.adminTag,
+                        userTags: doc.userTags,
+                    }})
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+        }
+
+    } else if(req.body.option == "title") {
+        // 타이틀로 검색
+        await ShareFlowTb.find({'shareTitle': {$regex:req.body.shareTitle}})
+        .exec()
+        .then(docs => {
+            res.status(200).json({
+                count: docs.length,
+                shareFlowTb: docs.map(doc => {
+                    return {
+                    _id: doc._id,
+                    shareTitle: doc.shareTitle,
+                    shareThumbnail: doc.shareThumbnail,
+                    adminTag: doc.adminTag,
+                    userTags: doc.userTags,
+                }})
+            })
         })
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
         });
-    });
+    } else if(req.body.option == "nickname") {
+        // Nickname으로 검색
+        const user = await UserTb.find({'nickname': {$regex:req.body.nickname}})
+        .select('userId')
+        .exec();
+        let ids = user.map(doc => doc.userId)
+
+        console.log(user);
+        await ShareFlowTb.find({'userId': {$in: ids}})
+        .exec()
+        .then(docs => {
+            res.status(200).json({
+                count: docs.length,
+                shareFlowTb: docs.map(doc => {
+                    return {
+                    _id: doc._id,
+                    shareTitle: doc.shareTitle,
+                    shareThumbnail: doc.shareThumbnail,
+                    adminTag: doc.adminTag,
+                    userTags: doc.userTags,
+                }})
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    }
+
+
+
+
 
 
 });
