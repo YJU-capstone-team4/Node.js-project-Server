@@ -84,15 +84,12 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
 // 선택한 폴더 내의 stores 순서 바꿀 때
 router.put('/userFlow/folder', async (req, res, next) => {
     try {
-        console.log(req.body.folderId)
-
         // user 정보 검색
         const user = await UserTb
             .findOne({
                 "userId": req.body.userId
             })
             .exec()
-
             let index = 0
             let tmp = 0
             user.folders.forEach(element => {
@@ -101,19 +98,15 @@ router.put('/userFlow/folder', async (req, res, next) => {
                 }
                 tmp++;
             });
-
+            console.log(user.folders[0].stores)
 
         //바뀐 store 순서대로 정렬
-        let changeStores = []
-        let i = 0; 
+        let changeStores = [] 
         user.folders[index].stores.forEach(element => {
-            changeStores[req.body.storeIds[i]] = element;
-            i++;
+            changeStores[req.body.storeIds.indexOf(element.storeId)] = element;
+
         })
-
         user.folders[index].stores = changeStores;
-
-        
 
         mongoose.set('useFindAndModify', false);
         // 바뀐 store 배열로 update 해주기
