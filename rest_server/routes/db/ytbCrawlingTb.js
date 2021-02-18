@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
+const YtbChannelTb = require('../../models/ytbChannelTb.model');
+const YtbStoreTb = require('../../models/ytbStoreTb.model');
 const algo = require("./algo")
 
 // 데이터 수집 페이지 메인
@@ -69,16 +71,6 @@ router.get('/socket', async (req, res, next) => {
                 status : 'completeCrawling',
                 data : completeCrawling
             }
-            // status : 'errCrawling',
-            // data : errCrawling,
-            // status : 'completeCrawling',
-            // data : completeCrawling
-            // normalTotal: normalCount,
-            // errTotal: errCount,
-            // completeTotal: completeCount,
-            // { normalCrawling },
-            // { errCrawling },
-            // { completeCrawling }
         ])
     } catch (err) {
         res.status(500).json({
@@ -144,20 +136,43 @@ router.get('/error/:channelId', async (req, res, next) => {
     }
 });
 
+// // 삭제 버튼 클릭 시 배열 안 해당 영상 삭제
+// router.delete('/video/delete/:channelId/:videoId', (req, res, next) => {
+//     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
+//     { $pull: { 'video' : { '_id' : req.params.videoId } } })
+//     .exec()
+//     .then(result => {
+//         res.status(200).json({
+//             result
+//         })
+//     }).catch(err => {
+//         res.status(500).json({
+//             error: err
+//         });
+//     });
+// });
+
 // 삭제 버튼 클릭 시 배열 안 해당 영상 삭제
-router.delete('/video/delete/:channelId/:videoId', (req, res, next) => {
-    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
-    { $pull: { 'video' : { '_id' : req.params.videoId } } })
-    .exec()
-    .then(result => {
-        res.status(200).json({
-            result
-        })
-    }).catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
+router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
+    try {
+        var ytbCrawlingTb = await YtbCrawlingTb.findOne({ 'ytbChannel': req.params.channelId }) 
+
+        YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
+        { $pull: { 'video' : { '_id' : req.params.videoId } } }).exec()
+
+        YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
+        { 'videoCount' : ytbCrawlingTb.videoCount-1 } ).exec()
+
+        res.status(200).json('delete Success')
+    }
+    catch (err) {
+        res.status(500).json(
+            err
+        );
+    }
+
+    // var ytbCrawlingTb = YtbCrawlingTb.find({ 'ytbChannel': req.params.channelId })
+    // console.log(ytbCrawlingTb)
 });
 
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
@@ -178,13 +193,6 @@ router.put('/address/search/:addressId', async (req, res, next) => {
 // < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
 router.put('/address/search/result/:addressId', async (req, res, next) => {
     try {
-        // let crawlingFlatform = req.query.crawlingFlatform;
-        // let crawlingLocation = {
-        //     "lat" : req.query.lat,
-        //     "lgt" : req.query.lgt
-        // };
-        // let crawlingStore = req.query.crawlingStore;
-
         res.status(200).json(req.body)
     } catch (err) {
         res.status(500).json({
@@ -193,56 +201,7 @@ router.put('/address/search/result/:addressId', async (req, res, next) => {
     }
 });
 
-// router.post('/save/video/:channelId', (req, res, next) => {
-//     const updateOps = {};
-//     for(const ops of req.body) {
-//         updateOps[ops.propName] = ops.value
-//     }
-//     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, { $set: updateOps })
-//     .exec()
-//     .then(result => {
-//         res.status(201).json(result);
-//     }).catch(err => {
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
-
-// 3사 주소, 위도&경도, 가게 이름 저장 - 수정 중
-// router.post('/save/video/:channelId', (req, res, next) => {
-//     console.log(req.params)
-//     console.log(req.body)
-
-//     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId }, 
-//     { $set: req.body })
-//     .exec()
-//     .then(result => {
-//         res.status(200).json({
-//             result
-//         })
-//     }).catch(err => {
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
-
-// router.post('/save/video/:channelId', (req, res, next) => {
-//     YtbCrawlingTb.updateOne({ 'ytbChannel': req.params.channelId }, 
-//     { $set: req.body })
-//     .exec()
-//     .then(result => {
-//         res.status(200).json({
-//             result
-//         })
-//     }).catch(err => {
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
-
+// 비디오 저장 시
 router.post('/save/video/:channelId', (req, res, next) => {
     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
     { $pull: { 'video': { '_id' : req.body.video[0]._id } } }
@@ -298,12 +257,122 @@ router.post('/save/video/:channelId', (req, res, next) => {
 //     }
 // });
 
+// 크롤링 완료된 유튜버 ytbChannelTb, ytbStoreTb에 나눠 저장
+router.put('/save/youtuber/:channelId', async (req, res, next) => {
+
+    // ytbCrawlingTb에서 저장 클릭 시 데이터 변수에 저장
+    const ytbCrawling = await YtbCrawlingTb.findOne({ 'ytbChannel' : req.params.channelId });
+    
+    // 변수에 담은 뒤 신청 유튜버에서 삭제
+    // await YtbCrawlingTb.remove({ 'ytbChannel' : req.params.channelId });
+
+    var crawVideo = await YtbCrawlingTb.findOne({
+        "ytbChannel": req.params.channelId
+    },{
+        "_id": 0,
+        "video": 1
+    })
+
+    console.log(crawVideo.video[0].storeInfo.storeName)
+    // console.log(crawVideo.video[1].storeInfo.storeName)
+
+    // var ytbStore = await YtbStoreTb.findOne({
+    //     "storeInfo.storeName": req.params.storeInfo.storeName
+    // },{
+    //     "_id": 0,
+    //     "video": 1
+    // })
+
+    for(let i = 0; i < crawVideo.video.length; i++) {
+        var ytbStoreTb = new YtbStoreTb({
+            _id: new mongoose.Types.ObjectId(),
+            storeInfo: {
+                storeName: crawVideo.video[i].storeInfo.storeName,
+                storeAddress: crawVideo.video[i].storeInfo.storeAddress,
+                location: {
+                    lat: crawVideo.video[i].storeInfo.location.lat,
+                    lng: crawVideo.video[i].storeInfo.location.lng,
+                },
+                typeStore: crawVideo.video[i].storeInfo.typeStore,
+            },
+            regionTag: crawVideo.video[i].regionTag
+        });
+        ytbStoreTb.save()
+    }
+
+    // ytbChannelTb에 입력
+    // var ytbStoreTb = new YtbStoreTb({
+    //     _id: new mongoose.Types.ObjectId(),
+    //     StoreInfo: {
+    //         storeName: crawVideo.video.StoreInfo.storeName,
+    //         storeAddress: dd,
+    //         location: {
+    //             lat: dd,
+    //             lng: dd
+    //         },
+    //         typeStore: dd
+    //     },
+    //     regionTag: dd,
+
+    //     ytbRank: ytbReq.ytbRank,
+    //     ytbRankIncrease: ytbReq.ytbRankIncrease,
+    //     likeCount: ytbReq.likeCount
+    // });
+    // ytbStoreTb.save()
+
+    res.status(200).json(crawVideo);
+
+    // // ytbChannelTb에 입력
+    // const ytbChannelTb = new YtbChannelTb({
+    //     _id: new mongoose.Types.ObjectId(),
+    //     ytbChannel: ytbReq.ytbChannel,
+    //     ytbProfile: ytbReq.ytbProfile,
+    //     ytbLinkAddress: ytbReq.ytbLinkAddress,
+    //     ytbSubscribe: ytbReq.ytbSubscribe,
+    //     ytbSubIncrease: 0,
+    //     ytbHits: ytbReq.ytbHits,
+    //     ytbRank: ytbReq.ytbRank,
+    //     ytbRankIncrease: ytbReq.ytbRankIncrease,
+    //     likeCount: ytbReq.likeCount,
+    //     video: []
+    // });
+    // ytbChannelTb.save()
+
+    // // ytbCrawling으로 이동
+    // const ytbCrawlingTb = new YtbCrawlingTb({
+    //     _id: new mongoose.Types.ObjectId(),
+    //     ytbChannel: ytbReq.ytbChannel,
+    //     ytbProfile: ytbReq.ytbProfile,
+    //     videoCount: ytbReq.videoCount,
+    //     video: []
+    // });
+    // ytbCrawlingTb.save()
+    // .then(result => {
+    //     res.status(201).json({
+    //         // message1: 'ytbReqTb -> ytbChannelTb stored',
+    //         // message2: 'ytbReqTb -> ytbCrawlingTb stored',
+    //         // status: 'Success',
+    //         ytbChannel: ytbReq.ytbChannel,
+    //         videoCount: ytbReq.videoCount
+    //     });
+    // })
+    // .catch(err => {
+    //     console.log(err);
+    //     res.status(500).json({
+    //         error: err
+    //     });
+    // });
+});
+
 // 크롤링 데이터 생성용
 router.post('/', (req, res, next) => {
     const ytbCrawlingTb = new YtbCrawlingTb({
       _id: new mongoose.Types.ObjectId(),
       ytbChannel: req.body.ytbChannel,
       ytbProfile: req.body.ytbProfile,
+      ytbLinkAddress: req.body.ytbLinkAddress,
+      ytbSubscribe: req.body.ytbSubscribe,
+      ytbHits: req.body.ytbHits,
       videoCount: req.body.videoCount,
       video: req.body.video,
     });
@@ -315,8 +384,11 @@ router.post('/', (req, res, next) => {
                 _id: result._id,
                 ytbChannel: result.ytbChannel,
                 ytbProfile: result.ytbProfile,
-                video: result.video,
+                ytbLinkAddress: result.ytbLinkAddress,
+                ytbSubscribe: result.ytbSubscribe,
+                ytbHits: result.ytbHits,
                 videoCount: result.videoCount,
+                video: result.video,
                 request: {
                     type: 'GET',
                     url: 'http://localhost:3000/attractionCrawlingTb/' + result._id
