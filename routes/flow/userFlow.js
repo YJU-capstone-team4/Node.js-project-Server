@@ -18,8 +18,9 @@ const authenticateUser = async (req, res, next) => {
 
 
 
-  router.get('/userFlow/:user_id', async (req, res, next) => {
+  router.get('/userFlow/', async (req, res, next) => {
     try {
+        req.params.user_id='payment'
         // 공유 동선
         const shareFlow = await ShareFlowTb.find({userId : req.params.user_id})
         .select('folderId')
@@ -138,6 +139,7 @@ router.put('/userFlow/folder', async (req, res, next) => {
 // 유저 폴더 만들기
 router.post('/userFlow', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment'
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id
@@ -172,6 +174,7 @@ router.post('/userFlow', async (req, res, next) => {
 // 유저 폴더 지우기
 router.delete('/userFlow', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment'
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id
@@ -211,6 +214,7 @@ router.delete('/userFlow', async (req, res, next) => {
 // 즐겨찾기 한 가게 폴더에 추가
 router.post('/favorite', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment';
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id
@@ -260,6 +264,7 @@ router.post('/favorite', async (req, res, next) => {
 // 즐겨찾기 삭제
 router.delete('/favorite', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment'
         const user = await UserTb
             .findOne({
                 "userId": req.body.user_id

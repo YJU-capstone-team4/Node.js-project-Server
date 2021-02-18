@@ -32,7 +32,8 @@ router.get('/flowSearch', (req, res, next) => {
   });
 
 // shareFlowTb에서 아이디로 검색
-router.get('/flowSearch/shareFlow/:user_id', (req, res, next) => {
+router.get('/flowSearch/shareFlow', (req, res, next) => {
+    req.params.user_id = "payment"
     ShareFlowTb.find({userId : req.params.user_id})
     .exec()
     .then(docs => {
