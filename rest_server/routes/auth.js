@@ -1,6 +1,9 @@
 const express  = require('express');
+const { IdTokenClient } = require('google-auth-library');
 const router   = express.Router();
 const passport = require('../config/passport.js');
+
+const UserTb = require('../models/userTb.model');
 
 router.get('/login', function(req,res){
   res.render('auth/login');
@@ -8,7 +11,7 @@ router.get('/login', function(req,res){
 
 router.get('/logout', function(req, res) {
   req.logout();
-  res.redirect('/');
+  res.status(200).json("success");
 });
 
 router.get('/google',
@@ -25,7 +28,7 @@ router.get("/current_user", (req, res) => {
 
 
 function authSuccess(req, res) {
-  res.redirect('/');
+  res.status(200).json("success")
 }
 
 module.exports = router;
