@@ -6,6 +6,9 @@ const ytbCrawlingTbSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   ytbChannel: String,
   ytbProfile: String,
+  ytbLinkAddress: String,
+  ytbSubscribe: Number,
+  ytbHits: Number,
   videoCount: Number,
   video: [
     {

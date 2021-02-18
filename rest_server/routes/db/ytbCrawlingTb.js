@@ -201,6 +201,7 @@ router.put('/address/search/result/:addressId', async (req, res, next) => {
     }
 });
 
+// 비디오 저장 시
 router.post('/save/video/:channelId', (req, res, next) => {
     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
     { $pull: { 'video': { '_id' : req.body.video[0]._id } } }
@@ -369,6 +370,9 @@ router.post('/', (req, res, next) => {
       _id: new mongoose.Types.ObjectId(),
       ytbChannel: req.body.ytbChannel,
       ytbProfile: req.body.ytbProfile,
+      ytbLinkAddress: req.body.ytbLinkAddress,
+      ytbSubscribe: req.body.ytbSubscribe,
+      ytbHits: req.body.ytbHits,
       videoCount: req.body.videoCount,
       video: req.body.video,
     });
@@ -380,8 +384,11 @@ router.post('/', (req, res, next) => {
                 _id: result._id,
                 ytbChannel: result.ytbChannel,
                 ytbProfile: result.ytbProfile,
-                video: result.video,
+                ytbLinkAddress: result.ytbLinkAddress,
+                ytbSubscribe: result.ytbSubscribe,
+                ytbHits: result.ytbHits,
                 videoCount: result.videoCount,
+                video: result.video,
                 request: {
                     type: 'GET',
                     url: 'http://localhost:3000/attractionCrawlingTb/' + result._id
