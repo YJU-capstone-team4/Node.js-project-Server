@@ -104,8 +104,10 @@ router.get('/error', async (req, res, next) => {
             errCount += errCrawling[i].video.length
 
         res.status(200).json({
-            errTotal: errCount,
-            errCrawling
+            status : 'errCrawling',
+            data : errCrawling
+            // errTotal: errCount,
+            // errCrawling
         })
     } catch (err) {
         res.status(500).json({
@@ -273,8 +275,7 @@ router.put('/save/youtuber/:channelId', async (req, res, next) => {
         "video": 1
     })
 
-    console.log(crawVideo.video[0].storeInfo.storeName)
-    // console.log(crawVideo.video[1].storeInfo.storeName)
+    // console.log(crawVideo.video[0].storeInfo.storeName)
 
     // var ytbStore = await YtbStoreTb.findOne({
     //     "storeInfo.storeName": req.params.storeInfo.storeName
