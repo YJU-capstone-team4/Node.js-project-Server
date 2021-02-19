@@ -179,7 +179,7 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 });
 
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
-router.put('/address/search/:addressId', async (req, res, next) => {
+router.post('/address/search/:addressId', async (req, res, next) => {
     try {
         console.log(req.params.addressId)
 
@@ -194,7 +194,7 @@ router.put('/address/search/:addressId', async (req, res, next) => {
 });
 
 // < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
-router.put('/address/search/result/:addressId', async (req, res, next) => {
+router.post('/address/search/result/:addressId', async (req, res, next) => {
     try {
         res.status(200).json(req.body)
     } catch (err) {
