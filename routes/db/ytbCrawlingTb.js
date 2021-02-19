@@ -405,6 +405,8 @@ router.post('/save/youtuber/:channelId', async (req, res, next) => {
             ytbSubscribe: a.ytbSubIncrease,
             ytbSubIncrease: crawYoutuber.ytbSubscribe,
             ytbHits: crawYoutuber.ytbHits,
+            ytbRank: a.ytbRankIncrease,
+            ytbRankIncrease: 0,
             likeCount: a.likeCount,
             video: videos
          }).exec()
