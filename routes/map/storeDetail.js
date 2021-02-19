@@ -52,13 +52,12 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
      }
 });
 
-router.get('/storeDetail/attraction/:lat&:lng', (req, res, next) => {
+router.get('/storeDetail/attraction', (req, res, next) => {
     const latTmp = 1;
     const lngTmp = 0.5;
-
     AttractionTb.find()
-    .where('attractionInfo.location.lat').gte(req.params.lat*1-latTmp).lte(req.params.lat*1+latTmp)
-    .where('attractionInfo.location.lng').gte(req.params.lng*1-lngTmp).lte(req.params.lng*1+lngTmp)
+    .where('attractionInfo.location.lat').gte(req.query.lat*1-latTmp).lte(req.query.lat+latTmp)
+    .where('attractionInfo.location.lng').gte(req.query.lng*1-lngTmp).lte(req.query.lng+lngTmp)
     .select()
     .populate('adminTagTbId')
     .exec()

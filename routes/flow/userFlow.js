@@ -171,6 +171,41 @@ router.post('/userFlow', async (req, res, next) => {
     }
 });
 
+// 유저 폴더 수정
+router.put('/userFlow', async (req, res, next) => {
+    try {
+        req.body.user_id = 'payment'
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+            user.folders.push({
+                folderTitle: req.body.folderTitle,
+                createDate: new Date(),  
+                updateDate: null,
+                stores: []               
+            })
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
 // 유저 폴더 지우기
 router.delete('/userFlow', async (req, res, next) => {
     try {
@@ -230,9 +265,7 @@ router.post('/favorite', async (req, res, next) => {
                 tmp++;
             });
 
-            let inpuStore = null
-
-                inputStore = {
+            let inputStore = {
                     'ytbStoreTbId': req.body.store_id,
                     'attractionTbId': req.body.attraction_id,
                     'storeId': req.body.store_id,

@@ -29,7 +29,8 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
             ytbChannel : docs.ytbChannel,
             ytbProfile: docs.ytbProfile,
             ytbSubscribe: docs.ytbSubscribe,
-            rank: docs.ytbRank,
+            rank: docs.ytbRankIncrease,
+            ytbRankIncrease: docs.ytbRankIncrese - docs.ytbRank,
             youtuberLike : youtuberLike
         });
         
