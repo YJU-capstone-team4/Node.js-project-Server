@@ -413,7 +413,7 @@ router.post('/save/youtuber/:channelId', async (req, res, next) => {
         res.status(200).json('youtuber updated');
     }
 
-    // 변수에 담은 뒤 신청 유튜버에서 삭제
+    // 변수에 담은 뒤 신청 유튜버에서 삭제 
     YtbCrawlingTb.remove({ 'ytbChannel' : req.params.channelId }).exec();
 });
 
