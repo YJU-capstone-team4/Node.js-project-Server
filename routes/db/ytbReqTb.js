@@ -247,6 +247,20 @@ router.post('/', (req, res, next) => {
 //     });
 // });
 
+// 신청 유튜버 삭제
+router.delete('/delete/:youtuber', async (req, res, next) => {    
+    // 변수에 담은 뒤 신청 유튜버에서 삭제
+    await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber }).exec()
+    .then(result => {
+        res.status(200).json('delete success')
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
 // 신청 유튜버 승인 시 2
 router.put('/recognize/:youtuber', async (req, res, next) => {
     // ytbReqTb에서 승인 시 데이터 변수에 저장
