@@ -7,6 +7,7 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTb = require('../../models/userTb.model');
 const UserTagTb = require('../../models/userTagTb.model');
 const { route } = require('../db/userTb');
+const moment  = require('moment-timezone');
 
 function getCurrentDate(){
     var date = new Date();
@@ -23,6 +24,7 @@ function getCurrentDate(){
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
 router.post('/shareFlow/folder', async (req, res, next) => {
     try {
+        req.body.user_id = 'payment';
         // 로그인 검사 후 필요한 유저정보 반환
         const userInfo = await UserTb.findOne({userId : req.body.user_id})
         .exec()
@@ -44,28 +46,34 @@ router.post('/shareFlow/folder', async (req, res, next) => {
             likeCount: 0,
             hits: 0,
         });
-        ShareFlowTb(shareFlowTb).save()
+        await ShareFlowTb(shareFlowTb).save()
         .exec()
+        console.log("공유 동선 저장 완료")
+
 
         // 해시 태그 저장
+        const tag = await UserTagTb.find()
+        .exec()
+
         req.body.userTags.forEach(async element =>  {
 
-            await UserTagTb.findOne({'userTag': element})
-            .exec()
-            .then(doc => {
-                if(!doc) {
-                    let tmp = new UserTagTb({
-                        _id: new mongoose.Types.ObjectId(),
-                        userTag: element,
-                        userCount: 1
-                    })
-                    UserTagTb(tmp).save().exec()
-                }else {
-                    UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': 1}})
-                }
-            })
+            let tmp = tag.userTags.includes(element)
 
-        })
+                console.log("해시태그 저장 시작")
+                if(!tmp) {
+                    let newTag = new UserTagTb({
+                            _id: new mongoose.Types.ObjectId(),                      
+                            userTag: element,
+                            userCount: 1
+                    })
+                    tag.userTags.push(newTag)
+                    await UserTagTb.findByIdAndUpdate(tag._id, tag)
+                }else {
+                    //await UserTagTb.updateOne({'userTags.userTag' : element}, {$inc :{'userCount': 1}})
+                }
+
+                return res.status(201).json("success")
+            })
     }
     catch(e) {
         res.status(500).json({
@@ -155,8 +163,6 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
             })
                 
         })
-        console.log(userTag[0].userCount)
-        console.log(userTag)
         // UserTagTb.updateOne(userTag);
     
     
@@ -181,6 +187,7 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
 
 router.post('/shareFlow/like', async (req, res, next) => {
     try{
+        req.body.user_id = 'payment'
         mongoose.set('useFindAndModify', false);
 
         // likeFlows 에 좋아요 누른 공유 동선 삭제
@@ -216,6 +223,7 @@ router.post('/shareFlow/like', async (req, res, next) => {
 // 동선 좋아요 삭제하기
 router.delete('/shareFlow/like', async (req, res, next) => {
     try{
+        req.body.user_id = 'payment'
         mongoose.set('useFindAndModify', false);
 
         // likeFlows 에 좋아요 누른 공유 동선 추가
