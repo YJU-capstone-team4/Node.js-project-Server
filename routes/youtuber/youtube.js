@@ -5,9 +5,22 @@ const mongoose = require('mongoose');
 const YtbChannelTb = require("../../models/ytbChannelTb.model");
 const YtbStoreTb = require("../../models/ytbStoreTb.model");
 const AdminTagTb = require('../../models/adminTagTb.model');
-
+const UserTb = require('../../models/userTb.model');
 // 유튜버 상세 페이지 - 유튜버 정보
-router.get('/youtuber/:ytb_id', (req, res, next) => {
+router.get('/youtuber/:ytb_id', async (req, res, next) => {
+    req.body.userId = 'payment'
+    let youtuberLike = false;
+    if(req.body.userId) { // 로그인이 되어 있을 때 
+        const user = await UserTb.findOne({userId: req.body.userId})
+        .select('likeYoutuber')
+        .exec();
+
+        if(user.likeYoutuber.includes(req.params.ytb_id)) {
+            youtuberLike = true;
+        }
+        
+    }
+
     YtbChannelTb.findOne({_id : req.params.ytb_id})
     .populate('video.ytbStoreTbId')
     .exec()
@@ -16,7 +29,8 @@ router.get('/youtuber/:ytb_id', (req, res, next) => {
             ytbChannel : docs.ytbChannel,
             ytbProfile: docs.ytbProfile,
             ytbSubscribe: docs.ytbSubscribe,
-            rank: docs.ytbRank
+            rank: docs.ytbRank,
+            youtuberLike : youtuberLike
         });
         
     })
@@ -53,18 +67,49 @@ router.get('/youtuber/video/:ytb_id', (req, res, next) => {
     });
 });
 
+// 유튜버가 지역별로 방문한 맛집 영상
+router.get('/youtuber/region/:ytb_id', async (req, res, next) => {
+    try {
+        const youtuber = await YtbChannelTb.findOne({_id : req.params.ytb_id})
+        .select('video.ytbStoreTbId')
+        .exec()
 
+        let search = []
+        youtuber.video.forEach(element => {
+            search.push(element.ytbStoreTbId)
+        });
+
+        await YtbStoreTb.find({_id: {$in: search}})
+        .select('regionTag')
+        .distinct('regionTag')
+        .exec()
+        .then(regionTag => {
+            res.status(200).json(regionTag)
+
+        })
+
+    } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
 
 // 유튜버가 지역별로 방문한 맛집 영상
 router.post('/youtuber/localVideo', async (req, res, next) => {
     try {
         const youtuber = await YtbChannelTb.findOne({_id : req.body.ytb_id})
-        .select('video.ytbStoreTbId')
+        .select('video.storeId')
+        .select('video._id')
+        .select('video.ytbVideoName')
+        .select('video.ytbAddress')
+        .select('video.hits')
         .exec()
-        
+
         let search = []
         youtuber.video.forEach(element => {
-            search.push(element.ytbStoreTbId)
+            search.push(element.storeId)
         });
 
         let store = await YtbStoreTb.find({_id: {$in: search}})
@@ -74,31 +119,129 @@ router.post('/youtuber/localVideo', async (req, res, next) => {
         .select('regionTag')
         .exec()
 
-        let ids = []
+        const ids = []
         store.forEach(element => {
             ids.push(element._id)
         })
 
-        await YtbChannelTb.findOne({_id: req.body.ytb_id})
-        .find({'video.ytbStoreTbId': {$in: ids}})
-        .select('video._id')
-        .select('video.ytbVideoName')
-        .select('video.ytbAddress')
-        .select('video.hits')
+        let result = []
 
-        .exec()
-        .then(docs => {
-            res.status(200).json(docs)
+        ids.forEach(element =>  {
+            youtuber.video.forEach(id => {
+                if(element == id.storeId) {
+                    result.push(id)
+                }
+            })
         })
 
-
-         //return res.status(200).json({result: store})
-        // .then(doc => {
-        //     res.status(200).json({doc})
-
-        // })
+         return res.status(200).json(result)
 
     } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
+// 좋아요 클릭한 유튜버 userTb에 저장
+router.post('/youtuber/like', async (req, res, next) => {
+    try {
+        req.body.user_id = 'payment'
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+            user.likeYoutuber.push(req.body.ytb_id);
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
+
+// 유튜버 좋아요 삭제
+router.delete('/youtuber/like', async (req, res, next) => {
+    try {
+        req.body.user_id = 'payment'
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+
+            let i = 0
+            tmp = 0
+            user.likeYoutuber.forEach(element => {
+                if(element == req.body.ytb_id) {
+                    i = tmp;
+                }
+                tmp++;
+            });
+
+            user.likeYoutuber.splice(i,1)
+
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
+// 유튜버 신청
+router.post('/youtuber/request', async (req, res, next) => {
+    try {
+        req.body.user_id = 'payment'
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .select('_id')
+            .select('userId')
+            .exec()
+        mongoose.set('useFindAndModify', false);
+
+
+        // 크롤링 함수 불러오기
+
+
+        //  새로운 신청 객체 만들기
+        const newYtbReq = {
+            ytbChannel: req.body.ytbChannel,
+            userTbId: user._id,
+            userId: req.body.user_id
+        };
+        // 신청 db에 추가
+
+    }catch(e) {
         res.status(500).json({
             error: e
         });
