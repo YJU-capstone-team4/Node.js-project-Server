@@ -22,8 +22,8 @@ const ytbChannelTbSchema = new Schema({
       storeId: String,
       hits: Number,
       hitsIncrease: Number,
-      Rank: Number,
-      RankIncrease: Number,
+      rank: Number,
+      rankIncrease: Number,
       uploadDate: Date
     }
   ]

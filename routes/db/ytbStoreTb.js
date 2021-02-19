@@ -9,20 +9,7 @@ router.get('/', (req, res, next) => {
     .select()
     .exec()
     .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            ytbStoreTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    storeInfo: doc.storeInfo,
-                    regionTag: doc.regionTag,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/ytbStoreTb/' + doc._id
-                    }
-                }
-            })
-        });
+        res.status(200).json(docs);
         
     })
     .catch(err => {
