@@ -7,7 +7,20 @@ const YtbStoreTb = require("../../models/ytbStoreTb.model");
 const AdminTagTb = require('../../models/adminTagTb.model');
 const UserTb = require('../../models/userTb.model');
 // 유튜버 상세 페이지 - 유튜버 정보
-router.get('/youtuber/:ytb_id', (req, res, next) => {
+router.get('/youtuber/:ytb_id', async (req, res, next) => {
+    req.body.userId = 'payment'
+    let youtuberLike = false;
+    if(req.body.userId) { // 로그인이 되어 있을 때 
+        const user = await UserTb.findOne({userId: req.body.userId})
+        .select('likeYoutuber')
+        .exec();
+
+        if(user.likeYoutuber.includes(req.params.ytb_id)) {
+            youtuberLike = true;
+        }
+        
+    }
+
     YtbChannelTb.findOne({_id : req.params.ytb_id})
     .populate('video.ytbStoreTbId')
     .exec()
@@ -16,7 +29,8 @@ router.get('/youtuber/:ytb_id', (req, res, next) => {
             ytbChannel : docs.ytbChannel,
             ytbProfile: docs.ytbProfile,
             ytbSubscribe: docs.ytbSubscribe,
-            rank: docs.ytbRank
+            rank: docs.ytbRank,
+            youtuberLike : youtuberLike
         });
         
     })
@@ -201,5 +215,40 @@ router.delete('/youtuber/like', async (req, res, next) => {
 
     }
 });
+
+// 유튜버 신청
+router.post('/youtuber/request', async (req, res, next) => {
+    try {
+        req.body.user_id = 'payment'
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .select('_id')
+            .select('userId')
+            .exec()
+        mongoose.set('useFindAndModify', false);
+
+
+        // 크롤링 함수 불러오기
+
+
+        //  새로운 신청 객체 만들기
+        const newYtbReq = {
+            ytbChannel: req.body.ytbChannel,
+            userTbId: user._id,
+            userId: req.body.user_id
+        };
+        // 신청 db에 추가
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
+
 
 module.exports = router;
