@@ -127,24 +127,24 @@ const youtuber = require('./routes/youtuber/youtube');
 app.use(youtuber);
 
 // 포트 연결
-// app.listen(PORT, function(){
-//   console.log('server on! http://localhost:'+ PORT);
-// });
-
-const path = require('path')
-const http = require('http')
-const server = http.createServer(app);
-const socketio = require('socket.io')
-const io = socketio(server);
-
-// Set static forder
-app.use(express.static(path.join(__dirname, 'public')))
-
-// Run when client connects
-io.on('connection', socket => {
-  console.log('New WS Connection...')
-})
-
-server.listen(PORT, function(){
+app.listen(PORT, function(){
   console.log('server on! http://localhost:'+ PORT);
 });
+
+// const path = require('path')
+// const http = require('http')
+// const server = http.createServer(app);
+// const socketio = require('socket.io')
+// const io = socketio(server);
+
+// // Set static forder
+// app.use(express.static(path.join(__dirname, 'public')))
+
+// // Run when client connects
+// io.on('connection', socket => {
+//   console.log('New WS Connection...')
+// })
+
+// server.listen(PORT, function(){
+//   console.log('server on! http://localhost:'+ PORT);
+// });
