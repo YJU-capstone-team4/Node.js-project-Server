@@ -108,6 +108,17 @@ const youtuber = require('./routes/youtuber/youtube');
 app.use(youtuber);
 
 // 포트 연결
-app.listen(PORT, function(){
+const server = app.listen(PORT, function(){
   console.log('server on! http://localhost:'+ PORT);
+});
+
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+
+  socket.on('event1', (msg) => {
+    console.log(msg)
+  }); // Get message from the browser.
+
+  socket.emit('event2', 'message here'); // Send a message to browser.
 });
