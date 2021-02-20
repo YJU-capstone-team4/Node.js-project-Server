@@ -5,6 +5,7 @@ const passport      = require('passport');
 const session       = require('express-session');
 const mongoose      = require('mongoose');
 const cors          = require('cors');
+// const algo          = require("./routes/db/algo")    // 알고리즘 용도
 
 const PORT = 3000;
 
@@ -12,26 +13,6 @@ const PORT = 3000;
 const LocalStrategy = require('passport-local').Strategy
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:false}))
-
-// 관리자용 소켓
-// const server = app.listen(1000, () => {
-//   console.log('socket listening on port 1000!');
-// });
-// const io = require('socket.io')(server);
-
-// io.on('connection', (socket) => {
-
-//   socket.on('event1', (msg) => {
-//     console.log(msg)
-//   }); // Get message from the browser.
-
-//   socket.emit('event2', 'message here'); // Send a message to browser.
-// });
-
-// test
-// app.get('/test', function(req, res) {
-//   res.send('<h1>hello world</h1>')
-// })
 
 // DB 연결
 mongoose.connect(process.env.ATLAS_URI, 
@@ -130,21 +111,3 @@ app.use(youtuber);
 app.listen(PORT, function(){
   console.log('server on! http://localhost:'+ PORT);
 });
-
-// const path = require('path')
-// const http = require('http')
-// const server = http.createServer(app);
-// const socketio = require('socket.io')
-// const io = socketio(server);
-
-// // Set static forder
-// app.use(express.static(path.join(__dirname, 'public')))
-
-// // Run when client connects
-// io.on('connection', socket => {
-//   console.log('New WS Connection...')
-// })
-
-// server.listen(PORT, function(){
-//   console.log('server on! http://localhost:'+ PORT);
-// });
