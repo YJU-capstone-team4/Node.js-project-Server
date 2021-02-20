@@ -83,7 +83,7 @@ router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
 // 동선 검색
 router.post('/flowSearch/flow/', async (req, res, next) => {
     // 동선 좋아요 확인
-    //req.body.userId = 'payment'
+    req.body.userId = 'payment'
     let flowLike = false;
     if(req.body.userId) { // 로그인이 되어 있을 때 
         const user = await UserTb.findOne({userId: req.body.userId})

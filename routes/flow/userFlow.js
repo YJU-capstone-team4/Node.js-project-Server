@@ -317,7 +317,7 @@ router.delete('/favorite', async (req, res, next) => {
             let i = 0
             tmp = 0
             user.folders[index].stores.forEach(element => {
-                if(element._id == req.body.store_id) {
+                if(element.storeId == req.body.store_id) {
                     i = tmp;
                 }
                 tmp++;
