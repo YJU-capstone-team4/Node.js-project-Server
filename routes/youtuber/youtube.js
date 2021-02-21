@@ -24,12 +24,22 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
     YtbChannelTb.findOne({_id : req.params.ytb_id})
     .populate('video.ytbStoreTbId')
     .exec()
-    .then(docs => {
+    .then(async docs => {
+        let Increase = docs.ytbRankIncrease - docs.ytbRank
+        
+        // 인기 급상승
+        let ytbIncrease = []
+        const youtuber = await YtbChannelTb.find()
+        .sort(ytbRankIncrease-ytbRank)
+        .exec();
+        
+
         res.status(200).json({
             ytbChannel : docs.ytbChannel,
             ytbProfile: docs.ytbProfile,
             ytbSubscribe: docs.ytbSubscribe,
-            rank: docs.ytbRank,
+            rank: docs.ytbRankIncrease,
+            ytbRankIncrease: Increase,
             youtuberLike : youtuberLike
         });
         
@@ -144,48 +154,30 @@ router.post('/youtuber/localVideo', async (req, res, next) => {
     }
 });
 
-// 좋아요 클릭한 유튜버 userTb에 저장
+// 유튜버 좋아요
 router.post('/youtuber/like', async (req, res, next) => {
     try {
-        req.body.user_id = 'payment'
+        mongoose.set('useFindAndModify', false);
+        req.body.userId = 'payment'
+        let youtuberLike = false;
+        if(req.body.userId) { // 로그인이 되어 있을 때 
+            const user = await UserTb.findOne({userId: req.body.userId})
+            .select('likeYoutuber')
+            .exec();
+            console.log(user)
+            if(user.likeYoutuber.includes(req.body.ytb_id)) {
+                youtuberLike = true;
+            }
+            
+        }
+        console.log(youtuberLike)
+        // 추가할 사람 검색
         const user = await UserTb
-            .findOne({
-                "userId": req.body.user_id
-            })
-            .exec()
-
-            user.likeYoutuber.push(req.body.ytb_id);
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
-
-
-    }catch(e) {
-        res.status(500).json({
-            error: e
-        });
-
-    }
-});
-
-
-// 유튜버 좋아요 삭제
-router.delete('/youtuber/like', async (req, res, next) => {
-    try {
-        req.body.user_id = 'payment'
-        const user = await UserTb
-            .findOne({
-                "userId": req.body.user_id
-            })
-            .exec()
-
-
+        .findOne({
+            "userId": req.body.userId
+        })
+        .exec()
+        if(youtuberLike) {// 유튜버 삭제하기
             let i = 0
             tmp = 0
             user.likeYoutuber.forEach(element => {
@@ -196,16 +188,19 @@ router.delete('/youtuber/like', async (req, res, next) => {
             });
 
             user.likeYoutuber.splice(i,1)
-
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
+ 
+        } else { // 유튜버 추가하기
+            user.likeYoutuber.push(req.body.ytb_id);
+        }
+        // 좋아요 업데이트
+        await UserTb
+        .findOneAndUpdate({
+            "userId": req.body.userId
+        }, user)
+        .exec()
+        .then(doc => {
+            res.status(201).json("success")
+        })
 
 
     }catch(e) {

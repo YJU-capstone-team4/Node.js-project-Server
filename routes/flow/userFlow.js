@@ -27,20 +27,43 @@ const authenticateUser = async (req, res, next) => {
         .select('shareTitle')
         .exec()
 
-        // 공유 되지 않은 동선
-        const userFlow = UserTb.find({
-            userId : req.params.user_id,
-            'folders._id' : {$ne : shareFlow.folderId} 
+        let ids = []
+
+        shareFlow.forEach(element => {
+            ids.push(element.folderId);
         })
+        console.log(ids)
+
+        // 공유 되지 않은 동선
+        const userFlow = await UserTb.findOne
+        (
+            {userId : req.params.user_id}
+        )
+        //.find({'folders._id': {$nin: ids}})
         .select('folders._id')
         .select('folders.folderTitle')
         .exec()
+        
+        ids.forEach(id => {
+            console.log(typeof(id))
+        })
+        let flow = []
+        userFlow.folders.forEach(folder => {
+            ids.forEach(id => {
+                share = false
+                if(folder._id == id.toString()){
+                    share = true;
+                    flow.push({folder, share})
+                }
+                flow.push({folder, share})
+            })
 
-       return res.status(200).json( {           
-           shareFlow,
-        userFlow}
 
-       )
+            
+          })
+          
+
+       return res.status(200).json(flow)
         
     } catch(e) {
         res.status(500).json({
@@ -171,6 +194,41 @@ router.post('/userFlow', async (req, res, next) => {
     }
 });
 
+// 유저 폴더 수정
+router.put('/userFlow', async (req, res, next) => {
+    try {
+        req.body.user_id = 'payment'
+        const user = await UserTb
+            .findOne({
+                "userId": req.body.user_id
+            })
+            .exec()
+
+            user.folders.push({
+                folderTitle: req.body.folderTitle,
+                createDate: new Date(),  
+                updateDate: null,
+                stores: []               
+            })
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
 // 유저 폴더 지우기
 router.delete('/userFlow', async (req, res, next) => {
     try {
@@ -230,9 +288,7 @@ router.post('/favorite', async (req, res, next) => {
                 tmp++;
             });
 
-            let inpuStore = null
-
-                inputStore = {
+            let inputStore = {
                     'ytbStoreTbId': req.body.store_id,
                     'attractionTbId': req.body.attraction_id,
                     'storeId': req.body.store_id,
@@ -284,7 +340,7 @@ router.delete('/favorite', async (req, res, next) => {
             let i = 0
             tmp = 0
             user.folders[index].stores.forEach(element => {
-                if(element._id == req.body.store_id) {
+                if(element.storeId == req.body.store_id) {
                     i = tmp;
                 }
                 tmp++;

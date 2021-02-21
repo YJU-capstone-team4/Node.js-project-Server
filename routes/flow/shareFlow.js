@@ -183,78 +183,64 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
 })
 
 // 동선 좋아요 추가
-
 router.post('/shareFlow/like', async (req, res, next) => {
     try{
-        req.body.user_id = 'payment'
         mongoose.set('useFindAndModify', false);
+        // 동선 좋아요 확인
+        req.body.userId = 'payment'
+        let flowLike = false;
+        if(req.body.userId) { // 로그인이 되어 있을 때 
+            const user = await UserTb.findOne({userId: req.body.userId})
+            .select('likeFlows')
+            .exec();
 
-        // likeFlows 에 좋아요 누른 공유 동선 삭제
-        const user = await UserTb.findOne({"userId":req.body.user_id})
+            if(user.likeFlows.includes(req.body.shareFlow_id)) {
+                flowLike = true;
+            }
+            
+        }
+
+
+
+        const user = await UserTb.findOne({"userId":req.body.userId})
         .exec();
-        user.likeFlows.push(req.body.shareFlow_id)
-        console.log(user.likeFlows)
-
-        UserTb.findOneAndUpdate({"userId": req.body.user_id}, user)
-        .exec();
-
-    
-        // likeCount  에 값 증가
         const shareFlow = await ShareFlowTb.find({"_id": req.body.shareFlow_id})
         .exec()
-        shareFlow.likeCount++;
-        console.log(shareFlow.likeCount)
-        await ShareFlowTb.findOneAndUpdate({"_id": req.body.shareFlow_id}, shareFlow)
-        .exec()
-        .then(doc => {
-            res.status(201).json("success")
-        })
-        
-    } catch(e) {
-        res.status(500).json({
-            error: e
-        });
-
-    }
-})
-
-
-// 동선 좋아요 삭제하기
-router.delete('/shareFlow/like', async (req, res, next) => {
-    try{
-        req.body.user_id = 'payment'
-        mongoose.set('useFindAndModify', false);
-
+        console.log(flowLike)
         // likeFlows 에 좋아요 누른 공유 동선 추가
-        const user = await UserTb.findOne({"userId":req.body.user_id})
-        .exec();
-        let tmp = 0;
-        let index = 0;
-        user.likeFlows.forEach(element => {
-            if(element == req.body.shareFlow_id)
-                index = tmp; 
-            tmp++;
-        })
+        if(flowLike) {//like가 되어 있는 상태라면 삭제
+            // likeFlows 에 좋아요 누른 공유 동선 추가
+            let tmp = 0;
+            let index = 0;
+            user.likeFlows.forEach(element => {
+                if(element == req.body.shareFlow_id)
+                    index = tmp; 
+                tmp++;
+            })
 
-        user.likeFlows.splice(index, 1)
+            user.likeFlows.splice(index, 1)
 
-        console.log(user.likeFlows)
-
-        UserTb.findOneAndUpdate({"userId": req.body.user_id}, user)
-        .exec();
-
-    
-        // likeCount 값 감소
-        const shareFlow = await ShareFlowTb.find({"_id": req.body.shareFlow_id})
-        .exec()
-        shareFlow.likeCount--;
-        console.log(shareFlow.likeCount)
-        await ShareFlowTb.findOneAndUpdate({"_id": req.body.shareFlow_id}, shareFlow)
-        .exec()
-        .then(doc => {
-            res.status(201).json("success")
-        })
+            // likeCount 값 감소
+            shareFlow.likeCount--;
+            
+        }else {//like가 되어 있지 않다면 추가
+            // 동선에서 삭제
+            user.likeFlows.push(req.body.shareFlow_id)
         
+            // likeCount  에 값 증가
+            shareFlow.likeCount++;
+            
+        }
+
+        await UserTb.findOneAndUpdate({"userId": req.body.userId}, user)
+        .exec();
+
+        await ShareFlowTb.findOneAndUpdate({"_id": req.body.shareFlow_id}, shareFlow)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+
     } catch(e) {
         res.status(500).json({
             error: e
@@ -262,6 +248,5 @@ router.delete('/shareFlow/like', async (req, res, next) => {
 
     }
 })
-
 
 module.exports = router;
