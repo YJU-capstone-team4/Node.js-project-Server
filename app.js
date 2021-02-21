@@ -114,15 +114,16 @@ const server = app.listen(PORT, function(){
 
 const io = require('socket.io')(server);
 
+// 사용자가 접속 중인지 아닌지 판별
 var access = false
 
 // 관리자가 데이터수집 페이지에 접속 중일 때
-io.on('connection', (socket) => {
-  socket.on('givedata', (msg) => {
-    console.log(msg)
-    socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-  });
-});
+// io.on('connection', (socket) => {
+//   socket.on('givedata', (msg) => {
+//     console.log(msg)
+//     socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+//   });
+// });
 
 // 관리자가 데이터수집 페이지에서 나갔을 때
 // io.on('disconnection', (socket) => {
