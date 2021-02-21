@@ -27,20 +27,43 @@ const authenticateUser = async (req, res, next) => {
         .select('shareTitle')
         .exec()
 
-        // 공유 되지 않은 동선
-        const userFlow = UserTb.find({
-            userId : req.params.user_id,
-            'folders._id' : {$ne : shareFlow.folderId} 
+        let ids = []
+
+        shareFlow.forEach(element => {
+            ids.push(element.folderId);
         })
+        console.log(ids)
+
+        // 공유 되지 않은 동선
+        const userFlow = await UserTb.findOne
+        (
+            {userId : req.params.user_id}
+        )
+        //.find({'folders._id': {$nin: ids}})
         .select('folders._id')
         .select('folders.folderTitle')
         .exec()
+        
+        ids.forEach(id => {
+            console.log(typeof(id))
+        })
+        let flow = []
+        userFlow.folders.forEach(folder => {
+            ids.forEach(id => {
+                share = false
+                if(folder._id == id.toString()){
+                    share = true;
+                    flow.push({folder, share})
+                }
+                flow.push({folder, share})
+            })
 
-       return res.status(200).json( {           
-           shareFlow,
-        userFlow}
 
-       )
+            
+          })
+          
+
+       return res.status(200).json(flow)
         
     } catch(e) {
         res.status(500).json({

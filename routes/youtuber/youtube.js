@@ -24,13 +24,22 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
     YtbChannelTb.findOne({_id : req.params.ytb_id})
     .populate('video.ytbStoreTbId')
     .exec()
-    .then(docs => {
+    .then(async docs => {
+        let Increase = docs.ytbRankIncrease - docs.ytbRank
+        
+        // 인기 급상승
+        let ytbIncrease = []
+        const youtuber = await YtbChannelTb.find()
+        .sort(ytbRankIncrease-ytbRank)
+        .exec();
+        
+
         res.status(200).json({
             ytbChannel : docs.ytbChannel,
             ytbProfile: docs.ytbProfile,
             ytbSubscribe: docs.ytbSubscribe,
             rank: docs.ytbRankIncrease,
-            ytbRankIncrease: docs.ytbRankIncrese - docs.ytbRank,
+            ytbRankIncrease: Increase,
             youtuberLike : youtuberLike
         });
         
