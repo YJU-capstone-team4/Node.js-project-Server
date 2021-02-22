@@ -139,6 +139,8 @@ io.on('connection', (socket) => {
       // 아래 saveYoutuber, saveVideo의 알고리즘은 수정이 필요함
       algo.saveYoutuber(YtbCrawlingTb)
       algo.saveVideo(YtbCrawlingTb, msg)
+
+      // 결과 데이터 전송
       algo.sockets(YtbCrawlingTb).then(function(result) {
         // console.log(result) // "Some User token"
         socket.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
