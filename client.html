@@ -1,0 +1,12 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+
+  socket.on('result', function(msg) {
+    // document.write(msg);
+    console.log(msg);
+  });
+
+  socket.emit('givedata', 'Hello Server!');
+</script>
+<h1>Jinui Socket Chat</h1>

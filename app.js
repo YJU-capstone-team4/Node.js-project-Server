@@ -5,7 +5,7 @@ const passport      = require('passport');
 const session       = require('express-session');
 const mongoose      = require('mongoose');
 const cors          = require('cors');
-// const algo          = require("./routes/db/algo")    // 알고리즘 용도
+const algo          = require("./routes/db/algo")    // 알고리즘 용도
 
 const PORT = 3000;
 
@@ -111,3 +111,52 @@ app.use(youtuber);
 app.listen(PORT, function(){
   console.log('server on! http://localhost:'+ PORT);
 });
+
+// 포트 연결
+// const server = app.listen(PORT, function(){
+//   console.log('server on! http://localhost:'+ PORT);
+// });
+
+// const io = require('socket.io')(server);
+
+// 사용자가 접속 중인지 아닌지 판별
+// var access = false
+
+// 관리자가 데이터수집 페이지에 접속 중일 때
+// io.on('connection', (socket) => {
+//   socket.on('givedata', (msg) => {
+//     console.log(msg)
+//     socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+//   });
+// });
+
+// 관리자가 데이터수집 페이지에서 나갔을 때
+// io.on('disconnection', (socket) => {
+//   socket.on('dontgive', (msg) => {
+//     console.log(msg)
+//     algo.savedb()                           // 백엔드에서만 처리
+//   });
+// });
+
+// 여기서부터
+// app.get("/test", function(req, res) {
+//   res.sendfile("client.html");
+// });
+
+// // 관리자가 데이터수집 페이지에 접속 중일 때
+// io.on('connection', (socket) => {
+//   access = true
+//   if (access) {
+//     socket.on('givedata', (msg) => {
+//       console.log(msg)
+//       // socket.emit('result', 'its server');
+//       socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+//     });
+//   }
+
+//   // 관리자가 데이터수집 페이지에서 나갔을 때 
+//   socket.on('disconnect', (socket) => {
+//     access = false
+//     console.log('admin disconnect')
+//   });
+// });

@@ -7,6 +7,7 @@ const YtbChannelTb = require('../../models/ytbChannelTb.model');
 const YtbStoreTb = require('../../models/ytbStoreTb.model');
 const algo = require("./algo");
 const { ObjectId } = require('bson');
+const apps = require("../../app");
 
 // // 데이터 수집 페이지 메인
 // router.get('/socket', async (req, res, next) => {
@@ -123,6 +124,33 @@ router.get('/socket', async (req, res, next) => {
         })
     }
 });
+
+// // 데이터 수집 페이지 메인3
+// router.get('/socket', async (req, res, next) => {
+//     try {
+//         // 관리자가 데이터수집 페이지에 접속 중일 때
+//         io.on('connection', (socket) => {
+//             access = true
+//             if (access) {
+//                 socket.on('givedata', (msg) => {
+//                     console.log(msg)
+//                     // socket.emit('result', 'its server');
+//                     socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+//                 });
+//             }
+        
+//             // 관리자가 데이터수집 페이지에서 나갔을 때 
+//             socket.on('disconnect', (socket) => {
+//                 access = false
+//                 console.log('admin disconnect')
+//             });
+//         });
+//     } catch (err) {
+//         res.status(500).json({
+//             error : err
+//         })
+//     }
+// });
 
 // // 에러 해결 메인 페이지 - 좌측
 // router.get('/error', async (req, res, next) => {
@@ -260,11 +288,12 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
 router.post('/address/search/:addressId', async (req, res, next) => {
     try {
-        console.log(req.params.addressId)
+        // console.log(req.params.addressId)
 
-        res.status(200).json({
-            data : req.params.addressId
-        })
+        // res.status(200).json({
+        //     data : req.params.addressId
+        // })
+        res.status(200).json(req.body)
     } catch (err) {
         res.status(500).json({
             error : err
