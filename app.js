@@ -108,55 +108,51 @@ const youtuber = require('./routes/youtuber/youtube');
 app.use(youtuber);
 
 // 포트 연결
-app.listen(PORT, function(){
-  console.log('server on! http://localhost:'+ PORT);
-});
-
-// 포트 연결
-// const server = app.listen(PORT, function(){
+// app.listen(PORT, function(){
 //   console.log('server on! http://localhost:'+ PORT);
 // });
 
-// const io = require('socket.io')(server);
+// 포트 연결
+const server = app.listen(PORT, function(){
+  console.log('server on! http://localhost:'+ PORT);
+});
+
+const io = require('socket.io')(server);
 
 // 사용자가 접속 중인지 아닌지 판별
-// var access = false
+var access = false
 
-// 관리자가 데이터수집 페이지에 접속 중일 때
-// io.on('connection', (socket) => {
-//   socket.on('givedata', (msg) => {
-//     console.log(msg)
-//     socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-//   });
-// });
-
-// 관리자가 데이터수집 페이지에서 나갔을 때
-// io.on('disconnection', (socket) => {
-//   socket.on('dontgive', (msg) => {
-//     console.log(msg)
-//     algo.savedb()                           // 백엔드에서만 처리
-//   });
-// });
-
-// 여기서부터
+// test 코드
 // app.get("/test", function(req, res) {
 //   res.sendfile("client.html");
 // });
 
-// // 관리자가 데이터수집 페이지에 접속 중일 때
-// io.on('connection', (socket) => {
-//   access = true
-//   if (access) {
-//     socket.on('givedata', (msg) => {
-//       console.log(msg)
-//       // socket.emit('result', 'its server');
-//       socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-//     });
-//   }
+const YtbCrawlingTb = require('./models/ytbCrawlingTb.model');
 
-//   // 관리자가 데이터수집 페이지에서 나갔을 때 
-//   socket.on('disconnect', (socket) => {
-//     access = false
-//     console.log('admin disconnect')
-//   });
-// });
+// 관리자가 데이터수집 페이지에 접속 중일 때
+io.on('connection', (socket) => {
+  access = true
+  if (access) {
+    socket.on('givedata', (msg) => {
+      console.log(msg)  // 유튜버 이름
+      
+      // 아래 saveYoutuber, saveVideo의 알고리즘은 수정이 필요함
+      algo.saveYoutuber(YtbCrawlingTb)
+      algo.saveVideo(YtbCrawlingTb, msg)
+      algo.sockets(YtbCrawlingTb).then(function(result) {
+        // console.log(result) // "Some User token"
+        socket.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+      })
+    });
+  }
+
+  // 관리자가 데이터수집 페이지에서 나갔을 때 
+  socket.on('disconnect', (msg) => {
+    access = false
+    algo.sockets(YtbCrawlingTb).then(function(result) {
+      // console.log(result) // "Some User token"
+      socket.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+    })
+    console.log('admin disconnect')
+  });
+});
