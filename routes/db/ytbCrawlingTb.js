@@ -288,11 +288,12 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
 router.post('/address/search/:addressId', async (req, res, next) => {
     try {
-        console.log(req.params.addressId)
+        // console.log(req.params.addressId)
 
-        res.status(200).json({
-            data : req.params.addressId
-        })
+        // res.status(200).json({
+        //     data : req.params.addressId
+        // })
+        res.status(200).json(req.body)
     } catch (err) {
         res.status(500).json({
             error : err
