@@ -148,7 +148,7 @@ io.on('connection', (socket) => {
     });
   }
 
-  // 관리자가 데이터수집 페이지에서 나갔을 때
+  // 관리자가 데이터수집 페이지에서 나갔을 때 
   socket.on('disconnect', (socket) => {
     access = false
     console.log('admin disconnect')
