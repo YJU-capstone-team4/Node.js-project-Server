@@ -7,6 +7,7 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const { response } = require('express');
 
 
+
 // 로그인 확인
 const authenticateUser = async (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -88,9 +89,9 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
         docs.folders[0].stores.forEach(element => {
             if(!element.ytbStoreTbId) { // 관광지, 카페
                 stores.push({
-                    storeName: element.attractionTbId.storeInfo.attractionName,
-                    storeAddress: element.attractionTbId.storeInfo.attractionAddress,
-                    location: element.attractionTbId.storeInfo.location,
+                    storeName: element.attractionTbId.attractionInfo.attractionName,
+                    storeAddress: element.attractionTbId.attractionInfo.attractionAddress,
+                    location: element.attractionTbId.attractionInfo.location,
                     storeId: element.storeId,
                     typeStore: element.typeStore
 
@@ -309,22 +310,23 @@ router.post('/favorite', async (req, res, next) => {
             let tmp = 0
             let ids = []
             user.folders.forEach(element => {
-                ids.push(element._id)
-                if(element._id == req.body.folder_id) {
+                ids.push(element._id.toString())
+                if(element._id.toString() == req.body.folder_id.toString()) {
                     index = tmp;
                 }
                 tmp++;
             });
             if(ids.includes(req.body.folder_id.toString())) {
+                let inputStore = null
                 if(req.body.typeStore == "맛집") {
-                    let inputStore = {
+                    inputStore = {
                         'ytbStoreTbId': req.body.store_id,
                         'attractionTbId': null,
                         'storeId': req.body.store_id,
                         'typeStore': req.body.typeStore
                     }
                 } else {
-                    let inputStore = {
+                    inputStore = {
                         'ytbStoreTbId': null,
                         'attractionTbId': req.body.store_id,
                         'storeId': req.body.store_id,
