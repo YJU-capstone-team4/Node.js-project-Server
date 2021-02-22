@@ -32,10 +32,9 @@ const authenticateUser = async (req, res, next) => {
         shareFlow.forEach(element => {
             ids.push(element.folderId);
         })
-        console.log(ids)
 
         // 공유 되지 않은 동선
-        const userFlow = await UserTb.findOne
+        let userFlow = await UserTb.findOne
         (
             {userId : req.params.user_id}
         )
@@ -44,25 +43,19 @@ const authenticateUser = async (req, res, next) => {
         .select('folders.folderTitle')
         .exec()
         
-        ids.forEach(id => {
-            console.log(typeof(id))
-        })
         let flow = []
         userFlow.folders.forEach(folder => {
+            share = false
             ids.forEach(id => {
-                share = false
                 if(folder._id == id.toString()){
                     share = true;
-                    flow.push({folder, share})
                 }
-                flow.push({folder, share})
-            })
-
-
-            
+            }) 
+            flow.push({_id: folder._id,
+                        folderTitle: folder.folderTitle,
+                        share : share})
           })
           
-
        return res.status(200).json(flow)
         
     } catch(e) {
