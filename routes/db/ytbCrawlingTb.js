@@ -125,7 +125,7 @@ const apps = require("../../app");
 //     }
 // });
 
-// 데이터 수집 페이지 메인3
+// 데이터 수집 페이지 메인3 - 반드시 수정 필요!!
 router.get('/socket', async (req, res, next) => {
     try {
         res.sendfile('./client.html');
@@ -272,11 +272,21 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
 router.post('/address/search/:addressId', async (req, res, next) => {
     try {
-        // console.log(req.params.addressId)
+        // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
+        // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+        console.log(req.params.addressId)
 
-        // res.status(200).json({
-        //     data : req.params.addressId
+        // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
+        // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
+        // axios({
+        //     url: '/user/12345',
+        //     method: 'post',
+        //     params: {
+        //       address: req.params.addressId
+        //     }
         // })
+
+        // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
         res.status(200).json(req.body)
     } catch (err) {
         res.status(500).json({
@@ -287,6 +297,7 @@ router.post('/address/search/:addressId', async (req, res, next) => {
 
 // < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
 router.post('/address/search/result/:addressId', async (req, res, next) => {
+    // 이건 어떻게 수정해야할까? 람다 서버 전용인데... -> 수정 필요
     try {
         res.status(200).json(req.body)
     } catch (err) {
