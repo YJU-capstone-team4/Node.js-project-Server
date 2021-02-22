@@ -84,14 +84,29 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
                 select: 'attractionInfo.location attractionInfo.attractionName attractionInfo.attractionAddress'})
     .exec()
     .then(docs => {
+        let stores = [];
+        docs.folders[0].stores.forEach(element => {
+            if(!element.ytbStoreTbId) { // 관광지, 카페
+                stores.push({
+                    storeName: element.attractionTbId.storeInfo.attractionName,
+                    storeAddress: element.attractionTbId.storeInfo.attractionAddress,
+                    location: element.attractionTbId.storeInfo.location,
+                    storeId: element.storeId,
+                    typeStore: element.typeStore
 
-        console.log(docs);
-        res.status(200).json({
-            stores : docs.folders[0].stores
-            
-            
+                })
+            }else {// 맛집
+                stores.push({
+                    storeName: element.ytbStoreTbId.storeInfo.storeName,
+                    storeAddress: element.ytbStoreTbId.storeInfo.storeAddress,
+                    location: element.ytbStoreTbId.storeInfo.location,
+                    storeId: element.storeId,
+                    typeStore: element.typeStore
+                })
+            }
+        })
 
-        }); 
+        res.status(200).json(stores); 
     })
     .catch(err => {
         res.status(500).json({
@@ -164,7 +179,7 @@ router.post('/userFlow', async (req, res, next) => {
 
             user.folders.push({
                 folderTitle: req.body.folderTitle,
-                createDate: new Date(),  
+                createDate: getCurrentDate(new Date()),  
                 updateDate: null,
                 stores: []               
             })
@@ -197,11 +212,22 @@ router.put('/userFlow', async (req, res, next) => {
             })
             .exec()
 
-            user.folders.push({
+            let index = 0
+            let tmp = 0
+            let ids = []
+            user.folders.forEach(element => {
+                ids.push(element._id.toString())
+                if(element._id == req.body.folder_id) {
+                    index = tmp;
+                }
+                tmp++;
+            });
+
+            user.folders[index] = ({
                 folderTitle: req.body.folderTitle,
-                createDate: new Date(),  
-                updateDate: null,
-                stores: []               
+                createDate: user.folders[index].createDate,  
+                updateDate: getCurrentDate(new Date()),
+                stores: user.folders[index].stores               
             })
             mongoose.set('useFindAndModify', false);
             await UserTb
@@ -281,31 +307,45 @@ router.post('/favorite', async (req, res, next) => {
 
             let index = 0
             let tmp = 0
+            let ids = []
             user.folders.forEach(element => {
+                ids.push(element._id)
                 if(element._id == req.body.folder_id) {
                     index = tmp;
                 }
                 tmp++;
             });
-
-            let inputStore = {
-                    'ytbStoreTbId': req.body.store_id,
-                    'attractionTbId': req.body.attraction_id,
-                    'storeId': req.body.store_id,
-                    'typeStore': req.body.typeStore
+            if(ids.includes(req.body.folder_id.toString())) {
+                if(req.body.typeStore == "맛집") {
+                    let inputStore = {
+                        'ytbStoreTbId': req.body.store_id,
+                        'attractionTbId': null,
+                        'storeId': req.body.store_id,
+                        'typeStore': req.body.typeStore
+                    }
+                } else {
+                    let inputStore = {
+                        'ytbStoreTbId': null,
+                        'attractionTbId': req.body.store_id,
+                        'storeId': req.body.store_id,
+                        'typeStore': req.body.typeStore
+                    }
                 }
+                user.folders[index].stores.push(inputStore);
 
-            user.folders[index].stores.push(inputStore);
+                mongoose.set('useFindAndModify', false);
+                await UserTb
+                .findOneAndUpdate({
+                    "userId": req.body.user_id
+                }, user)
+                .exec()
+                .then(doc => {
+                    res.status(201).json("success")
+                })
+            }else {
+                res.status(200).json("선택하신 폴더가 존재하지 않습니다.")
+            }
 
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
 
 
     }catch(e) {
