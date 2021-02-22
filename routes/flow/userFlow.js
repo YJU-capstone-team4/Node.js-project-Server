@@ -7,6 +7,7 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const { response } = require('express');
 
 
+
 // 로그인 확인
 const authenticateUser = async (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -32,10 +33,9 @@ const authenticateUser = async (req, res, next) => {
         shareFlow.forEach(element => {
             ids.push(element.folderId);
         })
-        console.log(ids)
 
         // 공유 되지 않은 동선
-        const userFlow = await UserTb.findOne
+        let userFlow = await UserTb.findOne
         (
             {userId : req.params.user_id}
         )
@@ -44,25 +44,19 @@ const authenticateUser = async (req, res, next) => {
         .select('folders.folderTitle')
         .exec()
         
-        ids.forEach(id => {
-            console.log(typeof(id))
-        })
         let flow = []
         userFlow.folders.forEach(folder => {
+            share = false
             ids.forEach(id => {
-                share = false
                 if(folder._id == id.toString()){
                     share = true;
-                    flow.push({folder, share})
                 }
-                flow.push({folder, share})
-            })
-
-
-            
+            }) 
+            flow.push({_id: folder._id,
+                        folderTitle: folder.folderTitle,
+                        share : share})
           })
           
-
        return res.status(200).json(flow)
         
     } catch(e) {
@@ -91,14 +85,29 @@ router.get('/userFlow/folder/:folderId', (req, res, next) => {
                 select: 'attractionInfo.location attractionInfo.attractionName attractionInfo.attractionAddress'})
     .exec()
     .then(docs => {
+        let stores = [];
+        docs.folders[0].stores.forEach(element => {
+            if(!element.ytbStoreTbId) { // 관광지, 카페
+                stores.push({
+                    storeName: element.attractionTbId.attractionInfo.attractionName,
+                    storeAddress: element.attractionTbId.attractionInfo.attractionAddress,
+                    location: element.attractionTbId.attractionInfo.location,
+                    storeId: element.storeId,
+                    typeStore: element.typeStore
 
-        console.log(docs);
-        res.status(200).json({
-            stores : docs.folders[0].stores
-            
-            
+                })
+            }else {// 맛집
+                stores.push({
+                    storeName: element.ytbStoreTbId.storeInfo.storeName,
+                    storeAddress: element.ytbStoreTbId.storeInfo.storeAddress,
+                    location: element.ytbStoreTbId.storeInfo.location,
+                    storeId: element.storeId,
+                    typeStore: element.typeStore
+                })
+            }
+        })
 
-        }); 
+        res.status(200).json(stores); 
     })
     .catch(err => {
         res.status(500).json({
@@ -171,7 +180,7 @@ router.post('/userFlow', async (req, res, next) => {
 
             user.folders.push({
                 folderTitle: req.body.folderTitle,
-                createDate: new Date(),  
+                createDate: getCurrentDate(new Date()),  
                 updateDate: null,
                 stores: []               
             })
@@ -204,11 +213,22 @@ router.put('/userFlow', async (req, res, next) => {
             })
             .exec()
 
-            user.folders.push({
+            let index = 0
+            let tmp = 0
+            let ids = []
+            user.folders.forEach(element => {
+                ids.push(element._id.toString())
+                if(element._id == req.body.folder_id) {
+                    index = tmp;
+                }
+                tmp++;
+            });
+
+            user.folders[index] = ({
                 folderTitle: req.body.folderTitle,
-                createDate: new Date(),  
-                updateDate: null,
-                stores: []               
+                createDate: user.folders[index].createDate,  
+                updateDate: getCurrentDate(new Date()),
+                stores: user.folders[index].stores               
             })
             mongoose.set('useFindAndModify', false);
             await UserTb
@@ -241,24 +261,31 @@ router.delete('/userFlow', async (req, res, next) => {
 
             let index = 0
             let tmp = 0
+            let ids = []
             user.folders.forEach(element => {
+                ids.push(element._id.toString())
                 if(element._id == req.body.folder_id) {
                     index = tmp;
+                    console.log(element._id == req.body.folder_id)
+                    console.log(index)
                 }
                 tmp++;
             });
+            if(ids.includes(req.body.folder_id)){
+                user.folders.splice(index,1);
+                mongoose.set('useFindAndModify', false);
+                await UserTb
+                .findOneAndUpdate({
+                    "userId": req.body.user_id
+                }, user)
+                .exec()
+                .then(doc => {
+                    res.status(201).json("success")
+                })
+            }else {
+                res.status(200).json("해당 폴더를 찾을 수 없습니다.")
+            }
 
-            user.folders.splice(index,1);
-
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
 
 
     }catch(e) {
@@ -281,31 +308,46 @@ router.post('/favorite', async (req, res, next) => {
 
             let index = 0
             let tmp = 0
+            let ids = []
             user.folders.forEach(element => {
-                if(element._id == req.body.folder_id) {
+                ids.push(element._id.toString())
+                if(element._id.toString() == req.body.folder_id.toString()) {
                     index = tmp;
                 }
                 tmp++;
             });
-
-            let inputStore = {
-                    'ytbStoreTbId': req.body.store_id,
-                    'attractionTbId': req.body.attraction_id,
-                    'storeId': req.body.store_id,
-                    'typeStore': req.body.typeStore
+            if(ids.includes(req.body.folder_id.toString())) {
+                let inputStore = null
+                if(req.body.typeStore == "맛집") {
+                    inputStore = {
+                        'ytbStoreTbId': req.body.store_id,
+                        'attractionTbId': null,
+                        'storeId': req.body.store_id,
+                        'typeStore': req.body.typeStore
+                    }
+                } else {
+                    inputStore = {
+                        'ytbStoreTbId': null,
+                        'attractionTbId': req.body.store_id,
+                        'storeId': req.body.store_id,
+                        'typeStore': req.body.typeStore
+                    }
                 }
+                user.folders[index].stores.push(inputStore);
 
-            user.folders[index].stores.push(inputStore);
+                mongoose.set('useFindAndModify', false);
+                await UserTb
+                .findOneAndUpdate({
+                    "userId": req.body.user_id
+                }, user)
+                .exec()
+                .then(doc => {
+                    res.status(201).json("success")
+                })
+            }else {
+                res.status(200).json("선택하신 폴더가 존재하지 않습니다.")
+            }
 
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
 
 
     }catch(e) {
@@ -339,24 +381,31 @@ router.delete('/favorite', async (req, res, next) => {
 
             let i = 0
             tmp = 0
+            let ids = []
             user.folders[index].stores.forEach(element => {
+                ids.push(element.storeId)
+                console.log(element.storeId == req.body.store_id.toString())
                 if(element.storeId == req.body.store_id) {
                     i = tmp;
                 }
                 tmp++;
             });
+            if(ids.includes(req.body.store_id.toString())) {
+                user.folders[index].stores.splice(i,1)
 
-            user.folders[index].stores.splice(i,1)
-
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
+                mongoose.set('useFindAndModify', false);
+                await UserTb
+                .findOneAndUpdate({
+                    "userId": req.body.user_id
+                }, user)
+                .exec()
+                .then(doc => {
+                    res.status(201).json("success")
+                })
+    
+            }else {
+                res.status(400).json("해당 가게가 동선에 포함되어 있지 않습니다.")
+            }
 
 
     }catch(e) {
