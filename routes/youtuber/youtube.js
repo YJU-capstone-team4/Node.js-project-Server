@@ -27,11 +27,11 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
     .then(async docs => {
         let Increase = docs.ytbRankIncrease - docs.ytbRank
         
-        // 인기 급상승
-        let ytbIncrease = []
-        const youtuber = await YtbChannelTb.find()
-        .sort(ytbRankIncrease-ytbRank)
-        .exec();
+        // // 인기 급상승
+        // let ytbIncrease = []
+        // const youtuber = await YtbChannelTb.find()
+        // .sort(ytbRankIncrease-ytbRank)
+        // .exec();
         
 
         res.status(200).json({
