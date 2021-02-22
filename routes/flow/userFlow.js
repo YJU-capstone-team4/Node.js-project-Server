@@ -234,24 +234,31 @@ router.delete('/userFlow', async (req, res, next) => {
 
             let index = 0
             let tmp = 0
+            let ids = []
             user.folders.forEach(element => {
+                ids.push(element._id.toString())
                 if(element._id == req.body.folder_id) {
                     index = tmp;
+                    console.log(element._id == req.body.folder_id)
+                    console.log(index)
                 }
                 tmp++;
             });
+            if(ids.includes(req.body.folder_id)){
+                user.folders.splice(index,1);
+                mongoose.set('useFindAndModify', false);
+                await UserTb
+                .findOneAndUpdate({
+                    "userId": req.body.user_id
+                }, user)
+                .exec()
+                .then(doc => {
+                    res.status(201).json("success")
+                })
+            }else {
+                res.status(200).json("해당 폴더를 찾을 수 없습니다.")
+            }
 
-            user.folders.splice(index,1);
-
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
 
 
     }catch(e) {
@@ -332,24 +339,31 @@ router.delete('/favorite', async (req, res, next) => {
 
             let i = 0
             tmp = 0
+            let ids = []
             user.folders[index].stores.forEach(element => {
+                ids.push(element.storeId)
+                console.log(element.storeId == req.body.store_id.toString())
                 if(element.storeId == req.body.store_id) {
                     i = tmp;
                 }
                 tmp++;
             });
+            if(ids.includes(req.body.store_id.toString())) {
+                user.folders[index].stores.splice(i,1)
 
-            user.folders[index].stores.splice(i,1)
-
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
+                mongoose.set('useFindAndModify', false);
+                await UserTb
+                .findOneAndUpdate({
+                    "userId": req.body.user_id
+                }, user)
+                .exec()
+                .then(doc => {
+                    res.status(201).json("success")
+                })
+    
+            }else {
+                res.status(400).json("해당 가게가 동선에 포함되어 있지 않습니다.")
+            }
 
 
     }catch(e) {
