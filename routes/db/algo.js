@@ -146,22 +146,22 @@ async function sockets(YtbCrawlingTb) {
 exports.sockets = sockets;
 
 // 데이터 수집 메인 페이지 - socket 알고리즘 - DB에 유튜버 저장
-async function saveYoutuber(YtbCrawlingTb) {
+async function saveYoutuber(YtbCrawlingTb, channel, profile, link, sub, hits, videocount) {
     try {
         // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
 
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
-        var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: "문복희2" })
+        var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
 
         if (checkYoutuber == null) {
             YtbCrawlingTb.create({
                 _id: new mongoose.Types.ObjectId(),
-                ytbChannel: "문복희2",
-                ytbProfile: "../images/test.jpg",
-                ytbLinkAddress: "https://www.youtube.com/channel/UCoLQZ4ZClFqVPCvvjuiUSRA",
-                ytbSubscribe: 5120000,
-                ytbHits: 24400000,
-                videoCount: 3,
+                ytbChannel: channel,
+                ytbProfile: profile,
+                ytbLinkAddress: link,
+                ytbSubscribe: sub,
+                ytbHits: hits,
+                videoCount: videocount,
                 video: [],
             });
             console.log('유튜버 DB에 저장 성공')
@@ -181,37 +181,38 @@ async function saveYoutuber(YtbCrawlingTb) {
 exports.saveYoutuber = saveYoutuber;
 
 // 데이터 수집 메인 페이지 - socket 알고리즘 - 해당 유튜버에 영상 저장
-async function saveVideo(YtbCrawlingTb) {
+async function saveVideo(YtbCrawlingTb, channel, videoName, thumbnail, ytbAddress, hits, date, more,
+    status, regionTag, storeName, storeAddress, typeStore, lat, lng) {
     try {
         // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
 
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
         var videos = []
 
-        var checkVideos = await YtbCrawlingTb.findOne({ "video.ytbVideoName" : "SUB)촉촉한 팬케이크에 푸짐한 샌드위치 에그스크램블 등 브런치 먹방!🥞🥪(ft.감자튀김) 리얼사운드 Pancake Sandwich Brunch mukbang ASMR", })
+        var checkVideos = await YtbCrawlingTb.findOne({ "video.ytbVideoName" : { $eq : videoName } })
 
         if (checkVideos == null) {
             videos.push({
                 "storeInfo": {
                     "location": {
-                        "lat": 35.84987200777492,
-                        "lng": 128.6244778213711
+                        "lat": lat,
+                        "lng": lng
                     },
-                    "storeName": "아웃백스테이크하우스 대구황금점",
-                    "storeAddress": "대구광역시 수성구 황금동 동대구로 219",
-                    "typeStore": "맛집"
+                    "storeName": storeName,
+                    "storeAddress": storeAddress,
+                    "typeStore": typeStore
                 },
-                "ytbVideoName": "SUB)촉촉한 팬케이크에 푸짐한 샌드위치 에그스크램블 등 브런치 먹방!🥞🥪(ft.감자튀김) 리얼사운드 Pancake Sandwich Brunch mukbang ASMR",
-                "ytbThumbnail": "../images/test.jpg",
-                "ytbAddress": "https://www.youtube.com/watch?v=B_GRymHuLhw",
-                "hits": 660597,
-                "uploadDate": "2020-11-19",
-                "more": [ "각국어", "번역", "자막", "제작", ":", "컨텐츠", "제작", "의", "마무리", "는", "컨텐츠플라이", "!"],
-                "status": "완료",
-                "regionTag": "대구광역시"
+                "ytbVideoName": videoName,
+                "ytbThumbnail": thumbnail,
+                "ytbAddress": ytbAddress,
+                "hits": hits,
+                "uploadDate": date,
+                "more": more,
+                "status": status,
+                "regionTag": regionTag
             })
 
-            YtbCrawlingTb.update({ ytbChannel : "문복희2" }, { $push : { video : videos } }).exec()
+            YtbCrawlingTb.update({ ytbChannel : channel }, { $push : { video : videos } }).exec()
             console.log('유튜버 DB 영상 저장 성공')
 
         } else {
