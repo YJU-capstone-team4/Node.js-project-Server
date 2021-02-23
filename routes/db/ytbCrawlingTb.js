@@ -308,28 +308,42 @@ router.post('/address/search/result/:addressId', async (req, res, next) => {
 });
 
 // 3사 결과 비디오 저장 시
-router.post('/save/video/:channelId', (req, res, next) => {
-    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
-    { $pull: { 'video': { 'ytbVideoName' : req.body.video[0].ytbVideoName } } }
-    )
-    .exec()
-    .then().catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
+router.post('/save/video/:channelId', async (req, res, next) => {
+    
+    // res.status(200).json(req.body.video[0]._id)
+    const ytbCrawling = await YtbCrawlingTb.findOne({ 'video._id' : req.body.video[0]._id });
+
+    var a = await YtbCrawlingTb.findOne( { $and : [ { 'ytbChannel': req.params.channelId },
+            { 'video._id': req.body.video[0]._id } ] },
+            {
+                "_id": 0,
+                "video": { $elemMatch:{ '_id' : req.body.video[0]._id } }
+            })
+
+    var videos = []
+
+    videos.push({
+        _id: req.body.video[0]._id,
+        more: a.video[0].more,
+        ytbVideoName: a.video[0].ytbVideoName,
+        ytbThumbnail: a.video[0].ytbThumbnail,
+        ytbAddress: a.video[0].ytbAddress,
+        hits: a.video[0].hits,
+        uploadDate: a.video[0].uploadDate,
+        storeInfo: req.body.video[0].storeInfo,
+        status: req.body.video[0].status,
+        regionTag: req.body.video[0].regionTag
+    })
+
+    if(ytbCrawling != null) {
+        res.status(200).json({ video : videos })
+    }
 
     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
-    { $push : req.body }
-    )
-    .exec()
-    .then(result => {
-        res.status(200).json('success to save')
-    }).catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
+    { $pull : { video : { _id : req.body.video[0]._id } } }).exec()
+
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    { $push : { video : videos } }).exec()
 });
 
 // router.post("/save/video/:channelId", async (req, res, next) => {
