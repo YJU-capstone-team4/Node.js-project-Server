@@ -52,26 +52,18 @@ router.get('/flowSearch/shareFlow', (req, res, next) => {
 
 // 동선 검색 - 해시태그 검색
 router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
-    UserTagTb.find({'userTag': {$regex:req.params.user_tag}})
+    UserTagTb.findOne(
+        {'userTag.userTag': {$regex:req.params.user_tag}})
     .exec()
     .then(docs => {
-        const response = {
-            userTagTbs: docs.map(doc => {
-                let tag = []
-                
-                doc.userTag.forEach(element => {
-
-                    if(element.includes(req.params.user_tag))
-                        tag.push(element);
-                });
-
-                return {
-                    _id: doc._id,
-                    userTag: tag
-                }
-            })
-        };
-        res.status(200).json(response);
+        let tag = []
+        docs.userTag.forEach(element => {
+            if(element.userTag.includes(req.params.user_tag)){
+                let index = element.userTag.indexOf(req.params.user_tag)
+                tag.push(element.userTag);
+            }
+        });
+        res.status(200).json(tag);
     }).catch(err => {
         console.log(err);
         res.status(500).json({
