@@ -82,59 +82,59 @@ const apps = require("../../app");
 // });
 
 // 데이터 수집 페이지 메인2
-router.get('/socket', async (req, res, next) => {
-    try {
-        var errCount = 0;
-        var completeCount = 0;
-
-        // 프론트 전송 폼
-        var array = []
-
-        // status가 에러인 유튜버와 영상 필터링
-        // var error = await YtbCrawlingTb.find({ 'video.status' : '에러' })
-
-        // ytbCrawlingTb 전체
-        var data = await YtbCrawlingTb.find()
-
-        for(let i = 0; i < data.length; i++) {
-            for(let j = 0; j < data[i].video.length; j++) {
-                if(data[i].video[j].status == "에러") {
-                    errCount++;
-                } else if (data[i].video[j].status == "완료") {
-                    completeCount++;
-                }
-            }
-            array.push({
-                ytbChannel: data[i].ytbChannel,
-                ytbProfile: data[i].ytbProfile,
-                videoCount: data[i].videoCount,
-                errCount: errCount,
-                completeCount: completeCount
-            })
-            errCount = 0;
-            completeCount = 0;
-        }
-
-        // console.log(array)
-
-        res.status(200).json(array)
-    } catch (err) {
-        res.status(500).json({
-            error : err
-        })
-    }
-});
-
-// 데이터 수집 페이지 메인3 - 반드시 수정 필요!!
 // router.get('/socket', async (req, res, next) => {
 //     try {
-//         res.sendfile('./client.html');
+//         var errCount = 0;
+//         var completeCount = 0;
+
+//         // 프론트 전송 폼
+//         var array = []
+
+//         // status가 에러인 유튜버와 영상 필터링
+//         // var error = await YtbCrawlingTb.find({ 'video.status' : '에러' })
+
+//         // ytbCrawlingTb 전체
+//         var data = await YtbCrawlingTb.find()
+
+//         for(let i = 0; i < data.length; i++) {
+//             for(let j = 0; j < data[i].video.length; j++) {
+//                 if(data[i].video[j].status == "에러") {
+//                     errCount++;
+//                 } else if (data[i].video[j].status == "완료") {
+//                     completeCount++;
+//                 }
+//             }
+//             array.push({
+//                 ytbChannel: data[i].ytbChannel,
+//                 ytbProfile: data[i].ytbProfile,
+//                 videoCount: data[i].videoCount,
+//                 errCount: errCount,
+//                 completeCount: completeCount
+//             })
+//             errCount = 0;
+//             completeCount = 0;
+//         }
+
+//         // console.log(array)
+
+//         res.status(200).json(array)
 //     } catch (err) {
 //         res.status(500).json({
 //             error : err
 //         })
 //     }
 // });
+
+// 데이터 수집 페이지 메인3 - 반드시 수정 필요!!
+router.get('/socket', async (req, res, next) => {
+    try {
+        res.sendfile('./client.html');
+    } catch (err) {
+        res.status(500).json({
+            error : err
+        })
+    }
+});
 
 // // 에러 해결 메인 페이지 - 좌측
 // router.get('/error', async (req, res, next) => {
