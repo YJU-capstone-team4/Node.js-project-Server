@@ -335,15 +335,17 @@ router.post('/save/video/:channelId', async (req, res, next) => {
         regionTag: req.body.video[0].regionTag
     })
 
-    if(ytbCrawling != null) {
-        res.status(200).json({ video : videos })
-    }
+    // if(ytbCrawling != null) {
+    //     res.status(200).json({ video : videos })
+    // }
 
     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
     { $pull : { video : { _id : req.body.video[0]._id } } }).exec()
 
-    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
-    { $push : { video : videos } }).exec()
+    var b = await YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    { $push : { video : videos } })
+
+    res.status(200).json(b)
 });
 
 // router.post("/save/video/:channelId", async (req, res, next) => {
