@@ -29,8 +29,8 @@ router.post('/shareFlow/folder', async (req, res, next) => {
         .exec()
 
 
-        //process.exit(0)
-        // shareFlowTb에 들어갈 내용 저장
+        // process.exit(0)
+        //shareFlowTb에 들어갈 내용 저장
         const shareFlowTb = new ShareFlowTb({
             _id: new mongoose.Types.ObjectId(),
             userTbId: userInfo._id,
@@ -47,28 +47,42 @@ router.post('/shareFlow/folder', async (req, res, next) => {
         });
         await ShareFlowTb(shareFlowTb).save()
         .exec()
-        console.log("공유 동선 저장 완료")
+        .catch(err => {
+            res.status(500).json("동선 공유를 실패했습니다.");
+        });
+        // console.log("공유 동선 저장 완료")
 
 
         // 해시 태그 저장
-        const tag = await UserTagTb.find()
-        .exec()
-
         req.body.userTags.forEach(async element =>  {
-
-            let tmp = tag.userTags.includes(element)
-
+            const tag = await UserTagTb.findOne({'userTag.userTag': element})
+            .exec()
+            console.log(tag)
                 console.log("해시태그 저장 시작")
-                if(!tmp) {
-                    let newTag = new UserTagTb({
-                            _id: new mongoose.Types.ObjectId(),                      
+                if(!tag) {
+                    const userTag = await UserTagTb.findOne()
+                    .exec()
+                    let newTag = {                     
                             userTag: element,
-                            userCount: 1
-                    })
-                    tag.userTags.push(newTag)
-                    await UserTagTb.findByIdAndUpdate(tag._id, tag)
+                            useCount: 1
+                    }
+                    userTag.userTag.push(newTag)
+                    await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+                    .exec()
+                    .catch(err => {
+                        res.status(500).json("해시태그 저장을 실패하였습니다.");
+                    });
                 }else {
-                    //await UserTagTb.updateOne({'userTags.userTag' : element}, {$inc :{'userCount': 1}})
+                    tag.userTag.forEach(userTag => {
+                        if(userTag.userTag == element) {
+                            userTag.useCount++;
+                        }
+                    })
+                    await UserTagTb.findOneAndUpdate({'userTags.userTag' : element}, tag)
+                    .exec()
+                    .catch(err => {
+                        res.status(500).json("해시태그 저장을 실패하였습니다.");
+                    });
                 }
 
                 return res.status(201).json("success")
@@ -98,18 +112,19 @@ router.put('/shareFlow/folder', async (req, res, next) => {
             let tmp = await shareFlow.userTags.includes(element)
 
             if(!tmp) {
-                await UserTagTb.findOne({'userTag': element})
+                await UserTagTb.findOne({'userTag.userTag': element})
                 .exec()
-                .then(doc => {
-                    if(!doc) {
+                .then(docs => {
+                    if(!docs) {
                         let tmp = new UserTagTb({
                             _id: new mongoose.Types.ObjectId(),
                             userTag: element,
                             userCount: 1
                         })
-                        UserTagTb(tmp).save().exec()
+
+                        //UserTagTb(tmp).save().exec()
                     }else {
-                        UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': 1}})
+                        UserTagTb.findOneAndUpdate({'userTag' : element}, {$inc :{'userCount': 1}})
                     }
                 })
             }
@@ -150,28 +165,44 @@ router.put('/shareFlow/folder', async (req, res, next) => {
 // 공유 동선 삭제
 router.delete('/shareFlow/folder', async(req, res, next) => {
     try {
+        mongoose.set('useFindAndModify', false);
         const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
         // 해시태그 삭제
+
+        console.log(shareFlow)
         // 
-        const userTag = await UserTagTb.find().exec();
-        userTag.forEach(userTag => {
-            shareFlow.userTags.forEach(tmp => {
-                if(tmp == userTag) {
-                    UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': -1}})
+        
+        const tag = await UserTagTb.findOne({_id : '5fb7a29bf648764c3cb9ebeb'}).exec()
+        // .then(doc => {
+        //     res.status(200).json(doc)
+        // });
+        console.log(tag)
+        tag.userTag.forEach(userTag => {
+            if(shareFlow.userTags.includes(userTag.userTag)) {
+                userTag.useCount--;
+                if(userTag.useCount == 0) {
+                    userTag = null
                 }
-            })
-                
+            }
         })
+        await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+        .exec()
+        .catch(err => {
+            res.status(500).json("해시태그 저장을 실패하였습니다.");
+        });
         // UserTagTb.updateOne(userTag);
     
     
-        mongoose.set('useFindAndModify', false);
+
         // 공유 동선 삭제
-        await ShareFlowTb.findByIdAndRemove(req.body.shareFlowId)
-        .exec() 
-        .then(doc => {
-            res.status(200).json("success")
-        })
+        // await ShareFlowTb.findByIdAndRemove(req.body.shareFlowId)
+        // .exec() 
+        // .then(doc => {
+        //     res.status(200).json("success")
+        // })
+        // .catch(err => {
+        //     res.status(500).json("동선 삭제를 실패하였습니다.");
+        // });
     
     } catch(e) {
         res.status(500).json({

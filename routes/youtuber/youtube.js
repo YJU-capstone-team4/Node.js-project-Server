@@ -6,6 +6,19 @@ const YtbChannelTb = require("../../models/ytbChannelTb.model");
 const YtbStoreTb = require("../../models/ytbStoreTb.model");
 const AdminTagTb = require('../../models/adminTagTb.model');
 const UserTb = require('../../models/userTb.model');
+const ShareFlowTb = require("../../models/shareFlowTb.model");
+const UserTagTb = require('../../models/userTagTb.model');
+function getCurrentDate(){
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var today = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    var milliseconds = date.getMilliseconds();
+    return new Date(Date.UTC(year, month, today, hours, minutes, seconds, milliseconds));
+}
 // 유튜버 상세 페이지 - 유튜버 정보
 router.get('/youtuber/:ytb_id', async (req, res, next) => {
     req.body.userId = 'payment'
@@ -21,18 +34,30 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
         
     }
 
+    // 인기 급상승 동영상 개수
+    const youtuber = await YtbChannelTb.findOne({_id : req.params.ytb_id})
+    .select('video')
+    .exec();
+
+    let video = 0;
+    youtuber.video.forEach(element => {
+        if(element.RankIncrease > 20)
+            video++;
+    })
+    // 최근 올라온 동영상 개수
+    let last = 0;
+    youtuber.video.forEach(element => {
+        let date = getCurrentDate()
+        date = date.setDate(date.getDate() - 150);
+        if(element.uploadDate <= getCurrentDate() && element.uploadDate >= date) {
+            last++;
+        }
+    })
     YtbChannelTb.findOne({_id : req.params.ytb_id})
     .populate('video.ytbStoreTbId')
     .exec()
     .then(async docs => {
         let Increase = docs.ytbRankIncrease - docs.ytbRank
-        
-        // // 인기 급상승
-        // let ytbIncrease = []
-        // const youtuber = await YtbChannelTb.find()
-        // .sort(ytbRankIncrease-ytbRank)
-        // .exec();
-        
 
         res.status(200).json({
             ytbChannel : docs.ytbChannel,
@@ -40,7 +65,9 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
             ytbSubscribe: docs.ytbSubscribe,
             rank: docs.ytbRankIncrease,
             ytbRankIncrease: Increase,
-            youtuberLike : youtuberLike
+            youtuberLike : youtuberLike,
+            videoCount: video,
+            lastVideoCount : last
         });
         
     })
@@ -50,6 +77,77 @@ router.get('/youtuber/:ytb_id', async (req, res, next) => {
         });
     });
 });
+
+// 유튜버가 방문한 맛집 영상을 포함한 동선의 해시태그 순위
+router.get('/youtuber/userTag/:ytb_id', async(req, res, next) => {
+    // 유튜버가 방문한 맛집
+    const youtuber = await YtbChannelTb.findOne({_id : req.params.ytb_id})
+    .select('video.ytbStoreTbId')
+    .exec()
+
+    let search = []
+    youtuber.video.forEach(element => {
+        search.push(element.ytbStoreTbId)
+    });
+
+    const storeId = await YtbStoreTb.find({_id: {$in: search}})
+    .select('_id')
+    .exec()
+
+    // storeIds
+    let ids = []
+    storeId.forEach(id => {
+        ids.push(id._id);
+    })
+
+    // 맛집이 포함된 동선
+    const flow = await UserTb.find({
+        "folders.stores.storeId": {$in: ids}
+    },{
+        "_id": 0,
+        "folders": {
+            "$elemMatch": {
+            "stores.storeId": {$in: ids}
+            }
+        }
+    })
+    .exec()
+    let flowIds = []
+    flow.forEach(doc => {
+        flowIds.push(doc.folders[0]._id);
+
+    });
+
+    const shareFlow = await ShareFlowTb.find({
+        'folderId': {$in:flowIds}
+    })
+    .exec()
+    let userTags = []
+    // 동선에 포함된 해시태그
+    shareFlow.forEach(shareFlow => {
+        shareFlow.userTags.forEach(tag => {
+            userTags.push(tag);
+        })
+    })
+
+    // 해시태그 순위
+    const userTag = await UserTagTb.findOne({_id:'5fb7a29bf648764c3cb9ebeb'})
+    .exec();
+    let result = []
+    userTag.userTag.forEach(element => {
+        if(userTags.includes(element.userTag)) {
+            result.push(element);
+        }
+    })
+    result = result.sort(function(a, b) {
+        return b.useCount - a.useCount
+    })
+    
+    result = result.map(doc => doc.userTag);
+    res.status(200).json(result);
+    
+
+})
 
 // 유튜브 영상 정보 가져오기 - 조회수 순으로 
 router.get('/youtuber/video/:ytb_id', (req, res, next) => {
@@ -77,7 +175,7 @@ router.get('/youtuber/video/:ytb_id', (req, res, next) => {
     });
 });
 
-// 유튜버가 지역별로 방문한 맛집 영상
+// 유튜버가 지역별로 방문한 지역
 router.get('/youtuber/region/:ytb_id', async (req, res, next) => {
     try {
         const youtuber = await YtbChannelTb.findOne({_id : req.params.ytb_id})
