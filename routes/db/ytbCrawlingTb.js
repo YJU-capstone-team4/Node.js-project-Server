@@ -125,26 +125,10 @@ router.get('/socket', async (req, res, next) => {
     }
 });
 
-// // 데이터 수집 페이지 메인3
+// 데이터 수집 페이지 메인3 - 반드시 수정 필요!!
 // router.get('/socket', async (req, res, next) => {
 //     try {
-//         // 관리자가 데이터수집 페이지에 접속 중일 때
-//         io.on('connection', (socket) => {
-//             access = true
-//             if (access) {
-//                 socket.on('givedata', (msg) => {
-//                     console.log(msg)
-//                     // socket.emit('result', 'its server');
-//                     socket.emit('result', algo.sockets());  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-//                 });
-//             }
-        
-//             // 관리자가 데이터수집 페이지에서 나갔을 때 
-//             socket.on('disconnect', (socket) => {
-//                 access = false
-//                 console.log('admin disconnect')
-//             });
-//         });
+//         res.sendfile('./client.html');
 //     } catch (err) {
 //         res.status(500).json({
 //             error : err
@@ -288,11 +272,21 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
 router.post('/address/search/:addressId', async (req, res, next) => {
     try {
-        // console.log(req.params.addressId)
+        // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
+        // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+        console.log(req.params.addressId)
 
-        // res.status(200).json({
-        //     data : req.params.addressId
+        // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
+        // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
+        // axios({
+        //     url: '/user/12345',
+        //     method: 'post',
+        //     params: {
+        //       address: req.params.addressId
+        //     }
         // })
+
+        // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
         res.status(200).json(req.body)
     } catch (err) {
         res.status(500).json({
@@ -303,6 +297,7 @@ router.post('/address/search/:addressId', async (req, res, next) => {
 
 // < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
 router.post('/address/search/result/:addressId', async (req, res, next) => {
+    // 이건 어떻게 수정해야할까? 람다 서버 전용인데... -> 수정 필요
     try {
         res.status(200).json(req.body)
     } catch (err) {
@@ -313,28 +308,42 @@ router.post('/address/search/result/:addressId', async (req, res, next) => {
 });
 
 // 3사 결과 비디오 저장 시
-router.post('/save/video/:channelId', (req, res, next) => {
-    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
-    { $pull: { 'video': { 'ytbVideoName' : req.body.video[0].ytbVideoName } } }
-    )
-    .exec()
-    .then().catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
+router.post('/save/video/:channelId', async (req, res, next) => {
+    
+    // res.status(200).json(req.body.video[0]._id)
+    const ytbCrawling = await YtbCrawlingTb.findOne({ 'video._id' : req.body.video[0]._id });
+
+    var a = await YtbCrawlingTb.findOne( { $and : [ { 'ytbChannel': req.params.channelId },
+            { 'video._id': req.body.video[0]._id } ] },
+            {
+                "_id": 0,
+                "video": { $elemMatch:{ '_id' : req.body.video[0]._id } }
+            })
+
+    var videos = []
+
+    videos.push({
+        _id: req.body.video[0]._id,
+        more: a.video[0].more,
+        ytbVideoName: a.video[0].ytbVideoName,
+        ytbThumbnail: a.video[0].ytbThumbnail,
+        ytbAddress: a.video[0].ytbAddress,
+        hits: a.video[0].hits,
+        uploadDate: a.video[0].uploadDate,
+        storeInfo: req.body.video[0].storeInfo,
+        status: req.body.video[0].status,
+        regionTag: req.body.video[0].regionTag
+    })
+
+    if(ytbCrawling != null) {
+        res.status(200).json({ video : videos })
+    }
 
     YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
-    { $push : req.body }
-    )
-    .exec()
-    .then(result => {
-        res.status(200).json('success to save')
-    }).catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
+    { $pull : { video : { _id : req.body.video[0]._id } } }).exec()
+
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    { $push : { video : videos } }).exec()
 });
 
 // router.post("/save/video/:channelId", async (req, res, next) => {

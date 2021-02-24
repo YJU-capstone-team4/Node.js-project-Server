@@ -269,49 +269,45 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     // 변수에 담은 뒤 신청 유튜버에서 삭제
     await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
 
-    // // ytbChannelTb에 입력
-    // const ytbChannelTb = new YtbChannelTb({
+    // ytbCrawling으로 이동
+    // const ytbCrawlingTb = new YtbCrawlingTb({
     //     _id: new mongoose.Types.ObjectId(),
     //     ytbChannel: ytbReq.ytbChannel,
     //     ytbProfile: ytbReq.ytbProfile,
     //     ytbLinkAddress: ytbReq.ytbLinkAddress,
     //     ytbSubscribe: ytbReq.ytbSubscribe,
-    //     ytbSubIncrease: 0,
     //     ytbHits: ytbReq.ytbHits,
-    //     ytbRank: ytbReq.ytbRank,
-    //     ytbRankIncrease: ytbReq.ytbRankIncrease,
-    //     likeCount: ytbReq.likeCount,
+    //     videoCount: ytbReq.videoCount,
     //     video: []
     // });
-    // ytbChannelTb.save()
+    // ytbCrawlingTb.save()
+    
+    // res.status(200).json({
+    //     ytbChannel: ytbReq.ytbChannel
+    // });
 
-    // ytbCrawling으로 이동
+    // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링
+    var minhyuk = minhyuksFunction(req.params.youtuber);
+
     const ytbCrawlingTb = new YtbCrawlingTb({
         _id: new mongoose.Types.ObjectId(),
-        ytbChannel: ytbReq.ytbChannel,
-        ytbProfile: ytbReq.ytbProfile,
-        ytbLinkAddress: ytbReq.ytbLinkAddress,
-        ytbSubscribe: ytbReq.ytbSubscribe,
-        ytbHits: ytbReq.ytbHits,
-        videoCount: ytbReq.videoCount,
-        video: []
-    });
-    ytbCrawlingTb.save()
-    .then(result => {
-        res.status(201).json({
-            // message1: 'ytbReqTb -> ytbChannelTb stored',
-            // message2: 'ytbReqTb -> ytbCrawlingTb stored',
-            // status: 'Success',
-            ytbChannel: ytbReq.ytbChannel
-            // videoCount: ytbReq.videoCount
-        });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
+        ytbChannel: minhyuk.ytbChannel,
+        ytbProfile: minhyuk.ytbProfile,
+        ytbLinkAddress: minhyuk.ytbLinkAddress,
+        ytbSubscribe: minhyuk.ytbSubscribe,
+        ytbHits: minhyuk.ytbHits,
+        videoCount: minhyuk.videoCount,
+        video: minhyuk.video,
+      });
+      ytbCrawlingTb.save()
+      .then(result => {
+          res.status(200).json(result);
+      })
+      .catch(err => {
+          res.status(500).json({
+              error: err
+          });
+      });
 });
 
 module.exports = router;
