@@ -339,11 +339,11 @@ router.post('/save/video/:channelId', async (req, res, next) => {
     //     res.status(200).json({ video : videos })
     // }
 
-    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    var b = await YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
     { $pull : { video : { _id : req.body.video[0]._id } } }).exec()
 
-    var b = await YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
-    { $push : { video : videos } })
+    YtbCrawlingTb.update({ 'ytbChannel': req.params.channelId },
+    { $push : { video : videos } }).exec()
 
     res.status(200).json(b)
 });
