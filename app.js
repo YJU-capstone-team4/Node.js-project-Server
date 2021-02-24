@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
   socket.on('givedata', (msg) => {
     // 아래 saveYoutuber, saveVideo의 알고리즘은 수정이 필요함
     algo.saveYoutuber(YtbCrawlingTb, "문복희2", "../images/test.jpg", "https://www.youtube.com/channel/UCoLQZ4ZClFqVPCvvjuiUSRA",
-    5120000, 24400000, 3)
+    5120001, 24400000, 3)
     algo.saveVideo(YtbCrawlingTb, "문복희2", "촉촉한 팬케이크에 푸짐한 샌드위치", "../images/test.jpg", "https://www.youtube.com/watch?v=B_GRymHuLhw",
     660597, "2020-11-19", [ "각국어", "번역", "자막", "제작", ":", "컨텐츠", "제작", "의", "마무리", "는", "컨텐츠플라이", "!"], "완료", "대구광역시",
     "아웃백스테이크하우스 대구황금점", "대구광역시 수성구 황금동 동대구로 219", "맛집", 35.84987200777492, 128.6244778213711)

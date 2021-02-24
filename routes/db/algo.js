@@ -167,6 +167,14 @@ async function saveYoutuber(YtbCrawlingTb, channel, profile, link, sub, hits, vi
             console.log('유튜버 DB에 저장 성공')
         } else {
             console.log('유튜버 데이터가 이미 존재합니다.')
+            YtbCrawlingTb.update({ ytbChannel: channel }, {
+                ytbProfile: profile,
+                ytbLinkAddress: link,
+                ytbSubscribe: sub,
+                ytbHits: hits,
+                videoCount: videocount
+            }).exec();
+            console.log('유튜버 DB에 video 제외 데이터 수정 성공')
         }
 
     } catch (err) {
