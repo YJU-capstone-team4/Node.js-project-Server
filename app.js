@@ -1,5 +1,3 @@
-const http = require('http');
-const io = require('socket.io');
 require('dotenv').config();
 const express       = require('express');
 const app           = express();
@@ -9,7 +7,7 @@ const mongoose      = require('mongoose');
 const cors          = require('cors');
 const algo          = require("./routes/db/algo")    // 알고리즘 용도
 
-const PORT = 3000;
+const PORT = 80;
 
 // 관리자용 로그인
 const LocalStrategy = require('passport-local').Strategy
@@ -115,29 +113,11 @@ app.use(youtuber);
 // });
 
 // 포트 연결 - 소켓 버전
-
-
 // const server = app.listen(PORT, function(){
 //   console.log('server on! http://localhost:'+ PORT);
 // });
 
-const httpServer = http.createServer(app).listen(PORT, function(){
-  console.log('server on! http://localhost:'+ PORT);
-});
-
-const socketServer = io(httpServer);
-
-socketServer.on("connection", socket => {
-  console.log("connect client by Socket.io");
-
-  socket.on("givedata", msg => {
-    socket.emit('result', msg);
-    console.log('admin give me result data')
-  });
-});
-
 // const io = require('socket.io')(server);
-
 
 // // 사용자가 접속 중인지 아닌지 판별
 // var access = false
@@ -151,8 +131,9 @@ socketServer.on("connection", socket => {
 
 // // 관리자가 데이터수집 페이지에 접속 중일 때
 // io.on('connection', (socket) => {
-//   access = true  
+//   access = true
 //   console.log('admin join')
+//   socket.emit('connect', 'admin join');
   
 //   socket.on('givedata', (msg) => {
 //     // // 아래 saveYoutuber, saveVideo의 알고리즘은 수정이 필요함
@@ -189,3 +170,22 @@ socketServer.on("connection", socket => {
 //     // "아웃백스테이크하우스 대구황금점", "대구광역시 수성구 황금동 동대구로 219", "맛집", 35.84987200777492, 128.6244778213711)
 //   });
 // });
+
+const http = require('http');
+const io = require('socket.io');
+
+const httpServer = http.createServer(app).listen(PORT, function(){
+  console.log('server on! http://localhost:'+ PORT);
+});
+
+const socketServer = io(httpServer);
+
+socketServer.on("connection", socket => {
+  socket.emit('connect', 'admin join');
+  console.log("connect client by Socket.io");
+
+  socket.on("givedata", msg => {
+    socket.emit('result', msg);
+    console.log('admin give me result data')
+  });
+});
