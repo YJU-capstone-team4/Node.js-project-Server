@@ -7,7 +7,17 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const { response } = require('express');
 
 
-
+function getCurrentDate(){
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var today = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    var milliseconds = date.getMilliseconds();
+    return new Date(Date.UTC(year, month, today, hours, minutes, seconds, milliseconds));
+}
 // 로그인 확인
 const authenticateUser = async (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -178,21 +188,22 @@ router.post('/userFlow', async (req, res, next) => {
             })
             .exec()
 
-            user.folders.push({
-                folderTitle: req.body.folderTitle,
-                createDate: getCurrentDate(new Date()),  
-                updateDate: null,
-                stores: []               
-            })
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
+        user.folders.push({
+            folderTitle: req.body.folderTitle,
+            createDate: getCurrentDate(new Date()),  
+            updateDate: null,
+            stores: []               
+        })
+        console.log(user)
+        mongoose.set('useFindAndModify', false);
+        await UserTb
+        .findOneAndUpdate({
+            "userId": req.body.user_id
+        }, user)
+        .exec()
+        .then(doc => {
+            res.status(201).json("success")
+        })
 
 
     }catch(e) {
