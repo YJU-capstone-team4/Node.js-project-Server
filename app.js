@@ -112,7 +112,7 @@ app.listen(PORT, function(){
   console.log('server on! http://localhost:'+ PORT);
 }); 
 
-// 포트 연결
+// 포트 연결 - 소켓 전용
 // const server = app.listen(PORT, function(){
 //   console.log('server on! http://localhost:'+ PORT);
 // });
