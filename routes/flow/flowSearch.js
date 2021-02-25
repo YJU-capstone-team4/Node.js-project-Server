@@ -96,15 +96,18 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
             .where('adminTag.seasonTag').in(req.body.seasonTag)
             .exec()
             .then(docs => {
+                console.log(docs)
                 res.status(200).json({
                     count: docs.length,
                     shareFlowTb: docs.map(doc => {
                         return {
                         _id: doc._id,
                         shareTitle: doc.shareTitle,
+                        //shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
                         shareThumbnail: doc.shareThumbnail,
                         adminTag: doc.adminTag,
                         userTags: doc.userTags,
+                        folderId: doc.folderId
                     }})
                 })
             })
@@ -122,15 +125,18 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
             .where('userTags').in(req.body.userTag)
             .exec()
             .then(docs => {
+                console.log(docs)
                 res.status(200).json({
                     count: docs.length,
                     shareFlowTb: docs.map(doc => {
                         return {
                         _id: doc._id,
                         shareTitle: doc.shareTitle,
+                        //shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
                         shareThumbnail: doc.shareThumbnail,
                         adminTag: doc.adminTag,
                         userTags: doc.userTags,
+                        folderId: doc.folderId
                     }})
                 })
             })
@@ -146,15 +152,18 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
         await ShareFlowTb.find({'shareTitle': {$regex:req.body.shareTitle}})
         .exec()
         .then(docs => {
+            console.log(docs)
             res.status(200).json({
                 count: docs.length,
                 shareFlowTb: docs.map(doc => {
                     return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
+                    //shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
                     shareThumbnail: doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
+                    folderId: doc.folderId
                 }})
             })
         })
@@ -174,15 +183,17 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
         await ShareFlowTb.find({'userId': {$in: ids}})
         .exec()
         .then(docs => {
+            console.log(docs)
             res.status(200).json({
                 count: docs.length,
                 shareFlowTb: docs.map(doc => {
                     return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
+                    //shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
                     shareThumbnail: doc.shareThumbnail,
-                    adminTag: doc.adminTag,
                     userTags: doc.userTags,
+                    folderId: doc.folderId
                 }})
             })
         })

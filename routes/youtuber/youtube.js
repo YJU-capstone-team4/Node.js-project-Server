@@ -225,24 +225,29 @@ router.post('/youtuber/localVideo', async (req, res, next) => {
         .in(req.body.regionTags)
         .select('_id')
         .select('regionTag')
+        .select('storeInfo.storeAddress')
         .exec()
 
-        const ids = []
-        store.forEach(element => {
-            ids.push(element._id)
-        })
+        console.log(store)
 
         let result = []
 
-        ids.forEach(element =>  {
+        store.forEach(element =>  {
             youtuber.video.forEach(id => {
-                if(element == id.storeId) {
-                    result.push(id)
+                if(element._id == id.storeId) {
+                    result.push({
+                        _id: id._id,
+                        ytbVideoName: id.ytbVideoName,
+                        ytbAddress: id.ytbAddress,
+                        storeId: id.storeId,
+                        hits: id.hits,
+                        storeAddress :element.storeInfo.storeAddress,
+                        regionTag:element.regionTag
+                    })
                 }
             })
         })
-
-         return res.status(200).json(result)
+        return res.status(200).json(result)
 
     } catch(e) {
         res.status(500).json({
