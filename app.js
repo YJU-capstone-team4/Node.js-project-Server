@@ -131,8 +131,9 @@ const YtbCrawlingTb = require('./models/ytbCrawlingTb.model');
 
 // 관리자가 데이터수집 페이지에 접속 중일 때
 io.on('connection', (socket) => {
-  access = true
+  access = true  
   console.log('admin join')
+  
   socket.on('givedata', (msg) => {
     // // 아래 saveYoutuber, saveVideo의 알고리즘은 수정이 필요함
     // algo.saveYoutuber(YtbCrawlingTb, "문복희2", "../images/test.jpg", "https://www.youtube.com/channel/UCoLQZ4ZClFqVPCvvjuiUSRA",
