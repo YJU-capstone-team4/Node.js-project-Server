@@ -15,9 +15,11 @@ router.get('/regionFlow', (req, res, next) => {
                 return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
+                    //shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
                     shareThumbnail: doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
+                    folderId: doc.folderId
                 }
             })
         });
@@ -46,6 +48,7 @@ router.get('/regionFlow/region/:regionTag', (req, res, next) => {
                     shareThumbnail: doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
+                    folderId: doc.folderId
                 }
             })
         });

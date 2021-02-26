@@ -7,7 +7,17 @@ const ShareFlowTb = require("../../models/shareFlowTb.model");
 const { response } = require('express');
 
 
-
+function getCurrentDate(){
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var today = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    var milliseconds = date.getMilliseconds();
+    return new Date(Date.UTC(year, month, today, hours, minutes, seconds, milliseconds));
+}
 // 로그인 확인
 const authenticateUser = async (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -178,21 +188,22 @@ router.post('/userFlow', async (req, res, next) => {
             })
             .exec()
 
-            user.folders.push({
-                folderTitle: req.body.folderTitle,
-                createDate: getCurrentDate(new Date()),  
-                updateDate: null,
-                stores: []               
-            })
-            mongoose.set('useFindAndModify', false);
-            await UserTb
-            .findOneAndUpdate({
-                "userId": req.body.user_id
-            }, user)
-            .exec()
-            .then(doc => {
-                res.status(201).json("success")
-            })
+        user.folders.push({
+            folderTitle: req.body.folderTitle,
+            createDate: getCurrentDate(new Date()),  
+            updateDate: null,
+            stores: []               
+        })
+        console.log(user)
+        mongoose.set('useFindAndModify', false);
+        await UserTb
+        .findOneAndUpdate({
+            "userId": req.body.user_id
+        }, user)
+        .exec()
+        .then(doc => {
+            res.status(201).json("success")
+        })
 
 
     }catch(e) {
@@ -224,12 +235,9 @@ router.put('/userFlow', async (req, res, next) => {
                 tmp++;
             });
 
-            user.folders[index] = ({
-                folderTitle: req.body.folderTitle,
-                createDate: user.folders[index].createDate,  
-                updateDate: getCurrentDate(new Date()),
-                stores: user.folders[index].stores               
-            })
+            user.folders[index].folderTitle = req.body.folderTitle;
+            user.folders[index].updateDate = getCurrentDate(new Date());
+            console.log(user)
             mongoose.set('useFindAndModify', false);
             await UserTb
             .findOneAndUpdate({
@@ -301,52 +309,66 @@ router.post('/favorite', async (req, res, next) => {
     try {
         req.body.user_id = 'payment';
         const user = await UserTb
-            .findOne({
-                "userId": req.body.user_id
-            })
-            .exec()
-
-            let index = 0
-            let tmp = 0
-            let ids = []
-            user.folders.forEach(element => {
-                ids.push(element._id.toString())
-                if(element._id.toString() == req.body.folder_id.toString()) {
-                    index = tmp;
-                }
-                tmp++;
-            });
-            if(ids.includes(req.body.folder_id.toString())) {
-                let inputStore = null
-                if(req.body.typeStore == "맛집") {
-                    inputStore = {
-                        'ytbStoreTbId': req.body.store_id,
-                        'attractionTbId': null,
-                        'storeId': req.body.store_id,
-                        'typeStore': req.body.typeStore
-                    }
-                } else {
-                    inputStore = {
-                        'ytbStoreTbId': null,
-                        'attractionTbId': req.body.store_id,
-                        'storeId': req.body.store_id,
-                        'typeStore': req.body.typeStore
-                    }
-                }
-                user.folders[index].stores.push(inputStore);
-
-                mongoose.set('useFindAndModify', false);
-                await UserTb
-                .findOneAndUpdate({
-                    "userId": req.body.user_id
-                }, user)
-                .exec()
-                .then(doc => {
-                    res.status(201).json("success")
-                })
-            }else {
-                res.status(200).json("선택하신 폴더가 존재하지 않습니다.")
+        .findOne({
+            "userId": req.body.user_id
+        })
+        .exec()
+        //즐겨찾기에 포함된 가게인지 상태 검사
+        let index = 0
+        let tmp = 0
+        user.folders.forEach(element => {
+            if(element._id == req.body.folder_id) {
+                index = tmp;
             }
+            tmp++;
+        });
+        console.log(user.folders[index]);
+        
+        let i = 0
+        tmp = 0
+        let ids = []
+        user.folders[index].stores.forEach(element => {
+            ids.push(element.storeId)
+            console.log(element.storeId == req.body.store_id.toString())
+            if(element.storeId == req.body.store_id) {
+                i = tmp;
+            }
+            tmp++;
+        });
+        if(!ids.includes(req.body.store_id.toString())) {
+        //if(!storeLike) {
+            let inputStore = null
+            if(req.body.typeStore == "맛집") {
+                inputStore = {
+                    'ytbStoreTbId': req.body.store_id,
+                    'attractionTbId': null,
+                    'storeId': req.body.store_id,
+                    'typeStore': req.body.typeStore
+                }
+            } else {
+                inputStore = {
+                    'ytbStoreTbId': null,
+                    'attractionTbId': req.body.store_id,
+                    'storeId': req.body.store_id,
+                    'typeStore': req.body.typeStore
+                }
+            }
+            user.folders[index].stores.push(inputStore);
+
+            console.log(user)
+            mongoose.set('useFindAndModify', false);
+            await UserTb
+            .findOneAndUpdate({
+                "userId": req.body.user_id
+            }, user)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+
+        }else {
+            res.status(200).json("이미 포함되어있는 가게입니다.")
+        }
 
 
 
