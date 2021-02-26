@@ -6,7 +6,12 @@ let socket = (io) => {
     // 관리자가 데이터수집 페이지에 접속 중일 때
     io.on('connection', (socket) => {
         // console.log('------------------------------------')
-        access.adminAccess = true
+        access = true
+        var admin = socket;
+        global.admin = admin;
+
+        // console.log(admin)
+        console.log(access)
         console.log('admin join')
         // console.log('what is access?')
         // console.log(access.adminAccess)
@@ -22,17 +27,11 @@ let socket = (io) => {
             // 660597, "2020-11-19", [ "각국어", "번역", "자막", "제작", ":", "컨텐츠", "제작", "의", "마무리", "는", "컨텐츠플라이", "!"], "완료", "대구광역시",
             // "아웃백스테이크하우스 대구황금점", "대구광역시 수성구 황금동 동대구로 219", "맛집", 35.84987200777492, 128.6244778213711)
             // algo.minusVideo(YtbCrawlingTb, "문복희2")
-
-            // function sendResult() {
-            //     algo.sockets(YtbCrawlingTb).then(function(result) {
-            //         socket.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-            //     })
-            // }
         
             // 결과 데이터 전송
-            algo.sockets(YtbCrawlingTb).then(function(result) {
-                socket.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-            })
+            // algo.sockets(YtbCrawlingTb).then(function(result) {
+            //     socket.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+            // })
         
             // 프론트와 통신 테스트
             // socket.emit('result', msg);
@@ -41,6 +40,7 @@ let socket = (io) => {
     
         // 관리자가 데이터수집 페이지에서 나갔을 때 
         socket.on('disconnect', (msg) => {
+            console.log(access)
             access.adminAccess = false
             console.log('admin disconnect')
             // console.log(access.adminAccess)
