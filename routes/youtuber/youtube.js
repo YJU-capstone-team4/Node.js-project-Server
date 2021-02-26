@@ -8,6 +8,7 @@ const AdminTagTb = require('../../models/adminTagTb.model');
 const UserTb = require('../../models/userTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTagTb = require('../../models/userTagTb.model');
+const YtbReqTb = require("../../models/ytbReqTb.model")
 function getCurrentDate(){
     var date = new Date();
     var year = date.getFullYear();
@@ -327,18 +328,24 @@ router.post('/youtuber/request', async (req, res, next) => {
             .exec()
         mongoose.set('useFindAndModify', false);
 
-
         // 크롤링 함수 불러오기
+        //const result = []// 함수 실행 return 값 반환
+        const result = {
+            ytbProfile: 'asdf',
+            ytbChannel: '야식이',
+            ytbSubscribe: 1060000,
+            videoCount: 1130,
+            ytbHits: 355899261,
+            ytbLinkAddress: "httPsaks"
+        }
+        // 신청할 객체에 필요한 정보 추가하기
+        result.userTbId = user._id;
+        result.userId = req.body.user_id;
 
-
-        //  새로운 신청 객체 만들기
-        const newYtbReq = {
-            ytbChannel: req.body.ytbChannel,
-            userTbId: user._id,
-            userId: req.body.user_id
-        };
         // 신청 db에 추가
-
+        //await YtbReqTb(result).save().catch(e) {
+        //  res.status(500).json("유튜버 신청에 실패했습니다.")
+        //}
     }catch(e) {
         res.status(500).json({
             error: e

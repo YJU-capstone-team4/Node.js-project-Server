@@ -45,7 +45,7 @@ router.get('/regionFlow/region/:regionTag', (req, res, next) => {
                 return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
-                    shareThumbnail: doc.shareThumbnail,
+                    shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
                     folderId: doc.folderId
