@@ -6,8 +6,8 @@ const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
 const YtbChannelTb = require('../../models/ytbChannelTb.model');
 const YtbStoreTb = require('../../models/ytbStoreTb.model');
 const algo = require("./algo");
-const { ObjectId } = require('bson');
 const apps = require("../../app");
+const socket = require("../../socket");
 
 // // 데이터 수집 페이지 메인
 // router.get('/socket', async (req, res, next) => {
@@ -578,74 +578,18 @@ router.post('/', (req, res, next) => {
     });
 });
 
-// router.get('/:userId', (req, res, next) => {
-//     AttractionCrawlingTb.findOne({userId : req.params.userId})
-//     // .select('name price _id')
-//     .exec()
-//     .then(doc => {
-//         console.log("From database", doc);
-//         if (doc) {
-//             res.status(200).json({
-//                 userTb: doc,
-//                 request: {
-//                     type: 'GET',
-//                     url: 'http://localhost:3000/attractionCrawlingTb'
-//                 }
-//             });
-//         } else {
-//             res.status(404)
-//             .json({
-//                 message: "No valid entry found for userId"
-//             })
-//         }
-//     }).catch(err => {
-//         console.log(err);
-//     });
+// 유튜브 videoCount 삭제 테스트
+// router.post('/test/:channelId', (req, res, next) => {
+//     algo.minusVideo(YtbCrawlingTb, req.params.channelId)
+
+//     res.status(200).json(req.params.channelId + "'s video -1 is successed")
 // });
 
-// router.patch('/:userId', (req, res, next) => {
-//     const updateOps = {};
-//     for(const ops of req.body) {
-//         updateOps[ops.propName] = ops.value
-//     }
-//     AttractionCrawlingTb.update({userId : req.params.userId}, { $set: updateOps })
-//     .exec()
-//     .then(result => {
-//         res.status(201).json({
-//             message: 'AttractionCrawlingTb updated',
-//             request: {
-//                 type: 'GET',
-//                 url: 'http://localhost:3000/attractionCrawlingTb' + userId
-//             }
-//         });
-//     }).catch(err => {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
-
-// router.delete('/:userId', (req, res, next) => {
-//     AttractionCrawlingTb.remove({userId : req.params.userId})
-//     // const id = req.params.productId;
-//     // UserTb.remove({_id: id})
-//     .exec()
-//     .then(result => {
-//         res.status(200).json({
-//             message: 'AttractionCrawlingTb deleted',
-//             request: {
-//                 type: 'POST',
-//                 url: 'http://localhost:3000/attractionCrawlingTb/',
-//                 // body: { name: 'String', price: 'Number' }
-//             }
-//         })
-//     }).catch(err => {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
+// 소켓 데이터 전송 테스트
+// router.post('/test', (req, res, next) => {
+//     // socket(app.io).sendResult()
+//     console.log(apps.io)
+//     res.status(200).json('소켓 데이터 전송')
 // });
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+var access          = require("../../adminAccess")
 
 // pagination 함수
 async function pagination(req, res, Collection) {
@@ -237,3 +238,29 @@ async function saveVideo(YtbCrawlingTb, channel, videoName, thumbnail, ytbAddres
 }
 
 exports.saveVideo = saveVideo;
+
+// 데이터 수집 메인 페이지 - 유료광고 영상일 시 videoCount - 1
+async function minusVideo(YtbCrawlingTb, channel) {
+    try {
+        // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
+
+        // 들어가는 값들은 전부 민혁이코드.값이 될 것임
+        var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
+        var count = checkYoutuber.videoCount - 1
+
+        YtbCrawlingTb.update({ ytbChannel: channel }, {
+            videoCount: count
+        }).exec();
+        console.log('유료광고 영상에 따른 videoCount - 1 성공')
+        console.log(access.adminAccess)
+
+    } catch (err) {
+        // res.status(500).json({
+        //     error : err
+        // })
+        console.log(err)
+        console.log('유료광고 영상에 따른 videoCount - 1 실패')
+    }
+}
+
+exports.minusVideo = minusVideo;
