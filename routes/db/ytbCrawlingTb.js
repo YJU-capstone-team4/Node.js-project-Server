@@ -588,7 +588,9 @@ router.post('/', (req, res, next) => {
 // 소켓 데이터 전송 테스트
 // router.post('/test', (req, res, next) => {
 //     // socket(app.io).sendResult()
-//     console.log(apps.io)
+//     // console.log(io)
+
+//     algo.sendFront(YtbCrawlingTb)
 //     res.status(200).json('소켓 데이터 전송')
 // });
 
