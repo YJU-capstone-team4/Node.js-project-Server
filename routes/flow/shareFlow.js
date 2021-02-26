@@ -31,96 +31,103 @@ const upload = multer({storage: storage})
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
 router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try {
-        const s3Client = s3.s3Client;
-        const params = s3.uploadParams;
-
-
-        mongoose.set('useFindAndModify', false);
-        req.body.user_id = 'payment';
-        // 로그인 검사 후 필요한 유저정보 반환
-        const userInfo = await UserTb.findOne({userId : req.body.user_id})
-        .exec()
-
-
-        let payLoad = {url: req.file.location};
-
-        //shareFlowTb에 들어갈 내용 저장
-        const shareFlowTb = new ShareFlowTb({
-            _id: new mongoose.Types.ObjectId(),
-            userTbId: userInfo._id,
-            userId: req.body.user_id,
-            shareTitle: req.body.shareTitle,
-
-            folderId: req.body.folderId,
-            adminTag: req.body.adminTag,
-            userTags: req.body.userTags,
-            shareDate: getCurrentDate(new Date()),
-            updateDate: null,
-            likeCount: 0,
-            hits: 0,
-        });
-        const flowId = await ShareFlowTb(shareFlowTb).save()
-        .then(doc => {
-            return doc._id;
-        })
-
-        params.Key = flowId.toString();
-        params.Body = req.file.buffer;
-        console.log(params);
-        s3Client.upload(params, (err, data) => {
-            if(err) {
-                res.status(500).json("파일 업로드에 실패했습니다.");
-            }
-         })
-        console.log("파일 업로드 성공")
-
-        const shareFlowImg = await ShareFlowTb.findOne({_id : flowId})
-        .exec()
-
-        shareFlowImg.shareThumbnail = flowId.toString()
-        console.log(shareFlowImg)
-
-        await ShareFlowTb.findOneAndUpdate({_id : flowId},shareFlowImg)
-        .catch(err => {
-            res.status(500).json("동선 공유를 실패했습니다.");
-        });
-        console.log("공유 동선 저장 완료")
-
-
-        // 해시 태그 저장
-        req.body.userTags.forEach(async element =>  {
-            const tag = await UserTagTb.findOne({'userTag.userTag': element})
+        if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag.regionTag || !req.body.userTags || !req.file || !req.body.adminTag.seasonTag){
+            res.status(200).json("입력되지 않은 값이 있습니다.")
+        }
+        else {
+            const s3Client = s3.s3Client;
+            const params = s3.uploadParams;
+    
+    
+            mongoose.set('useFindAndModify', false);
+            req.body.user_id = 'payment';
+            // 로그인 검사 후 필요한 유저정보 반환
+            const userInfo = await UserTb.findOne({userId : req.body.user_id})
             .exec()
-            console.log(tag)
-            console.log("해시태그 저장 시작")
-            if(!tag) { // 아예 새로운 태그인 경우
-                const userTag = await UserTagTb.findOne()
-                .exec()
-                let newTag = {                     
-                        userTag: element,
-                        useCount: 1
+    
+    
+            let payLoad = {url: req.file.location};
+    
+            
+            //shareFlowTb에 들어갈 내용 저장
+            const shareFlowTb = new ShareFlowTb({
+                _id: new mongoose.Types.ObjectId(),
+                userTbId: userInfo._id,
+                userId: req.body.user_id,
+                shareTitle: req.body.shareTitle,
+    
+                folderId: req.body.folderId,
+                adminTag: req.body.adminTag,
+                userTags: req.body.userTags,
+                shareDate: getCurrentDate(new Date()),
+                updateDate: null,
+                likeCount: 0,
+                hits: 0,
+            });
+            const flowId = await ShareFlowTb(shareFlowTb).save()
+            .then(doc => {
+                return doc._id;
+            })
+    
+            params.Key = flowId.toString();
+            params.Body = req.file.buffer;
+            console.log(params);
+            s3Client.upload(params, (err, data) => {
+                if(err) {
+                    res.status(500).json("파일 업로드에 실패했습니다.");
                 }
-                userTag.userTag.push(newTag)
-                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+             })
+            console.log("파일 업로드 성공")
+    
+            const shareFlowImg = await ShareFlowTb.findOne({_id : flowId})
+            .exec()
+    
+            shareFlowImg.shareThumbnail = flowId.toString()
+            console.log(shareFlowImg)
+    
+            await ShareFlowTb.findOneAndUpdate({_id : flowId},shareFlowImg)
+            .catch(err => {
+                res.status(500).json("동선 공유를 실패했습니다.");
+            });
+            console.log("공유 동선 저장 완료")
+    
+    
+            // 해시 태그 저장
+            req.body.userTags.forEach(async element =>  {
+                const tag = await UserTagTb.findOne({'userTag.userTag': element})
                 .exec()
-                .catch(err => {
-                    res.status(500).json("해시태그 저장을 실패하였습니다.");
-                });
-            }else { // 원래 있던 태그인 경우
-                tag.userTag.forEach(userTag => {
-                    if(userTag.userTag == element) {
-                        userTag.useCount++;
+                console.log(tag)
+                console.log("해시태그 저장 시작")
+                if(!tag) { // 아예 새로운 태그인 경우
+                    const userTag = await UserTagTb.findOne()
+                    .exec()
+                    let newTag = {                     
+                            userTag: element,
+                            useCount: 1
                     }
-                })
-                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
-                .exec()
-                .catch(err => {
-                    res.status(500).json("해시태그 저장을 실패하였습니다.");
-                });
-            }
-        })
-        return res.status(201).json("success")
-     }
+                    userTag.userTag.push(newTag)
+                    await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+                    .exec()
+                    .catch(err => {
+                        res.status(500).json("해시태그 저장을 실패하였습니다.");
+                    });
+                }else { // 원래 있던 태그인 경우
+                    tag.userTag.forEach(userTag => {
+                        if(userTag.userTag == element) {
+                            userTag.useCount++;
+                        }
+                    })
+                    await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
+                    .exec()
+                    .catch(err => {
+                        res.status(500).json("해시태그 저장을 실패하였습니다.");
+                    });
+                }
+            })
+            return res.status(201).json("success")
+         }
+        }
+
     catch(e) {
         res.status(500).json({
             error: e
@@ -132,109 +139,114 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
 // 공유 동선 수정
 router.put('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try{
-        const s3Client = s3.s3Client;
-        const params = s3.uploadParams;
-
-        req.params.user_id = 'payment';
-        // 로그인 검사 후 필요한 유저정보 반환
-        const userInfo = await UserTb.findOne({userId : req.params.user_id})
-        .exec()
-        const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
-
-        params.Key = req.body.shareFlowId.toString();
-        params.Body = req.file.buffer;
-        console.log(params);
-        s3Client.upload(params, (err, data) => {
-            if(err) {
-                res.status(500).json("파일 업로드에 실패했습니다.");
-            }
-         })
-        console.log("파일 업로드 성공")
-
-        // 공유 동선 폴더 수정
-        mongoose.set('useFindAndModify', false);
-
-        // 해시태그 수정
-        let newTag = [];
-        let disappearTag = [];
-        // 새로 추가된 해시태그 검색
-        req.body.userTags.forEach(element => {
-            if(!shareFlow.userTags.includes(element)) {
-                newTag.push(element)
-            }
-
-        })
-
-        // 없어진 해시태그 검색
-        shareFlow.userTags.forEach(async element => {
-            if(!req.body.userTags.includes(element)) {
-                disappearTag.push(element)
-            }
-        })
-
-        
-        // 없어진 해시태그 삭제
-        const tag = await UserTagTb.findOne({_id : '5fb7a29bf648764c3cb9ebeb'}).exec()
-        tag.userTag.forEach(userTag => {
-            if(disappearTag.includes(userTag.userTag)) {
-                userTag.useCount--;
-            }
-        })
-        // 사용횟수가 0이면 삭제
-        tag.userTag = tag.userTag.filter(doc => doc.useCount !=0)
-        console.log(tag.userTag)
-        
-        // 원래 있던 해시태그 그대로
-        await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
-        .exec()
-        .catch(err => {
-            res.status(500).json("해시태그 수정에 실패하였습니다.");
-        });
-
-
-        // 새로 생긴 해시태그 추가
-        newTag.forEach(async element =>  {
-            const putTag = await UserTagTb.findOne({'userTag.userTag': element})
+        if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag.regionTag || !req.body.userTags || !req.file || !req.body.adminTag.seasonTag){
+            res.status(200).json("입력되지 않은 값이 있습니다.")
+        }else {
+            const s3Client = s3.s3Client;
+            const params = s3.uploadParams;
+    
+            req.params.user_id = 'payment';
+            // 로그인 검사 후 필요한 유저정보 반환
+            const userInfo = await UserTb.findOne({userId : req.params.user_id})
             .exec()
-            if(!putTag) { // 아예 새로운 태그인 경우
-                const userTag = await UserTagTb.findOne()
-                .exec()
-                let newOne = {                     
-                        userTag: element,
-                        useCount: 1
+            const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
+    
+            params.Key = req.body.shareFlowId.toString();
+            params.Body = req.file.buffer;
+            console.log(params);
+            s3Client.upload(params, (err, data) => {
+                if(err) {
+                    res.status(500).json("파일 업로드에 실패했습니다.");
                 }
-                userTag.userTag.push(newOne)
-                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+             })
+            console.log("파일 업로드 성공")
+    
+            // 공유 동선 폴더 수정
+            mongoose.set('useFindAndModify', false);
+    
+            // 해시태그 수정
+            let newTag = [];
+            let disappearTag = [];
+            // 새로 추가된 해시태그 검색
+            req.body.userTags.forEach(element => {
+                if(!shareFlow.userTags.includes(element)) {
+                    newTag.push(element)
+                }
+    
+            })
+    
+            // 없어진 해시태그 검색
+            shareFlow.userTags.forEach(async element => {
+                if(!req.body.userTags.includes(element)) {
+                    disappearTag.push(element)
+                }
+            })
+    
+            
+            // 없어진 해시태그 삭제
+            const tag = await UserTagTb.findOne({_id : '5fb7a29bf648764c3cb9ebeb'}).exec()
+            tag.userTag.forEach(userTag => {
+                if(disappearTag.includes(userTag.userTag)) {
+                    userTag.useCount--;
+                }
+            })
+            // 사용횟수가 0이면 삭제
+            tag.userTag = tag.userTag.filter(doc => doc.useCount !=0)
+            console.log(tag.userTag)
+            
+            // 원래 있던 해시태그 그대로
+            await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
+            .exec()
+            .catch(err => {
+                res.status(500).json("해시태그 수정에 실패하였습니다.");
+            });
+    
+    
+            // 새로 생긴 해시태그 추가
+            newTag.forEach(async element =>  {
+                const putTag = await UserTagTb.findOne({'userTag.userTag': element})
                 .exec()
-                .catch(err => {
-                    res.status(500).json("해시태그 저장을 실패하였습니다.");
-                });
-
-            }else { // 원래 있던 태그인 경우
-                putTag.userTag.forEach(userTag => {
-                    if(userTag.userTag == element) {
-                        userTag.useCount++;
+                if(!putTag) { // 아예 새로운 태그인 경우
+                    const userTag = await UserTagTb.findOne()
+                    .exec()
+                    let newOne = {                     
+                            userTag: element,
+                            useCount: 1
                     }
-                })
-                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, putTag)
-                .exec()
-                .catch(err => {
-                    res.status(500).json("해시태그 저장을 실패하였습니다.");
-                });
-            }
-        })
-
-        // 동선에 수정할 값 입력
-        shareFlow.shareTitle = req.body.shareTitle;
-        shareFlow.adminTag = req.body.adminTag;
-        shareFlow.userTags = req.body.userTags;
-        shareFlow.updateDate = getCurrentDate(new Date())
-
-        await ShareFlowTb.findOneAndUpdate({ _id : req.body.shareFlowId }, shareFlow)
-        .exec()
-        .then(doc => {
-            res.status(201).json("success")
-        })
+                    userTag.userTag.push(newOne)
+                    await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+                    .exec()
+                    .catch(err => {
+                        res.status(500).json("해시태그 저장을 실패하였습니다.");
+                    });
+    
+                }else { // 원래 있던 태그인 경우
+                    putTag.userTag.forEach(userTag => {
+                        if(userTag.userTag == element) {
+                            userTag.useCount++;
+                        }
+                    })
+                    await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, putTag)
+                    .exec()
+                    .catch(err => {
+                        res.status(500).json("해시태그 저장을 실패하였습니다.");
+                    });
+                }
+            })
+    
+            // 동선에 수정할 값 입력
+            shareFlow.shareTitle = req.body.shareTitle;
+            shareFlow.adminTag = req.body.adminTag;
+            shareFlow.userTags = req.body.userTags;
+            shareFlow.updateDate = getCurrentDate(new Date())
+    
+            await ShareFlowTb.findOneAndUpdate({ _id : req.body.shareFlowId }, shareFlow)
+            .exec()
+            .then(doc => {
+                res.status(201).json("success")
+            })
+    
+        }
 
     } catch(e) {
         res.status(500).json({
@@ -374,5 +386,25 @@ router.post('/shareFlowDetail', async(req, res, next) => {
     .then(doc => {
         res.status(201).json("success");
     })
+})
+
+// 공유 동선 상세 페이지 정보
+router.get('/shareFlowDetail/:shareFlowId', async (req, res, next) => {
+    // 동선 제목, 썸네일, 해시태그, 
+    await ShareFlowTb.findOne({_id: req.params.shareFlowId})
+    .select('shareTitle')
+    .select('shareThumbnail')
+    .select('adminTag')
+    .select('userTags')
+    .exec()
+    .then(doc => {
+        res.status(200).json({
+            shareTitle: doc.shareTitle,
+            shareThumbnail: doc.shareThumbnail,
+            adminTag: doc.adminTag,
+            userTags: doc.userTags
+        })
+    })
+
 })
 module.exports = router;
