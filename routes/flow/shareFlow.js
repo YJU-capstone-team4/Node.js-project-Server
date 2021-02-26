@@ -32,7 +32,7 @@ const upload = multer({storage: storage})
 router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try {
         //if(!await ShareFlowTb.find({folderId : req.body.folderId})) {
-            if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag.regionTag || !req.body.userTags || !req.file || !req.body.adminTag.seasonTag){
+            if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag|| !req.body.userTags || !req.file){
                 res.status(200).json("입력되지 않은 값이 있습니다.")
             }
             else {
