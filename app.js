@@ -10,9 +10,9 @@ const algo          = require("./routes/db/algo")    // 알고리즘 용도
 const PORT = 4000;
 
 // 관리자용 로그인
-const LocalStrategy = require('passport-local').Strategy
-const bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({extended:false}))
+// const LocalStrategy = require('passport-local').Strategy
+// const bodyParser = require('body-parser')
+// app.use(bodyParser.urlencoded({extended:false}))
 
 // DB 연결
 mongoose.connect(process.env.ATLAS_URI, 

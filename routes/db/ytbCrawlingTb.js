@@ -578,7 +578,7 @@ router.post('/', (req, res, next) => {
 
 // 유튜브 videoCount 삭제 테스트
 // router.post('/test/:channelId', (req, res, next) => {
-//     algo.countVideo(YtbCrawlingTb, req.params.channelId)
+//     algo.minusVideo(YtbCrawlingTb, req.params.channelId)
 
 //     res.status(200).json(req.params.channelId + "'s video -1 is successed")
 // });
