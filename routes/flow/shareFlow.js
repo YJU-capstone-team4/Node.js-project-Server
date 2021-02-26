@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const s3 = require('../../config/s3');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const fs = require('fs'); // 설치 x
+const path = require('path'); // 설치 x
+const AWS = require('aws-sdk');
 
 const AdminTagTb = require('../../models/adminTagTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
@@ -20,23 +26,43 @@ function getCurrentDate(){
     return new Date(Date.UTC(year, month, today, hours, minutes, seconds, milliseconds));
 }
 
+// 이미지 업로드
+const upload = multer({
+    storage : multerS3({
+        s3:s3,
+        bucket:'test-gurume',
+        key : function(req, file, cb) {
+            var filename = file.originalname;
+            var ext = file.mimetype.split('/')[1];
+            if(!['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext)) {
+                return cb(new Error('Only images are allowed'));
+            }
+            cb(null, filename + '.jpg');
+        }
+    }),
+    acl : 'public-read-write'
+});
+
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
-router.post('/shareFlow/folder', async (req, res, next) => {
+router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try {
+        mongoose.set('useFindAndModify', false);
         req.body.user_id = 'payment';
         // 로그인 검사 후 필요한 유저정보 반환
         const userInfo = await UserTb.findOne({userId : req.body.user_id})
         .exec()
+        console.log('req.file: ', req.file);
 
+        let payLoad = {url: req.file.location};
 
-        // process.exit(0)
+        //process.exit(0)
         //shareFlowTb에 들어갈 내용 저장
         const shareFlowTb = new ShareFlowTb({
             _id: new mongoose.Types.ObjectId(),
             userTbId: userInfo._id,
             userId: req.body.user_id,
             shareTitle: req.body.shareTitle,
-            shareThumbnail: req.body.shareThumbnail,
+            shareThumbnail: req.file.key,
             folderId: req.body.folderId,
             adminTag: req.body.adminTag,
             userTags: req.body.userTags,
@@ -46,11 +72,10 @@ router.post('/shareFlow/folder', async (req, res, next) => {
             hits: 0,
         });
         await ShareFlowTb(shareFlowTb).save()
-        .exec()
-        .catch(err => {
-            res.status(500).json("동선 공유를 실패했습니다.");
-        });
-        // console.log("공유 동선 저장 완료")
+        // .catch(err => {
+        //     res.status(500).json("동선 공유를 실패했습니다.");
+        // });
+        console.log("공유 동선 저장 완료")
 
 
         // 해시 태그 저장
@@ -58,35 +83,34 @@ router.post('/shareFlow/folder', async (req, res, next) => {
             const tag = await UserTagTb.findOne({'userTag.userTag': element})
             .exec()
             console.log(tag)
-                console.log("해시태그 저장 시작")
-                if(!tag) {
-                    const userTag = await UserTagTb.findOne()
-                    .exec()
-                    let newTag = {                     
-                            userTag: element,
-                            useCount: 1
-                    }
-                    userTag.userTag.push(newTag)
-                    await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
-                    .exec()
-                    .catch(err => {
-                        res.status(500).json("해시태그 저장을 실패하였습니다.");
-                    });
-                }else {
-                    tag.userTag.forEach(userTag => {
-                        if(userTag.userTag == element) {
-                            userTag.useCount++;
-                        }
-                    })
-                    await UserTagTb.findOneAndUpdate({'userTags.userTag' : element}, tag)
-                    .exec()
-                    .catch(err => {
-                        res.status(500).json("해시태그 저장을 실패하였습니다.");
-                    });
+            console.log("해시태그 저장 시작")
+            if(!tag) { // 아예 새로운 태그인 경우
+                const userTag = await UserTagTb.findOne()
+                .exec()
+                let newTag = {                     
+                        userTag: element,
+                        useCount: 1
                 }
-
-                return res.status(201).json("success")
-            })
+                userTag.userTag.push(newTag)
+                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+                .exec()
+                .catch(err => {
+                    res.status(500).json("해시태그 저장을 실패하였습니다.");
+                });
+            }else { // 원래 있던 태그인 경우
+                tag.userTag.forEach(userTag => {
+                    if(userTag.userTag == element) {
+                        userTag.useCount++;
+                    }
+                })
+                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
+                .exec()
+                .catch(err => {
+                    res.status(500).json("해시태그 저장을 실패하였습니다.");
+                });
+            }
+        })
+        return res.status(201).json("success")
     }
     catch(e) {
         res.status(500).json({
@@ -97,68 +121,118 @@ router.post('/shareFlow/folder', async (req, res, next) => {
 });
 
 // 공유 동선 수정
-router.put('/shareFlow/folder', async (req, res, next) => {
+router.put('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try{
-        // 공유 동선 폴더 수정
-        const shareFlow = await ShareFlowTb.findOne({ _id : req.body.shareFlowId })
-        .exec()
 
-        
+        req.params.user_id = 'payment';
+        // 로그인 검사 후 필요한 유저정보 반환
+        const userInfo = await UserTb.findOne({userId : req.params.user_id})
+        .exec()
+        const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
+
+        // 만약 그림이 수정되어 있다면 원래 그림 삭제 후 새로운 그림 삽입
+        // if(req.file.originalname != shareFlow.shareThumbnail) {
+        //     // s3에 저장되어 있는 이미 삭제
+        //     s3.deleteObject({
+        //         Bucket: 'test-gurume', // 사용자 버켓 이름
+        //         Key: shareFlow.shareThumbnail // 버켓 내 경로
+        //     }, (err, data) => {
+        //         if (err) { throw err; }
+        //         console.log('s3 deleteObject ', data)
+        //     })
+        // }
+        // 공유 동선 폴더 수정
+        mongoose.set('useFindAndModify', false);
+
         // 해시태그 수정
         let newTag = [];
         let disappearTag = [];
         // 새로 추가된 해시태그 검색
-        req.body.userTags.forEach(async element => {
-            let tmp = await shareFlow.userTags.includes(element)
-
-            if(!tmp) {
-                await UserTagTb.findOne({'userTag.userTag': element})
-                .exec()
-                .then(docs => {
-                    if(!docs) {
-                        let tmp = new UserTagTb({
-                            _id: new mongoose.Types.ObjectId(),
-                            userTag: element,
-                            userCount: 1
-                        })
-
-                        //UserTagTb(tmp).save().exec()
-                    }else {
-                        UserTagTb.findOneAndUpdate({'userTag' : element}, {$inc :{'userCount': 1}})
-                    }
-                })
+        req.body.userTags.forEach(element => {
+            if(!shareFlow.userTags.includes(element)) {
+                newTag.push(element)
             }
+
         })
+
         // 없어진 해시태그 검색
         shareFlow.userTags.forEach(async element => {
-            let tmp = await req.body.userTags.includes(element)
-
-            if(!tmp) {
-                UserTagTb.updateOne({'userTag' : element}, {$inc :{'userCount': -1}})
+            if(!req.body.userTags.includes(element)) {
+                disappearTag.push(element)
             }
         })
+
+        
+        // 없어진 해시태그 삭제
+        const tag = await UserTagTb.findOne({_id : '5fb7a29bf648764c3cb9ebeb'}).exec()
+        tag.userTag.forEach(userTag => {
+            if(disappearTag.includes(userTag.userTag)) {
+                userTag.useCount--;
+            }
+        })
+
+        tag.userTag = tag.userTag.filter(doc => doc.useCount !=0)
+        console.log(tag.userTag)
+        // 원래 있던 해시태그 그대로
+        await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
+        .exec()
+        .catch(err => {
+            res.status(500).json("해시태그 수정에 실패하였습니다.");
+        });
+
+
+        // 새로 생긴 해시태그 추가
+        newTag.forEach(async element =>  {
+            const putTag = await UserTagTb.findOne({'userTag.userTag': element})
+            .exec()
+            if(!putTag) { // 아예 새로운 태그인 경우
+                const userTag = await UserTagTb.findOne()
+                .exec()
+                let newOne = {                     
+                        userTag: element,
+                        useCount: 1
+                }
+                userTag.userTag.push(newOne)
+                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+                .exec()
+                .catch(err => {
+                    res.status(500).json("해시태그 저장을 실패하였습니다.");
+                });
+
+            }else { // 원래 있던 태그인 경우
+                putTag.userTag.forEach(userTag => {
+                    if(userTag.userTag == element) {
+                        userTag.useCount++;
+                    }
+                })
+                await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, putTag)
+                .exec()
+                .catch(err => {
+                    res.status(500).json("해시태그 저장을 실패하였습니다.");
+                });
+            }
+        })
+
+        // 동선에 수정할 값 입력
+
         shareFlow.shareTitle = req.body.shareTitle;
         shareFlow.shareThumbnail = req.body.shareThumbnail;
         shareFlow.adminTag = req.body.adminTag;
         shareFlow.userTags = req.body.userTags;
-
         shareFlow.updateDate = getCurrentDate(new Date())
 
-        mongoose.set('useFindAndModify', false);
         await ShareFlowTb.findOneAndUpdate({ _id : req.body.shareFlowId }, shareFlow)
         .exec()
         .then(doc => {
             res.status(201).json("success")
-        });
+        })
 
-        // 해시태그 수정
-        
     } catch(e) {
         res.status(500).json({
             error: e
-        });
+       });
 
-    }
+   }
 
 })
 
@@ -167,42 +241,43 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
     try {
         mongoose.set('useFindAndModify', false);
         const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
-        // 해시태그 삭제
-
-        console.log(shareFlow)
-        // 
         
+        // s3에 저장되어 있는 이미 삭제
+        s3.deleteObject({
+            Bucket: 'test-gurume', // 사용자 버켓 이름
+            Key: shareFlow.shareThumbnail // 버켓 내 경로
+          }, (err, data) => {
+            if (err) { throw err; }
+            console.log('s3 deleteObject ', data)
+          })
+
+        // 해시태그 삭제
         const tag = await UserTagTb.findOne({_id : '5fb7a29bf648764c3cb9ebeb'}).exec()
-        // .then(doc => {
-        //     res.status(200).json(doc)
-        // });
-        console.log(tag)
         tag.userTag.forEach(userTag => {
             if(shareFlow.userTags.includes(userTag.userTag)) {
                 userTag.useCount--;
-                if(userTag.useCount == 0) {
-                    userTag = null
-                }
             }
         })
-        await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, userTag)
+
+        tag.userTag = tag.userTag.filter(doc => doc.useCount !=0)
+
+        await UserTagTb.findOneAndUpdate({_id : '5fb7a29bf648764c3cb9ebeb'}, tag)
         .exec()
         .catch(err => {
-            res.status(500).json("해시태그 저장을 실패하였습니다.");
+            res.status(500).json("해시태그 삭제에 실패하였습니다.");
         });
-        // UserTagTb.updateOne(userTag);
     
     
 
-        // 공유 동선 삭제
-        // await ShareFlowTb.findByIdAndRemove(req.body.shareFlowId)
-        // .exec() 
-        // .then(doc => {
-        //     res.status(200).json("success")
-        // })
-        // .catch(err => {
-        //     res.status(500).json("동선 삭제를 실패하였습니다.");
-        // });
+        //공유 동선 삭제
+        await ShareFlowTb.findByIdAndDelete(req.body.shareFlowId)
+        .exec() 
+        .then(doc => {
+            res.status(200).json("success")
+        })
+        .catch(err => {
+            res.status(500).json("동선 삭제를 실패하였습니다.");
+        });
     
     } catch(e) {
         res.status(500).json({
@@ -280,4 +355,14 @@ router.post('/shareFlow/like', async (req, res, next) => {
     }
 })
 
+
+// 동선 상세 페이지 조회수 증가
+router.post('/shareFlowDetail', async(req, res, next) => {
+    
+    await ShareFlowTb.updateOne({'_id': req.body.shareFlowId}, {$inc: {hits: 1}})
+    .exec()
+    .then(doc => {
+        res.status(201).json("success");
+    })
+})
 module.exports = router;

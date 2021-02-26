@@ -235,12 +235,9 @@ router.put('/userFlow', async (req, res, next) => {
                 tmp++;
             });
 
-            user.folders[index] = ({
-                folderTitle: req.body.folderTitle,
-                createDate: user.folders[index].createDate,  
-                updateDate: getCurrentDate(new Date()),
-                stores: user.folders[index].stores               
-            })
+            user.folders[index].folderTitle = req.body.folderTitle;
+            user.folders[index].updateDate = getCurrentDate(new Date());
+            console.log(user)
             mongoose.set('useFindAndModify', false);
             await UserTb
             .findOneAndUpdate({
