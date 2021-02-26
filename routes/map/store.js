@@ -25,9 +25,6 @@ router.get('/map/store', async (req, res, next) => {
             )
         .exec();
 
-
-        console.log(user)
-
         user.folders[0].stores.forEach(element => {
             console.log(element)
             if(element.storeId == req.query.storeId) {
@@ -36,10 +33,6 @@ router.get('/map/store', async (req, res, next) => {
             }
         })
 
-        // if(user.likeYoutuber.includes(req.params.ytb_id)) {
-        //     storeLike = true;
-        // }
-        
     }
     YtbStoreTb.findOne({"_id": req.query.storeId})
     .exec()
