@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const ShareFlowTb = require("../../models/shareFlowTb.model")
+const imgUrl = `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`;
 
 router.get('/regionFlow', (req, res, next) => {
     ShareFlowTb.find()
@@ -45,7 +46,7 @@ router.get('/regionFlow/region/:regionTag', (req, res, next) => {
                 return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
-                    shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
+                    shareThumbnail: imgUrl + doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
                     folderId: doc.folderId

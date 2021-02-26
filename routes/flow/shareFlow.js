@@ -31,7 +31,7 @@ const upload = multer({storage: storage})
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
 router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try {
-        //if(!await ShareFlowTb.find({folderId : req.body.folderId})) {
+        if(!await ShareFlowTb.find({folderId : req.body.folderId})) {
             if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag|| !req.body.userTags || !req.file){
                 res.status(200).json("입력되지 않은 값이 있습니다.")
             }
@@ -93,7 +93,7 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
         
         
                 // 해시 태그 저장
-                req.body.userTags.forEach(async element =>  {
+                JSON.parse(req.body.userTags).forEach(async element =>  {
                     const tag = await UserTagTb.findOne({'userTag.userTag': element})
                     .exec()
                     console.log(tag)
@@ -126,9 +126,9 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
                 })
                 return res.status(201).json("success")
              }
-            // } else {
-            //     return res.status(201).json("이미 공유된 동선입니다.")
-            // }
+            } else {
+                return res.status(201).json("이미 공유된 동선입니다.")
+            }
         }
         
 
@@ -143,7 +143,7 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
 // 공유 동선 수정
 router.put('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try{
-        if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag.regionTag || !req.body.userTags || !req.file || !req.body.adminTag.seasonTag){
+        if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag || !req.body.userTags || !req.file){
             res.status(200).json("입력되지 않은 값이 있습니다.")
         }else {
             const s3Client = s3.s3Client;
@@ -172,7 +172,7 @@ router.put('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
             let newTag = [];
             let disappearTag = [];
             // 새로 추가된 해시태그 검색
-            req.body.userTags.forEach(element => {
+            JSON.parse(req.body.userTags).forEach(element => {
                 if(!shareFlow.userTags.includes(element)) {
                     newTag.push(element)
                 }
@@ -181,7 +181,7 @@ router.put('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     
             // 없어진 해시태그 검색
             shareFlow.userTags.forEach(async element => {
-                if(!req.body.userTags.includes(element)) {
+                if(!JSON.parse(req.body.userTags).includes(element)) {
                     disappearTag.push(element)
                 }
             })
@@ -393,22 +393,60 @@ router.post('/shareFlowDetail', async(req, res, next) => {
 })
 
 // 공유 동선 상세 페이지 정보
-router.get('/shareFlowDetail/:shareFlowId', async (req, res, next) => {
+router.get('/shareFlowDetail', async (req, res, next) => {
+    mongoose.set('useFindAndModify', false);
+    req.body.user_id = 'payment';
+
+    let flowLike = false;
+
+
+    // // 로그인 검사 후 필요한 유저정보 반환
+    // const userInfo = await UserTb.findOne({userId : req.body.user_id})
+    // .select('folders._id')
+    // .exec()
+
+    // let ids = userInfo.folders.map(doc => doc._id)
+
     // 동선 제목, 썸네일, 해시태그, 
-    await ShareFlowTb.findOne({_id: req.params.shareFlowId})
+    const shareFlow = await ShareFlowTb.find({userId: req.body.user_id})
+    .select('_id')
     .select('shareTitle')
     .select('shareThumbnail')
+    .select('folderId')
     .select('adminTag')
     .select('userTags')
     .exec()
-    .then(doc => {
-        res.status(200).json({
-            shareTitle: doc.shareTitle,
-            shareThumbnail: doc.shareThumbnail,
-            adminTag: doc.adminTag,
-            userTags: doc.userTags
+    
+    let result = []
+
+    if(req.body.user_id) { // 로그인이 되어 있을 때 
+        const user = await UserTb.findOne({userId: req.body.user_id})
+        .select('likeFlows')
+        .exec();
+        
+        shareFlow.forEach(id => {
+
+            let flowLike = false;
+            if(user.likeFlows.includes(id._id.toString())) {
+                flowLike = true;
+            }
+            result.push({
+                _id: id._id,
+                shareTitle: id.shareTitle,
+                shareThumbnail: id.shareThumbnail,
+                folderId: id.folderId,
+                adminTag: id.adminTag,
+                userTags: id.userTags,
+                flowLike: flowLike
+            })
         })
-    })
+
+
+        
+    }
+    
+    return res.status(200).json(result)
+
 
 })
 module.exports = router;

@@ -6,6 +6,7 @@ const YtbStoreTb = require("../../models/ytbStoreTb.model");
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const AttractionTb = require("../../models/attractionTb.model");
 const UserTb = require('../../models/userTb.model');
+const imgUrl = `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`;
 
 router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
     try {
@@ -37,7 +38,7 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
                       return {
                           _id: doc._id,
                           shareTitle: doc.shareTitle,
-                          shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
+                          shareThumbnail: imgUrl+ doc.shareThumbnail,
                           //shareThumbnail: doc.shareThumbnail,
                           adminTag: doc.adminTag,
                           userTags: doc.userTags,
@@ -55,11 +56,11 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
 });
 
 router.get('/storeDetail/attraction', (req, res, next) => {
-    const latTmp = 1;
-    const lngTmp = 0.5;
+    const latTmp = 0.2;
+    const lngTmp = 0.1;
     AttractionTb.find()
-    .where('attractionInfo.location.lat').gte(req.query.lat*1-latTmp).lte(req.query.lat+latTmp)
-    .where('attractionInfo.location.lng').gte(req.query.lng*1-lngTmp).lte(req.query.lng+lngTmp)
+    .where('attractionInfo.location.lat').gte(req.query.lat*1-latTmp).lte(req.query.lat*1+latTmp)
+    .where('attractionInfo.location.lng').gte(req.query.lng*1-lngTmp).lte(req.query.lng*1+lngTmp)
     .select()
     .populate('adminTagTbId')
     .exec()

@@ -6,6 +6,7 @@ const AdminTagTb = require('../../models/adminTagTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTagTb = require('../../models/userTagTb.model');
 const UserTb = require('../../models/userTb.model');
+const imgUrl = `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`;
 
 router.get('/flowSearch', (req, res, next) => {
     AdminTagTb.find()
@@ -103,7 +104,7 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                         return {
                         _id: doc._id,
                         shareTitle: doc.shareTitle,
-                        shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
+                        shareThumbnail: imgUrl + doc.shareThumbnail,
                         //shareThumbnail: doc.shareThumbnail,
                         adminTag: doc.adminTag,
                         userTags: doc.userTags,
@@ -132,7 +133,7 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                         return {
                         _id: doc._id,
                         shareTitle: doc.shareTitle,
-                        shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
+                        shareThumbnail: imgUrl+ doc.shareThumbnail,
                         //shareThumbnail: doc.shareThumbnail,
                         adminTag: doc.adminTag,
                         userTags: doc.userTags,
@@ -159,7 +160,7 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                     return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
-                    shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
+                    shareThumbnail: imgUrl + doc.shareThumbnail,
                     //shareThumbnail: doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
@@ -190,7 +191,7 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                     return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
-                    shareThumbnail: `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`+ doc.shareThumbnail,
+                    shareThumbnail: imgUrl+ doc.shareThumbnail,
                     //shareThumbnail: doc.shareThumbnail,
                     userTags: doc.userTags,
                     folderId: doc.folderId
