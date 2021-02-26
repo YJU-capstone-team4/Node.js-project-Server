@@ -7,7 +7,7 @@ const mongoose      = require('mongoose');
 const cors          = require('cors');
 const algo          = require("./routes/db/algo")    // 알고리즘 용도
 
-const PORT = 4000;
+const PORT = process.env.PORT;
 
 // 관리자용 로그인
 // const LocalStrategy = require('passport-local').Strategy
@@ -121,7 +121,7 @@ const io = require("socket.io")(server, {
   handlePreflightRequest: (req, res) => {
       const headers = {
           "Access-Control-Allow-Headers": "Content-Type, Authorization",
-          "Access-Control-Allow-Origin": 'http://192.168.0.43:4000', //or the specific origin you want to give access to,
+          "Access-Control-Allow-Origin": process.env.SOCKET_URL, //or the specific origin you want to give access to,
           "Access-Control-Allow-Credentials": true
       };
       res.writeHead(200, headers);

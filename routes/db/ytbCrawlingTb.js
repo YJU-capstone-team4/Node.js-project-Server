@@ -6,6 +6,8 @@ const YtbCrawlingTb = require('../../models/ytbCrawlingTb.model');
 const YtbChannelTb = require('../../models/ytbChannelTb.model');
 const YtbStoreTb = require('../../models/ytbStoreTb.model');
 const algo = require("./algo");
+const apps = require("../../app");
+const socket = require("../../socket");
 
 // // 데이터 수집 페이지 메인
 // router.get('/socket', async (req, res, next) => {
@@ -581,6 +583,13 @@ router.post('/', (req, res, next) => {
 //     algo.minusVideo(YtbCrawlingTb, req.params.channelId)
 
 //     res.status(200).json(req.params.channelId + "'s video -1 is successed")
+// });
+
+// 소켓 데이터 전송 테스트
+// router.post('/test', (req, res, next) => {
+//     // socket(app.io).sendResult()
+//     console.log(apps.io)
+//     res.status(200).json('소켓 데이터 전송')
 // });
 
 module.exports = router;
