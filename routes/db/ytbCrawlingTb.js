@@ -269,7 +269,7 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
     }
 });
 
-// < 주소 전달 > 프론트 -> 백 -> 크롤링 서버
+// < 주소 전달 > 프론트 -> 백 -> 크롤링 서버 => 민혁 코드 추가하면 됨
 router.post('/address/search/:addressId', async (req, res, next) => {
     try {
         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
