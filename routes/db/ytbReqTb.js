@@ -289,25 +289,25 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링
     var minhyuk = minhyuksFunction(req.params.youtuber);
 
-    const ytbCrawlingTb = new YtbCrawlingTb({
-        _id: new mongoose.Types.ObjectId(),
-        ytbChannel: minhyuk.ytbChannel,
-        ytbProfile: minhyuk.ytbProfile,
-        ytbLinkAddress: minhyuk.ytbLinkAddress,
-        ytbSubscribe: minhyuk.ytbSubscribe,
-        ytbHits: minhyuk.ytbHits,
-        videoCount: minhyuk.videoCount,
-        video: minhyuk.video,
-      });
-      ytbCrawlingTb.save()
-      .then(result => {
-          res.status(200).json(result);
-      })
-      .catch(err => {
-          res.status(500).json({
-              error: err
-          });
-      });
+    // const ytbCrawlingTb = new YtbCrawlingTb({
+    //     _id: new mongoose.Types.ObjectId(),
+    //     ytbChannel: minhyuk.ytbChannel,
+    //     ytbProfile: minhyuk.ytbProfile,
+    //     ytbLinkAddress: minhyuk.ytbLinkAddress,
+    //     ytbSubscribe: minhyuk.ytbSubscribe,
+    //     ytbHits: minhyuk.ytbHits,
+    //     videoCount: minhyuk.videoCount,
+    //     video: minhyuk.video,
+    //   });
+    //   ytbCrawlingTb.save()
+    //   .then(result => {
+    //       res.status(200).json(result);
+    //   })
+    //   .catch(err => {
+    //       res.status(500).json({
+    //           error: err
+    //       });
+    //   });
 });
 
 module.exports = router;
