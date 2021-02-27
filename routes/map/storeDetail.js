@@ -10,6 +10,14 @@ const imgUrl = `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`;
 
 router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
     try {
+        req.body.userId = 'payment'
+        let flowLikeCheck =null;
+        if(req.body.userId) { // 로그인이 되어 있을 때 
+           flowLikeCheck = await UserTb.findOne({userId: req.body.userId})
+           .select('likeFlows')
+           .exec();
+        }
+
         const docs = await UserTb.find({
                 "folders.stores.storeId": req.params.store_id
             },{
@@ -35,6 +43,16 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
             .then(docs => {
               res.status(200).json({
                 shareFlowTb: docs.map(doc => {
+                        let flowLike = false;
+                        if(req.body.userId) { // 로그인이 되어 있을 때 
+                            if(flowLikeCheck.likeFlows.includes(doc._id.toString())) {
+                                flowLike = true;
+                            }
+    
+                         }
+    
+                        
+                   
                       return {
                           _id: doc._id,
                           shareTitle: doc.shareTitle,
@@ -42,7 +60,8 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
                           //shareThumbnail: doc.shareThumbnail,
                           adminTag: doc.adminTag,
                           userTags: doc.userTags,
-                          folderId: doc.folderId
+                          folderId: doc.folderId,
+                          flowLike: flowLike
                       }
                   })
               })

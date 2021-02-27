@@ -77,17 +77,13 @@ router.get('/flowSearch/tag/:user_tag', (req, res, next) => {
 router.post('/flowSearch/flow/', async (req, res, next) => {
     // 동선 좋아요 확인
     req.body.userId = 'payment'
-    let flowLike = false;
-    if(req.body.userId) { // 로그인이 되어 있을 때 
-        const user = await UserTb.findOne({userId: req.body.userId})
+    // let flowLike = false;
+    let flowLikeCheck =null;
+     if(req.body.userId) { // 로그인이 되어 있을 때 
+        flowLikeCheck = await UserTb.findOne({userId: req.body.userId})
         .select('likeFlows')
         .exec();
-
-        if(user.likeFlows.includes(req.params.folder_id)) {
-            flowLike = true;
-        }
-        
-    }
+     }
 
     if(req.body.option == "tag") {
         // 해시태그로 검색
@@ -101,6 +97,14 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                 res.status(200).json({
                     count: docs.length,
                     shareFlowTb: docs.map(doc => {
+                        let flowLike = false;
+                        if(req.body.userId) { // 로그인이 되어 있을 때 
+                            if(flowLikeCheck.likeFlows.includes(doc._id.toString())) {
+                                flowLike = true;
+                            }
+    
+                         }
+    
                         return {
                         _id: doc._id,
                         shareTitle: doc.shareTitle,
@@ -108,7 +112,8 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                         //shareThumbnail: doc.shareThumbnail,
                         adminTag: doc.adminTag,
                         userTags: doc.userTags,
-                        folderId: doc.folderId
+                        folderId: doc.folderId,
+                        flowLike: flowLike
                     }})
                 })
             })
@@ -130,6 +135,14 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                 res.status(200).json({
                     count: docs.length,
                     shareFlowTb: docs.map(doc => {
+                        let flowLike = false;
+                        if(req.body.userId) { // 로그인이 되어 있을 때 
+                            if(flowLikeCheck.likeFlows.includes(doc._id.toString())) {
+                                flowLike = true;
+                            }
+    
+                         }
+    
                         return {
                         _id: doc._id,
                         shareTitle: doc.shareTitle,
@@ -137,7 +150,8 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                         //shareThumbnail: doc.shareThumbnail,
                         adminTag: doc.adminTag,
                         userTags: doc.userTags,
-                        folderId: doc.folderId
+                        folderId: doc.folderId,
+                        flowLike: flowLike
                     }})
                 })
             })
@@ -157,6 +171,14 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
             res.status(200).json({
                 count: docs.length,
                 shareFlowTb: docs.map(doc => {
+                    let flowLike = false;
+                    if(req.body.userId) { // 로그인이 되어 있을 때 
+                        if(flowLikeCheck.likeFlows.includes(doc._id.toString())) {
+                            flowLike = true;
+                        }
+
+                     }
+
                     return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
@@ -164,7 +186,8 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
                     //shareThumbnail: doc.shareThumbnail,
                     adminTag: doc.adminTag,
                     userTags: doc.userTags,
-                    folderId: doc.folderId
+                    folderId: doc.folderId,
+                    flowLike: flowLike
                 }})
             })
         })
@@ -184,17 +207,25 @@ router.post('/flowSearch/flow/', async (req, res, next) => {
         await ShareFlowTb.find({'userId': {$in: ids}})
         .exec()
         .then(docs => {
-            console.log(docs)
             res.status(200).json({
                 count: docs.length,
                 shareFlowTb: docs.map(doc => {
+                    let flowLike = false;
+                    if(req.body.userId) { // 로그인이 되어 있을 때 
+                        if(flowLikeCheck.likeFlows.includes(doc._id.toString())) {
+                            flowLike = true;
+                        }
+
+                     }
+
                     return {
                     _id: doc._id,
                     shareTitle: doc.shareTitle,
                     shareThumbnail: imgUrl+ doc.shareThumbnail,
                     //shareThumbnail: doc.shareThumbnail,
                     userTags: doc.userTags,
-                    folderId: doc.folderId
+                    folderId: doc.folderId,
+                    flowLike: flowLike
                 }})
             })
         })
