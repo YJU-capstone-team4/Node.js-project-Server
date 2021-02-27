@@ -266,7 +266,7 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
     try {
         const s3Client = s3.s3Client;
         mongoose.set('useFindAndModify', false);
-        const shareFlow = await ShareFlowTb.findOne({_id: req.body.shareFlowId}).exec()
+        const shareFlow = await ShareFlowTb.findOne({_id: req.query.shareFlowId}).exec()
         
         // s3에 저장되어 있는 이미 삭제
         s3Client.deleteObject({
@@ -296,7 +296,7 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
     
 
         //공유 동선 삭제
-        await ShareFlowTb.findByIdAndDelete(req.body.shareFlowId)
+        await ShareFlowTb.findByIdAndDelete(req.query.shareFlowId)
         .exec() 
         .then(doc => {
             res.status(200).json("success")
