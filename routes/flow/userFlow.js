@@ -438,4 +438,34 @@ router.delete('/favorite', async (req, res, next) => {
     }
 });
 
+
+// 유저가 좋아요 한 동선
+// 공유 동선 상세 페이지 정보
+router.get('/shareFlow/like', async (req, res, next) => {
+    mongoose.set('useFindAndModify', false);
+    req.body.user_id = 'payment';
+
+    const user = await UserTb.findOne({userId: req.body.user_id})
+    .select('likeFlows')
+    .exec();
+
+    console.log(user);
+    let ids = user.likeFlows.map(doc => doc)
+
+    
+    // 동선 제목, 썸네일, 해시태그, 
+    await ShareFlowTb.find({_id: {$in: ids}})
+    .select('_id')
+    .select('shareTitle')
+    .select('shareThumbnail')
+    .select('folderId')
+    .select('adminTag')
+    .select('userTags')
+    .exec()
+    .then(doc => {
+        res.status(200).json(doc)
+    })
+
+
+})
 module.exports = router;

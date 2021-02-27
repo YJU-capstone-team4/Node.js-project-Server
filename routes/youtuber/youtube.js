@@ -332,7 +332,7 @@ router.post('/youtuber/request', async (req, res, next) => {
         //const result = []// 함수 실행 return 값 반환
         const result = {
             ytbProfile: 'asdf',
-            ytbChannel: '야식이',
+            ytbChannel: req.body.ytbChannel,
             ytbSubscribe: 1060000,
             videoCount: 1130,
             ytbHits: 355899261,
@@ -354,6 +354,44 @@ router.post('/youtuber/request', async (req, res, next) => {
     }
 });
 
+
+// 유튜버 좋아요 리스트 
+router.get('/likeYoutuber', async (req, res, next) => {
+    try {
+
+        req.body.user_id = 'payment';
+        const user = await UserTb.findOne({"userId": req.body.user_id})
+        .select('likeYoutuber')
+        .exec()
+        console.log(user)
+    
+        let ids = user.likeYoutuber.map(doc => doc);
+
+        console.log(ids)
+        await YtbChannelTb.find({'_id': {$in:ids}})
+          .populate({
+              path: 'video.ytbStoreTbId'
+          })
+          .exec()
+          .then(docs => {
+            res.status(200).json({
+                ytbChannelTb: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        ytbChannel: doc.ytbChannel,
+                        ytbProfile: doc.ytbProfile,
+                        ytbSubscribe: doc.ytbSubscribe,
+                        storeCount: doc.video.length
+                    }
+                })
+            })
+        }) 
+    } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+    }
+})
 
 
 module.exports = router;
