@@ -272,14 +272,14 @@ router.delete('/userFlow', async (req, res, next) => {
             let ids = []
             user.folders.forEach(element => {
                 ids.push(element._id.toString())
-                if(element._id == req.body.folder_id) {
+                if(element._id == req.query.folder_id) {
                     index = tmp;
-                    console.log(element._id == req.body.folder_id)
+                    console.log(element._id == req.query.folder_id)
                     console.log(index)
                 }
                 tmp++;
             });
-            if(ids.includes(req.body.folder_id)){
+            if(ids.includes(req.query.folder_id)){
                 user.folders.splice(index,1);
                 mongoose.set('useFindAndModify', false);
                 await UserTb
@@ -406,13 +406,13 @@ router.delete('/favorite', async (req, res, next) => {
             let ids = []
             user.folders[index].stores.forEach(element => {
                 ids.push(element.storeId)
-                console.log(element.storeId == req.body.store_id.toString())
-                if(element.storeId == req.body.store_id) {
+                console.log(element.storeId == req.query.store_id.toString())
+                if(element.storeId == req.query.store_id) {
                     i = tmp;
                 }
                 tmp++;
             });
-            if(ids.includes(req.body.store_id.toString())) {
+            if(ids.includes(req.query.store_id.toString())) {
                 user.folders[index].stores.splice(i,1)
 
                 mongoose.set('useFindAndModify', false);
