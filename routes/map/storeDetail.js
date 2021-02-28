@@ -75,8 +75,8 @@ router.get('/storeDetail/flow/:store_id', async (req, res, next) => {
 });
 
 router.get('/storeDetail/attraction', (req, res, next) => {
-    const latTmp = 0.2;
-    const lngTmp = 0.1;
+    const latTmp = 0.5;
+    const lngTmp = 1;
     AttractionTb.find()
     .where('attractionInfo.location.lat').gte(req.query.lat*1-latTmp).lte(req.query.lat*1+latTmp)
     .where('attractionInfo.location.lng').gte(req.query.lng*1-lngTmp).lte(req.query.lng*1+lngTmp)
