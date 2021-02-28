@@ -226,7 +226,7 @@ router.post('/youtuber/localVideo', async (req, res, next) => {
         .in(req.body.regionTags)
         .select('_id')
         .select('regionTag')
-        .select('storeInfo.storeAddress')
+        .select('storeInfo')
         .exec()
 
         console.log(store)
@@ -242,6 +242,7 @@ router.post('/youtuber/localVideo', async (req, res, next) => {
                         ytbAddress: id.ytbAddress,
                         storeId: id.storeId,
                         hits: id.hits,
+                        storeName: element.storeInfo.storeName,
                         storeAddress :element.storeInfo.storeAddress,
                         regionTag:element.regionTag
                     })
@@ -303,7 +304,7 @@ router.post('/youtuber/like', async (req, res, next) => {
         }, user)
         .exec()
         .then(doc => {
-            res.status(201).json("success")
+            res.status(201).json("좋아요 상태를 변경했습니다.")
         })
 
 
@@ -316,7 +317,7 @@ router.post('/youtuber/like', async (req, res, next) => {
 });
 
 // 유튜버 신청
-router.post('/youtuber/request', async (req, res, next) => {
+router.post('/youtuberRequest', async (req, res, next) => {
     try {
         req.body.user_id = 'payment'
         const user = await UserTb
@@ -329,23 +330,24 @@ router.post('/youtuber/request', async (req, res, next) => {
         mongoose.set('useFindAndModify', false);
 
         // 크롤링 함수 불러오기
+        
         //const result = []// 함수 실행 return 값 반환
-        const result = {
-            ytbProfile: 'asdf',
-            ytbChannel: '야식이',
-            ytbSubscribe: 1060000,
-            videoCount: 1130,
-            ytbHits: 355899261,
-            ytbLinkAddress: "httPsaks"
-        }
-        // 신청할 객체에 필요한 정보 추가하기
-        result.userTbId = user._id;
-        result.userId = req.body.user_id;
+        // const result = {
+        //     ytbProfile: 'test',
+        //     ytbChannel: req.body.ytbChannel,
+        //     ytbSubscribe: 1060000,
+        //     videoCount: 1130,
+        //     ytbHits: 355899261,
+        //     ytbLinkAddress: "test"
+        // }
+        // // 신청할 객체에 필요한 정보 추가하기
+        // result.userTbId = user._id;
+        // result.userId = req.body.user_id;
 
-        // 신청 db에 추가
-        //await YtbReqTb(result).save().catch(e) {
-        //  res.status(500).json("유튜버 신청에 실패했습니다.")
-        //}
+        // console.log(result)
+        // // 신청 db에 추가
+        // await YtbReqTb(result).save()
+
     }catch(e) {
         res.status(500).json({
             error: e
@@ -354,6 +356,45 @@ router.post('/youtuber/request', async (req, res, next) => {
     }
 });
 
+
+// 유튜버 좋아요 리스트 
+router.get('/likeYoutuber', async (req, res, next) => {
+    try {
+
+        req.body.user_id = 'payment';
+        const user = await UserTb.findOne({"userId": req.body.user_id})
+        .select('likeYoutuber')
+        .exec()
+        console.log(user)
+    
+        let ids = user.likeYoutuber.map(doc => doc);
+
+        console.log(ids)
+        await YtbChannelTb.find({'_id': {$in:ids}})
+          .populate({
+              path: 'video.ytbStoreTbId'
+          })
+          .exec()
+          .then(docs => {
+            res.status(200).json({
+                count: docs.length,
+                ytbChannelTb: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        ytbChannel: doc.ytbChannel,
+                        ytbProfile: doc.ytbProfile,
+                        ytbSubscribe: doc.ytbSubscribe,
+                        storeCount: doc.video.length
+                    }
+                })
+            })
+        }) 
+    } catch(e) {
+        res.status(500).json({
+            error: e
+        });
+    }
+})
 
 
 module.exports = router;

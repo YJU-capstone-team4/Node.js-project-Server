@@ -6,7 +6,7 @@ const UserTb = require('../../models/userTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const { response } = require('express');
 
-
+const imgUrl = `https://test-gurume.s3.ap-northeast-2.amazonaws.com/`;
 function getCurrentDate(){
     var date = new Date();
     var year = date.getFullYear();
@@ -162,7 +162,7 @@ router.put('/userFlow/folder', async (req, res, next) => {
         }, user)
         .exec()
         .then(doc => {
-            res.status(201).json("success")
+            res.status(201).json("stores의 순서를 변경했습니다.")
         })
         .catch(err => {
             res.status(500).json({
@@ -202,7 +202,7 @@ router.post('/userFlow', async (req, res, next) => {
         }, user)
         .exec()
         .then(doc => {
-            res.status(201).json("success")
+            res.status(201).json("폴더가 생성되었습니다.")
         })
 
 
@@ -245,7 +245,7 @@ router.put('/userFlow', async (req, res, next) => {
             }, user)
             .exec()
             .then(doc => {
-                res.status(201).json("success")
+                res.status(201).json("폴더 이름을 변경했습니다.")
             })
 
 
@@ -288,7 +288,7 @@ router.delete('/userFlow', async (req, res, next) => {
                 }, user)
                 .exec()
                 .then(doc => {
-                    res.status(201).json("success")
+                    res.status(201).json("폴더를 삭제했습니다.")
                 })
             }else {
                 res.status(200).json("해당 폴더를 찾을 수 없습니다.")
@@ -363,7 +363,7 @@ router.post('/favorite', async (req, res, next) => {
             }, user)
             .exec()
             .then(doc => {
-                res.status(201).json("success")
+                res.status(201).json("즐겨찾기 추가했습니다.")
             })
 
         }else {
@@ -394,7 +394,7 @@ router.delete('/favorite', async (req, res, next) => {
             let index = 0
             let tmp = 0
             user.folders.forEach(element => {
-                if(element._id == req.body.folder_id) {
+                if(element._id == req.query.folder_id) {
                     index = tmp;
                 }
                 tmp++;
@@ -422,7 +422,7 @@ router.delete('/favorite', async (req, res, next) => {
                 }, user)
                 .exec()
                 .then(doc => {
-                    res.status(201).json("success")
+                    res.status(201).json("즐겨찾기가 취소되었습니다.")
                 })
     
             }else {
@@ -438,4 +438,52 @@ router.delete('/favorite', async (req, res, next) => {
     }
 });
 
+
+// 유저가 좋아요 한 동선
+// 공유 동선 상세 페이지 정보
+router.get('/shareFlow/like', async (req, res, next) => {
+    mongoose.set('useFindAndModify', false);
+    req.body.user_id = 'payment';
+
+    const user = await UserTb.findOne({userId: req.body.user_id})
+    .select('likeFlows')
+    .exec();
+
+    console.log(user);
+    let ids = user.likeFlows.map(doc => doc)
+    let flowLikeCheck =null;
+     if(req.body.userId) { // 로그인이 되어 있을 때 
+        flowLikeCheck = await UserTb.findOne({userId: req.body.userId})
+        .select('likeFlows')
+        .exec();
+     }
+    
+    // 동선 제목, 썸네일, 해시태그, 
+    await ShareFlowTb.find({_id: {$in: ids}})
+    .select('_id')
+    .select('shareTitle')
+    .select('shareThumbnail')
+    .select('folderId')
+    .select('adminTag')
+    .select('userTags')
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            count:docs.length,
+            shareFlowTb: docs.map(doc => {
+
+                return {
+                _id: doc._id,
+                shareTitle: doc.shareTitle,
+                shareThumbnail: imgUrl + doc.shareThumbnail,
+                //shareThumbnail: doc.shareThumbnail,
+                adminTag: doc.adminTag,
+                userTags: doc.userTags,
+                folderId: doc.folderId,
+                flowLike: true
+            }})
+        })
+    })
+
+})
 module.exports = router;
