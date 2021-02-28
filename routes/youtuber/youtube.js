@@ -304,7 +304,7 @@ router.post('/youtuber/like', async (req, res, next) => {
         }, user)
         .exec()
         .then(doc => {
-            res.status(201).json("success")
+            res.status(201).json("좋아요 상태를 변경했습니다.")
         })
 
 
@@ -377,6 +377,7 @@ router.get('/likeYoutuber', async (req, res, next) => {
           .exec()
           .then(docs => {
             res.status(200).json({
+                count: docs.length,
                 ytbChannelTb: docs.map(doc => {
                     return {
                         _id: doc._id,
