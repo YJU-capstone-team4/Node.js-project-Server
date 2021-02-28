@@ -286,7 +286,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     //     ytbChannel: ytbReq.ytbChannel
     // });
 
-    // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링
+    // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링 -> 'var minhyuk =' 지우면 됨
     var minhyuk = minhyuksFunction(req.params.youtuber);
 
     // const ytbCrawlingTb = new YtbCrawlingTb({
