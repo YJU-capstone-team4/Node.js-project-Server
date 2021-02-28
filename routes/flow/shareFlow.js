@@ -124,7 +124,7 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
                         });
                     }
                 })
-                return res.status(201).json("success")
+                return res.status(201).json("동선 공유에 성공했습니다.")
              }
             } else {
                 return res.status(201).json("이미 공유된 동선입니다.")
@@ -247,7 +247,7 @@ router.put('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
             await ShareFlowTb.findOneAndUpdate({ _id : req.body.shareFlowId }, shareFlow)
             .exec()
             .then(doc => {
-                res.status(201).json("success")
+                res.status(201).json("동선 수정에 성공했습니다.")
             })
     
         }
@@ -274,6 +274,7 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
             Key: shareFlow.shareThumbnail // 버켓 내 경로
           }, (err, data) => {
             if (err) { throw err; }
+            res.status(500).json("파일 삭제에 실패했습니다.")
             console.log('s3 deleteObject ', data)
           })
 
@@ -299,7 +300,7 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
         await ShareFlowTb.findByIdAndDelete(req.query.shareFlowId)
         .exec() 
         .then(doc => {
-            res.status(200).json("success")
+            res.status(200).json("동선 삭제에 성공했습니다.")
         })
         .catch(err => {
             res.status(500).json("동선 삭제를 실패하였습니다.");
@@ -365,12 +366,13 @@ router.post('/shareFlow/like', async (req, res, next) => {
         }
 
         await UserTb.findOneAndUpdate({"userId": req.body.userId}, user)
-        .exec();
+        .exec()
+        .catch(e);
 
         await ShareFlowTb.findOneAndUpdate({"_id": req.body.shareFlow_id}, shareFlow)
             .exec()
             .then(doc => {
-                res.status(201).json("success")
+                res.status(201).json("좋아요 상태를 변경했습니다.")
             })
 
     } catch(e) {
@@ -388,7 +390,7 @@ router.post('/shareFlowDetail', async(req, res, next) => {
     await ShareFlowTb.updateOne({'_id': req.body.shareFlowId}, {$inc: {hits: 1}})
     .exec()
     .then(doc => {
-        res.status(201).json("success");
+        res.status(201).json("조회수가 증가되었습니다.");
     })
 })
 
