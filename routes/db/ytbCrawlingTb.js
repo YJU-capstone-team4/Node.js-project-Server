@@ -276,6 +276,9 @@ router.post('/address/search/:addressId', async (req, res, next) => {
         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
         console.log(req.params.addressId)
 
+        // 민혁이 3사 검색 알고리즘 실행
+        var minhyuk = minhyuksFunction(req.params.addressId);
+
         // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
         // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
         // axios({
@@ -287,7 +290,7 @@ router.post('/address/search/:addressId', async (req, res, next) => {
         // })
 
         // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
-        res.status(200).json(req.body)
+        res.status(200).json(minhyuk)
     } catch (err) {
         res.status(500).json({
             error : err
@@ -295,17 +298,17 @@ router.post('/address/search/:addressId', async (req, res, next) => {
     }
 });
 
-// < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
-router.post('/address/search/result/:addressId', async (req, res, next) => {
-    // 이건 어떻게 수정해야할까? 람다 서버 전용인데... -> 수정 필요
-    try {
-        res.status(200).json(req.body)
-    } catch (err) {
-        res.status(500).json({
-            error : err
-        })
-    }
-});
+// // < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
+// router.post('/address/search/result/:addressId', async (req, res, next) => {
+//     // 이건 어떻게 수정해야할까? 람다 서버 전용인데... -> 수정 필요
+//     try {
+//         res.status(200).json(req.body)
+//     } catch (err) {
+//         res.status(500).json({
+//             error : err
+//         })
+//     }
+// });
 
 // 3사 결과 비디오 저장 시
 router.post('/save/video/:channelId', async (req, res, next) => {
