@@ -84,7 +84,7 @@ exports.getYtbCrawling = async(argChannelName) => {
                     //     console.log('saveYoutuber', access)
                     // }
                     sendFront(YtbCrawlingTb)
-                    // sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
+                    sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
                     console.log('saveYoutuber', access)
                 } 
                 else if(url == false) {
