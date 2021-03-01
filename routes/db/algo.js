@@ -100,8 +100,8 @@ exports.paginationSearch = paginationSearch;
 // 데이터 수집 메인 페이지 - socket 알고리즘
 async function sockets(YtbCrawlingTb) {
     try {
-        var errCount = 0;
-        var completeCount = 0;
+        var errCount = 1;
+        var completeCount = 1;
 
         // 프론트 전송 폼
         var array = []
@@ -115,9 +115,9 @@ async function sockets(YtbCrawlingTb) {
         for(let i = 0; i < data.length; i++) {
             for(let j = 0; j < data[i].video.length; j++) {
                 if(data[i].video[j].status == "에러") {
-                    ++errCount;
+                    errCount++;
                 } else if (data[i].video[j].status == "완료") {
-                    ++completeCount;
+                    completeCount++;
                 }
             }
             array.push({
