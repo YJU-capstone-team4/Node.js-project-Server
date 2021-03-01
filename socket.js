@@ -12,6 +12,7 @@ let socket = (io) => {
 
         // console.log(admin)
         console.log(access)
+        global.access = access
         console.log('admin join')
         // console.log('what is access?')
         // console.log(access.adminAccess)
@@ -40,8 +41,9 @@ let socket = (io) => {
     
         // 관리자가 데이터수집 페이지에서 나갔을 때 
         socket.on('disconnect', (msg) => {
+            access = false
             console.log(access)
-            access.adminAccess = false
+            global.access = access
             console.log('admin disconnect')
             // console.log(access.adminAccess)
         });
