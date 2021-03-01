@@ -34,8 +34,6 @@ exports.getYtbCrawling = async(argChannelName) => {
         //     sendFront(YtbCrawlingTb)
         //     console.log('saveYoutuber', access)
         // }
-        sendFront(YtbCrawlingTb)
-        console.log('saveYoutuber', access)
         
         // const youtuberInfoJson  = await JSON.stringify(youtuberInfo) /* 유튜버 정보 JSON 문자열 변환 */
         // console.log('유튜버 정보 json \n', youtuberInfoJson)
