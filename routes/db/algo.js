@@ -115,9 +115,9 @@ async function sockets(YtbCrawlingTb) {
         for(let i = 0; i < data.length; i++) {
             for(let j = 0; j < data[i].video.length; j++) {
                 if(data[i].video[j].status == "에러") {
-                    errCount++;
+                    ++errCount;
                 } else if (data[i].video[j].status == "완료") {
-                    completeCount++;
+                    ++completeCount;
                 }
             }
             array.push({
