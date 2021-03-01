@@ -282,6 +282,7 @@ async function sendFrontError(YtbCrawlingTb, ytbChannel, videoName) {
             ytbChannel: ytbChannel,
             videoName: videoName
         })
+        console.log(a)
         admin.emit('result', a);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
     })
 }
