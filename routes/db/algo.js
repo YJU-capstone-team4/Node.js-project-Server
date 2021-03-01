@@ -278,11 +278,12 @@ exports.sendFront = sendFront
 // 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 에러
 async function sendFrontError(YtbCrawlingTb, ytbChannel, videoName) {
     sockets(YtbCrawlingTb).then(function(result) {
-        var a = result.push({
+        var a = result
+        a.push({
             ytbChannel: ytbChannel,
             videoName: videoName
         })
-        console.log(a)
+        console.log('sendFrontError : ' + a)
         admin.emit('result', a);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
     })
 }
