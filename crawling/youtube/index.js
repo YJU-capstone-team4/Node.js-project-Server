@@ -111,11 +111,11 @@ exports.getYtbCrawling = async(argChannelName) => {
                         url.storeInfo.typeStore, url.storeInfo.location.lat, url.storeInfo.location.lag)
 
                     // 관리자가 접속 했을 경우 소켓 전송(saveVideo : '완료')
-                    if(access == true) {
+                    
                         sendFront(YtbCrawlingTb)
                         console.log('saveVideo 완료', access)
                         
-                    }
+                    
                 }
                 console.log(url)
                 urlInfoResult.push(url)
