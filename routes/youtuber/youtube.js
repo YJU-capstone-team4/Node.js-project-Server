@@ -9,6 +9,9 @@ const UserTb = require('../../models/userTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTagTb = require('../../models/userTagTb.model');
 const YtbReqTb = require("../../models/ytbReqTb.model")
+
+const { getYoutuberInfo } = require('../../crawling/youtube/getYoutuberInfo')
+
 function getCurrentDate(){
     var date = new Date();
     var year = date.getFullYear();
@@ -328,25 +331,36 @@ router.post('/youtuberRequest', async (req, res, next) => {
             .select('userId')
             .exec()
         mongoose.set('useFindAndModify', false);
-
+    
         // 크롤링 함수 불러오기
-        
-        //const result = []// 함수 실행 return 값 반환
-        // const result = {
-        //     ytbProfile: 'test',
-        //     ytbChannel: req.body.ytbChannel,
-        //     ytbSubscribe: 1060000,
-        //     videoCount: 1130,
-        //     ytbHits: 355899261,
-        //     ytbLinkAddress: "test"
-        // }
+        const result = await getYoutuberInfo(req.body.ytbChannel)
+        console.log(result)
+        console.log(result.ytbChannel)
+    
+        // const result = []// 함수 실행 return 값 반환
+        await YtbReqTb.create({
+                _id: new mongoose.Types.ObjectId(),
+                ytbChannel: result.ytbChannel,
+                ytbProfile: result.ytbProfile,
+                ytbLinkAddress: result.ytbLinkAddress,
+                ytbSubscribe: result.ytbSubscribe,
+                ytbHits: result.ytbHits,
+                videoCount: result.videoCount,
+                userTbId: user._id,
+                userId: req.body.user_id
+      });
+
+      res.status(200).json('yrtReqTb save success')
+    //   await ytbReqTb.save()
+
         // // 신청할 객체에 필요한 정보 추가하기
         // result.userTbId = user._id;
         // result.userId = req.body.user_id;
 
         // console.log(result)
+
         // // 신청 db에 추가
-        // await YtbReqTb(result).save()
+        // await YtbReqTb(result).save() 
 
     }catch(e) {
         res.status(500).json({

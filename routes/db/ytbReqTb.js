@@ -6,6 +6,7 @@ const YtbReqTb = require("../../models/ytbReqTb.model")
 const UserTb = require("../../models/userTb.model")
 const YtbChannelTb = require("../../models/ytbChannelTb.model")
 const YtbCrawlingTb = require("../../models/ytbCrawlingTb.model")
+const { getYtbCrawling } = require('../../crawling/youtube/index')
 
 router.get('/', (req, res, next) => {
     YtbReqTb.find()
@@ -286,8 +287,11 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     //     ytbChannel: ytbReq.ytbChannel
     // });
 
-    // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링 -> 'var minhyuk =' 지우면 됨
-    var minhyuk = minhyuksFunction(req.params.youtuber);
+    // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링
+    console.log('req.params.youtuber :', req.params.youtuber)
+
+    getYtbCrawling(req.params.youtuber)
+    res.status(200).json('crawling 성공!')
 
     // const ytbCrawlingTb = new YtbCrawlingTb({
     //     _id: new mongoose.Types.ObjectId(),

@@ -8,6 +8,7 @@ const YtbStoreTb = require('../../models/ytbStoreTb.model');
 const algo = require("./algo");
 const apps = require("../../app");
 const socket = require("../../socket");
+const { adminStore } =  require('../../crawling/youtube/adminStore')
 
 // // 데이터 수집 페이지 메인
 // router.get('/socket', async (req, res, next) => {
@@ -274,10 +275,9 @@ router.post('/address/search/:addressId', async (req, res, next) => {
     try {
         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+        
         console.log(req.params.addressId)
-
-        // 민혁이 3사 검색 알고리즘 실행
-        var minhyuk = minhyuksFunction(req.params.addressId);
+        await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
 
         // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
         // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
