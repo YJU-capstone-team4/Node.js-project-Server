@@ -270,6 +270,7 @@ exports.minusVideo = minusVideo;
 async function sendFront(YtbCrawlingTb) {
     sockets(YtbCrawlingTb).then(function(result) {
         admin.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+        console.log('result event : ' + result)
     })
 }
 
@@ -282,6 +283,7 @@ async function sendFrontError(ytbChannel, videoName) {
         'videoName': videoName
     }
     admin.emit('errVideo', a);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+    console.log('errVideo event : ' + a)
 }
 
 exports.sendFrontError = sendFrontError
