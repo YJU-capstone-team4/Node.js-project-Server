@@ -24,14 +24,14 @@ exports.adminNaverMap = async(argSearchPlace) => {
         
         const searchPage = await browser.newPage() 
 
-        await searchPage.goto(searchUrl, {waitUntil:'networkidle2'})    /* Naver Map url 이동 */
+        await searchPage.goto(searchUrl)    /* Naver Map url 이동 */ // , {waitUntil:'networkidle2'}
         console.log('네이버 지도 이동')
     
         const searchBox = '#header > header > div.Nsearch._searchKeywordView._searchGuide > div > div > div > span.Nbox_text._textPanel > input'
         await searchPage.waitForSelector(searchBox)
         await searchPage.waitForTimeout(2000)
         await searchPage.click(searchBox)                /* 권한 요청 alert 때문에 검색바 클릭 */
-        await searchPage.type(searchBox, searchPlace)     /* 주소 검색란에 주소 입력 */
+        await searchPage.type(searchBox, searchPlace)    /* 주소 검색란에 주소 입력 */
         await searchPage.keyboard.press('Enter') 
         
         // await console.log('주소 검색 완료')
@@ -133,7 +133,7 @@ exports.adminGoogleMap = async(argSearchPlace) => {
         
         const searchPage = await browser.newPage() 
 
-        await searchPage.goto(searchUrl, {waitUntil:'networkidle2'})    /* Naver Map url 이동 */
+        await searchPage.goto(searchUrl)    /* Naver Map url 이동 */
         console.log('구글 지도 이동')
     
         const inputBox = '#searchboxinput'
@@ -234,7 +234,7 @@ exports.adminKakaoMap = async(argSearchPlace) => {
         
         const searchPage = await browser.newPage() 
 
-        await searchPage.goto(searchUrl, {waitUntil:'networkidle2'})    /* Naver Map url 이동 */
+        await searchPage.goto(searchUrl)    /* Naver Map url 이동 */
         console.log('카카오 지도 이동')
     
         const inputBox = '#search'

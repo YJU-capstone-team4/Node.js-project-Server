@@ -65,8 +65,8 @@ exports.getNaverLocation = async(argSearchPlace) => {
         // console.log('주소 검색!!')
         await searchPage.waitForTimeout(5000)
 
-        searchPage.close()
-        browser.close()
+        // searchPage.close() 2021 03 01 주석처리
+        // browser.close()
 
         return naverReqUrl
     } catch(e) {
