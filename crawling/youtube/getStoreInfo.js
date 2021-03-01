@@ -116,12 +116,20 @@ exports.getStoreInfo = async (argViewMore) => {
 
                     // 가게주소 좌표값 획득
                     const naverLocation = await getNaverLocation(viewMoreStoreAddr)
-                    console.log('네이버 지도 좌표값 획득!!!', naverLocation)
                     
-                    storeInfo = { storeName : viewMoreStoreName, storeAddress : viewMoreStoreAddr, typeStore : '맛집', location : naverLocation } // location {lat, lng} 추가 필요
-                    console.log('더보기란 주소 정보 반환(네이버 o)\n', storeInfo)
-            
-                    return storeInfo
+                    if(naverLocation == null||undefined) {
+                        console.log('[네이버지도] 가게 주소 좌표값 x')
+                        storeInfo = '에러'
+    
+                        return storeInfo
+                    } else {
+                        console.log('네이버 지도 좌표값 획득!!!', naverLocation)
+                    
+                        storeInfo = { storeName : viewMoreStoreName, storeAddress : viewMoreStoreAddr, typeStore : '맛집', location : naverLocation } // location {lat, lng} 추가 필요
+                        console.log('더보기란 주소 정보 반환(네이버 o)\n', storeInfo)
+                
+                        return storeInfo
+                    }
                 }
             }
         }      

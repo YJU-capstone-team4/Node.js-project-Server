@@ -3,7 +3,7 @@ const { adminGoogleMap } = require('./util/getAdminStore')
 const { adminKakaoMap } = require('./util/getAdminStore')
 
 // const place = 'ㅁㄴㅇㄻㄴㅇㄻㄴㅇㄹ'
-// const place = '대구 서구 내당동 내당칼국수'
+const place = '대구 서구 내당동 내당칼국수'
 
 exports.adminStore = async(argSearchPlace) => {
     try{
