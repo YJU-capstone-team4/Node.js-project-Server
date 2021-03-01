@@ -86,8 +86,7 @@ exports.getYtbCrawling = async(argChannelName) => {
                 else if(url == false) {
                     fal += 1
                     console.log('제외 영상 개수 :', fal)
-                    // minusVideo(YtbCrawlingTb, youtuberInfo.ytbChannel) // false일 경우 videoCount -1 (DB 저장)
-                          
+                    minusVideo(YtbCrawlingTb, youtuberInfo.ytbChannel) // false일 경우 videoCount -1 (DB 저장)
                 }
                 else if(url.status == '완료') {
                     // console.log('status 완료인 영상')
