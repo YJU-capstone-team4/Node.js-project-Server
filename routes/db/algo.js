@@ -273,6 +273,8 @@ async function sendFront(YtbCrawlingTb) {
     })
 }
 
+exports.sendFront = sendFront
+
 // 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 에러
 async function sendFrontError(YtbCrawlingTb, ytbChannel, videoName) {
     sockets(YtbCrawlingTb).then(function(result) {
@@ -284,4 +286,4 @@ async function sendFrontError(YtbCrawlingTb, ytbChannel, videoName) {
     })
 }
 
-exports.sendFront = sendFront
+exports.sendFrontError = sendFrontError
