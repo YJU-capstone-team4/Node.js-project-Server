@@ -17,7 +17,7 @@ let socket = (io) => {
         // console.log('what is access?')
         // console.log(access.adminAccess)
 
-        // socket.emit('first', 'admin join');
+        socket.emit('start', 'admin join');
 
         // socket.on('givedata', (msg) => {
         //     // console.log(msg)
