@@ -33,14 +33,13 @@ const getNaverLocation = async(argSearchPlace) => {
             // }
             if (requestURL.indexOf("https://map.naver.com/v5/api/addresses/") > -1) {
                 naverReqUrl = requestURL
-                console.log('네이버 Request Url 수집 결과!!!:', naverReqUrl)
+                console.log('\n\n네이버 Request Url 수집 결과!!!:', naverReqUrl)
 
                 /* Request URL 에서 위도 경도 값 추출 */
                 naverReqUrl = checkNaverlocation(naverReqUrl)
-                console.log('네이버 위도 경도 결과 :', naverReqUrl)
+                console.log('네이버 위도 경도 결과 :', naverReqUrl, '\n\n')//naverReqUrl.lat, naverReqUrl.lag 
 
-
-                await req.abort(); // 작업 중단
+                // await req.abort(); // 작업 중단
                 console.log('Request Url 수집 후 반환')
 
                 // await searchPage.close()
@@ -66,8 +65,8 @@ const getNaverLocation = async(argSearchPlace) => {
         console.log('입력 완료!!')
         await searchPage.keyboard.press('Enter')
         console.log('주소 검색!!')
-        await searchPage.waitForTimeout(10000) // 5초 -> 10초 대기
-        console.log('좌표 수집 10초 대기 완료')
+        await searchPage.waitForTimeout(20000) // 5초 -> 10초 -> 20초 대기
+        console.log('좌표 수집 20초 대기 완료')
         // let checkTag1 = await searchPage.$('#app-root > div > div')
         // #app-root > div > div > div 여러 검색결과가 나올 경우
 
