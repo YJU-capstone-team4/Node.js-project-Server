@@ -5,8 +5,8 @@ const { arrayToChunks }   = require('./util/arrayToChuncks') /* 비동기 병렬
 const { saveYoutuber }  = require('../../routes/db/algo')
 let   { saveVideo }     = require('../../routes/db/algo')
 let   { minusVideo }    = require('../../routes/db/algo')
-const { sendFront }     = require('../../routes/db/algo')
-const { sendFrontError }     = require('../../routes/db/algo')
+var   { sendFront }     = require('../../routes/db/algo')
+var { sendFrontError }     = require('../../routes/db/algo')
 const YtbCrawlingTb     = require('../../models/ytbCrawlingTb.model') // ytbCrawlingTb 모델
 
 // ytbCrawlingTb collection에 맞게 json 반환
@@ -33,7 +33,7 @@ exports.getYtbCrawling = async(argChannelName) => {
         //     sendFront(YtbCrawlingTb)
         //     console.log('saveYoutuber', access)
         // }
-        // sendFront(YtbCrawlingTb)
+        sendFront(YtbCrawlingTb)
 
 
         // const youtuberInfoJson  = await JSON.stringify(youtuberInfo) /* 유튜버 정보 JSON 문자열 변환 */
