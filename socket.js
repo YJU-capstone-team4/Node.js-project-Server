@@ -10,8 +10,6 @@ let socket = (io) => {
         var admin = socket;
         global.admin = admin;
 
-        console.log(admin)
-        // console.log(admin)
         // console.log(access)
         // global.access = access
         console.log('admin join')
