@@ -272,9 +272,6 @@ async function sendFront(YtbCrawlingTb) {
         admin.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
         console.log('result event : ' + result)
     })
-    admin.on('plz', (msg) => {
-        console.log(msg);
-    })
 }
 
 exports.sendFront = sendFront

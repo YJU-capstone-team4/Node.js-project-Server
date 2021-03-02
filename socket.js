@@ -37,6 +37,9 @@ let socket = (io) => {
         //     // socket.emit('result', msg);
         //     console.log('admin give me result data')
         // });
+        socket.on('plz', (msg) => {
+            console.log('plz : ' + msg)
+        });
     
         // 관리자가 데이터수집 페이지에서 나갔을 때 
         socket.on('disconnect', (msg) => {
