@@ -10,6 +10,7 @@ let socket = (io) => {
         var admin = socket;
         global.admin = admin;
 
+        console.log(admin)
         // console.log(admin)
         // console.log(access)
         // global.access = access
@@ -49,7 +50,5 @@ let socket = (io) => {
         });
     });
 }
-
-console.log(admin)
 
 module.exports = socket;
