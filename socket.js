@@ -1,13 +1,14 @@
 const algo          = require("./routes/db/algo")    // 알고리즘 용도
 const YtbCrawlingTb = require('./models/ytbCrawlingTb.model');
 // var access          = require("./adminAccess")
+var admin = ''
 
 let socket = (io) => {
     // 관리자가 데이터수집 페이지에 접속 중일 때
     io.on('connection', (socket) => {
         // console.log('------------------------------------')
         // access = true
-        var admin = socket;
+        admin = socket;
         global.admin = admin;
 
         // console.log(access)
