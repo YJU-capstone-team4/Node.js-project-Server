@@ -35,7 +35,7 @@ exports.getYtbCrawling = async(argChannelName) => {
         //     sendFront(YtbCrawlingTb)
         //     console.log('saveYoutuber', access)
         // }
-        sendFront(YtbCrawlingTb)
+        await sendFront(YtbCrawlingTb)
 
 
         // const youtuberInfoJson  = await JSON.stringify(youtuberInfo) /* 유튜버 정보 JSON 문자열 변환 */
@@ -83,8 +83,8 @@ exports.getYtbCrawling = async(argChannelName) => {
                     //     sendFront(YtbCrawlingTb)
                     //     console.log('saveYoutuber', access)
                     // }
-                    sendFront(YtbCrawlingTb)
-                    sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
+                    await sendFront(YtbCrawlingTb)
+                    await sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
                     console.log('saveYoutuber', access)
                 } 
                 else if(url == false) {
@@ -121,7 +121,7 @@ exports.getYtbCrawling = async(argChannelName) => {
                     //     sendFront(YtbCrawlingTb)
                     //     console.log('saveYoutuber', access)
                     // }
-                    sendFront(YtbCrawlingTb)
+                    await sendFront(YtbCrawlingTb)
                     console.log('saveYoutuber', access)
                 }
                 console.log(url)

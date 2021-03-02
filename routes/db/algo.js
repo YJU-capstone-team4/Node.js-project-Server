@@ -267,7 +267,7 @@ exports.minusVideo = minusVideo;
 
 
 // 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 완료
-async function sendFront(YtbCrawlingTb) {
+function sendFront(YtbCrawlingTb) {
     sockets(YtbCrawlingTb).then(function(result) {
         admin.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
         console.log('result event : ' + result)
@@ -277,7 +277,7 @@ async function sendFront(YtbCrawlingTb) {
 exports.sendFront = sendFront
 
 // 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 에러
-async function sendFrontError(ytbChannel, videoName) {
+function sendFrontError(ytbChannel, videoName) {
     var a = {
         'ytbChannel': ytbChannel,
         'videoName': videoName
