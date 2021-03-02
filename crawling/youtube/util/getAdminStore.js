@@ -1,4 +1,4 @@
-const { getNaverLocation } = require('./getLocation')
+const { getGoogleLocation } = require('./getLocation')
 const puppeteer = require('puppeteer')
 
 // const place = '부산광역시 남구 대연동 수영로 309' // 216-4
@@ -81,7 +81,7 @@ exports.adminNaverMap = async(argSearchPlace) => {
         address = address.replace('주소보기', '').trim()
         // console.log('네이버 주소 변환:', address)
 
-        const crawlingLocation = await getNaverLocation(address) // 네이버지도에서 좌표값 획득
+        const crawlingLocation = await getGoogleLocation(address) // 네이버지도에서 좌표값 획득
       
         if(crawlingLocation == null||undefined) {
             naverResult = { crawlingPlatform : 'Naver', data : [] }
@@ -100,8 +100,6 @@ exports.adminNaverMap = async(argSearchPlace) => {
         naverResult = { crawlingPlatform : 'Naver', data : data }
         console.log('admin 네이버지도 결과', naverResult)
         // <<-- 주소가 있을 경우
-
-
 
         searchPage.close()
         browser.close()
@@ -184,7 +182,7 @@ exports.adminGoogleMap = async(argSearchPlace) => {
                 return element.textContent;
             })
         
-        const crawlingLocation = await getNaverLocation(address) // 네이버지도에서 좌표값 획득
+        const crawlingLocation = await getGoogleLocation(address) // 네이버지도에서 좌표값 획득
 
         if(crawlingLocation == null||undefined) {
             googleResult = { crawlingPlatform : 'Google', data : [] }
@@ -292,7 +290,7 @@ exports.adminKakaoMap = async(argSearchPlace) => {
                 return element.textContent;
             })
 
-        let crawlingLocation =  await getNaverLocation(address) // 네이버지도에서 좌표값 획득
+        let crawlingLocation =  await getGoogleLocation(address) // 네이버지도에서 좌표값 획득
 
         if(crawlingLocation == null||undefined) {
             kakaoResult = { crawlingPlatform : 'Kakao', data : [] }

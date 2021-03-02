@@ -1,7 +1,7 @@
 const { rawAddr } = require('./util/addrMecab')
 const { getNaverStoreInfo } = require('./util/naverMap') 
 const { regMore } = require('./util/regMore') 
-const { getNaverLocation } = require('./util/getLocation')
+const { getGoogleLocation } = require('./util/getLocation')
 
 // const viewMore = `#보슬보슬​
 // #키토김밥​
@@ -132,8 +132,8 @@ exports.getStoreInfo = async (argViewMore) => {
                     console.log('[네이버지도] 상세 주소 :', viewMoreStoreAddr,'\n')
 
                     // [네이버지도] 가게주소 좌표값 획득
-                    const naverLocation = await getNaverLocation(viewMoreStoreAddr)
-                    console.log('[네이버지도] 좌표값 획득 여부', naverLocation)
+                    const naverLocation = await getGoogleLocation(viewMoreStoreAddr)
+                    console.log('[구글지도] 좌표값 획득 여부', naverLocation)
                    
                     if(naverLocation == null||undefined||false) {
                         console.log('[네이버지도] 가게 주소 좌표값 x')
@@ -141,7 +141,7 @@ exports.getStoreInfo = async (argViewMore) => {
     
                         return storeInfo
                     } else {
-                        console.log('[네이버 지도] 좌표값 획득!!!', naverLocation)
+                        console.log('[구글지도] 좌표값 획득!!!', naverLocation)
                     
                         storeInfo = { storeName : viewMoreStoreName, storeAddress : viewMoreStoreAddr, typeStore : '맛집', location : naverLocation } // location {lat, lng} 추가 필요
                         console.log('[더보기란] 주소 정보 반환(네이버 o)\n', storeInfo)

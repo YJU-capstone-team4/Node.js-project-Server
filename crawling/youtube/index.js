@@ -10,7 +10,7 @@ const { sendFrontError }     = require('../../routes/db/algo')
 const YtbCrawlingTb     = require('../../models/ytbCrawlingTb.model') // ytbCrawlingTb 모델
 
 // ytbCrawlingTb collection에 맞게 json 반환
-exports.getYtbCrawling = async(argChannelName) => {
+const getYtbCrawling = async(argChannelName) => {
     try{
         const channelName = argChannelName
         console.log('수집할 유튜브 채널명 :', channelName)
@@ -23,19 +23,19 @@ exports.getYtbCrawling = async(argChannelName) => {
         console.log(channelName, 'Channel URL :', channelUrl)
         
         // youtuber정보 DB 저장
-        saveYoutuber(YtbCrawlingTb, youtuberInfo.ytbChannel, youtuberInfo.ytbProfile, youtuberInfo.ytbLink, 
-            youtuberInfo.ytbSubscribe, youtuberInfo.ytbHits, youtuberInfo.videoCount)
+        // saveYoutuber(YtbCrawlingTb, youtuberInfo.ytbChannel, youtuberInfo.ytbProfile, youtuberInfo.ytbLink, 
+        //     youtuberInfo.ytbSubscribe, youtuberInfo.ytbHits, youtuberInfo.videoCount)
 
-        console.log(saveYoutuber)
+        // console.log(saveYoutuber)
 
-        console.log('saveYoutuber access 확인 :', access)
+        // console.log('saveYoutuber access 확인 :', access)
 
         // 관리자가 접속 했을 경우 소켓 전송(saveYoutuber)
         // if(access == true) {
         //     sendFront(YtbCrawlingTb)
         //     console.log('saveYoutuber', access)
         // }
-        sendFront(YtbCrawlingTb)
+        // sendFront(YtbCrawlingTb)
 
 
         // const youtuberInfoJson  = await JSON.stringify(youtuberInfo) /* 유튜버 정보 JSON 문자열 변환 */
@@ -74,23 +74,23 @@ exports.getYtbCrawling = async(argChannelName) => {
                     console.log('에러 영상 개수 :', err)
 
                     // video 크롤링 될때마다 DB에 저장(에러)
-                    saveVideo(YtbCrawlingTb, youtuberInfo.ytbChannel, url.ytbVideoName, url.ytbThumbnail, url.ytbAddress, 
-                        url.hits, url.uploadDate, url.more, url.status, '', '', '',
-                        url.typeStore, 0, 0)
+                    // saveVideo(YtbCrawlingTb, youtuberInfo.ytbChannel, url.ytbVideoName, url.ytbThumbnail, url.ytbAddress, 
+                    //     url.hits, url.uploadDate, url.more, url.status, '', '', '',
+                    //     url.typeStore, 0, 0)
 
                     // 관리자가 접속 했을 경우 소켓 전송(saveVideo : '에러')
                     // if(access == true) {
                     //     sendFront(YtbCrawlingTb)
                     //     console.log('saveYoutuber', access)
                     // }
-                    sendFront(YtbCrawlingTb)
-                    sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
+                    // sendFront(YtbCrawlingTb)
+                    // sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
                     // console.log('saveYoutuber', access)
                 } 
                 else if(url == false) {
                     fal += 1
                     console.log('제외 영상 개수 :', fal)
-                    minusVideo(YtbCrawlingTb, youtuberInfo.ytbChannel) // false일 경우 videoCount -1 (DB 저장)
+                    // minusVideo(YtbCrawlingTb, youtuberInfo.ytbChannel) // false일 경우 videoCount -1 (DB 저장)
                           
                 }
                 else if(url.status == '완료') {
@@ -112,16 +112,16 @@ exports.getYtbCrawling = async(argChannelName) => {
                     // console.log('videoJsonResult : ', videoJsonResult)
 
                     // video 크롤링 될때마다 DB에 저장(완료)
-                    saveVideo(YtbCrawlingTb, youtuberInfo.ytbChannel, url.ytbVideoName, url.ytbThumbnail, url.ytbAddress, 
-                        url.hits, url.uploadDate, url.more, url.status, url.regionTag, url.storeInfo.storeName, url.storeInfo.storeAddress,
-                        url.storeInfo.typeStore, url.storeInfo.location.lat, url.storeInfo.location.lag)
+                    // saveVideo(YtbCrawlingTb, youtuberInfo.ytbChannel, url.ytbVideoName, url.ytbThumbnail, url.ytbAddress, 
+                    //     url.hits, url.uploadDate, url.more, url.status, url.regionTag, url.storeInfo.storeName, url.storeInfo.storeAddress,
+                    //     url.storeInfo.typeStore, url.storeInfo.location.lat, url.storeInfo.location.lag)
 
                     // 관리자가 접속 했을 경우 소켓 전송(saveVideo : '완료')
                     // if(access == true) {
                     //     sendFront(YtbCrawlingTb)
                     //     console.log('saveYoutuber', access)
                     // }
-                    sendFront(YtbCrawlingTb)
+                    // sendFront(YtbCrawlingTb)
                     // console.log('saveYoutuber', access)
                 }
                 console.log(url)
@@ -172,4 +172,4 @@ exports.getYtbCrawling = async(argChannelName) => {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
     }
 }
-// getYtbCrawling('야식이')
+getYtbCrawling('야식이')
