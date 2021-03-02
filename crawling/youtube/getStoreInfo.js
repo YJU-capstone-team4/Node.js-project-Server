@@ -3,6 +3,23 @@ const { getNaverStoreInfo } = require('./util/naverMap')
 const { regMore } = require('./util/regMore') 
 const { getNaverLocation } = require('./util/getLocation')
 
+// const viewMore = `#보슬보슬​
+// #키토김밥​
+// #밥없는김밥​
+// #차돌마늘떡볶이​
+
+// 구독하기(Subscribe) 좋아요(Like) 고맙습니다!(Thank you!)
+
+// 노랑빛깔 밥없는 김밥 6줄..차돌마늘떡볶이에 찍어묵자!!
+// 야식이 먹방
+
+// 2021년 2월 24일 서울시 강남구 역삼동 824-29 '보슬보슬'
+
+// 각국어 번역 자막 제작 : 
+// 컨텐츠 제작의 마무리는 컨텐츠플라이! 글로벌 진출을 위한 최고의 파트너
+// CONTENTSFLY에서 제작되었습니다.
+// https://www.contentsfly.com`
+
 /* { 가게이름, 가게주소, typeStore:'맛집' } */
 exports.getStoreInfo = async (argViewMore) => {
     try {
@@ -12,7 +29,7 @@ exports.getStoreInfo = async (argViewMore) => {
 
         if (rawAddrArray == '') { 
             /* 더보기란에 주소가 없을 경우 false return */
-            console.log('더보기란 가게 주소 x') 
+            console.log('[더보기란] 가게 주소 x') 
             console.log('수집 제외')
 
             return false
@@ -68,9 +85,9 @@ exports.getStoreInfo = async (argViewMore) => {
             let storeInfo
             /* 지번 상세 주소가 없을 경우 -> 에러 */
             if (detailAddr == '') {
-                console.log('네이버지도에 검색할 주소가 없습니다.')
+                console.log('[네이버지도]에 검색할 주소가 없습니다.')
                 storeInfo = '에러'
-                console.log('더보기란 주소 정보 반환(상세주소 x)\n', storeInfo)
+                console.log('[더보기란] 주소 정보 반환(상세주소 x)\n', storeInfo)
                 
                 return storeInfo
             }
@@ -79,7 +96,7 @@ exports.getStoreInfo = async (argViewMore) => {
     
             if(mapStoreInfo == undefined) {
                 storeInfo = '에러'
-                console.log('네이버 지도 검색중 오류 발생\n', storeInfo)
+                console.log('[네이버지도] 검색중 오류 발생\n', storeInfo)
 
                 return storeInfo
             }
@@ -93,14 +110,14 @@ exports.getStoreInfo = async (argViewMore) => {
            
             /* 네이버지도에서 더보기란 가게이름이랑 일치하는 가게가 없을 경우 -> 에러 */
             if(viewMoreStoreName == '') {
-                console.log('[네이버 지도 / 더보기란] 가게 이름 비교 -> 가게이름 x')
+                console.log('[네이버지도 / 더보기란] 가게 이름 비교 -> 가게이름 x')
                 storeInfo = '에러'
                 console.log('더보기란 주소 정보 반환(가게이름 x)\n', storeInfo)
 
                 return storeInfo
             } 
             else {
-                console.log('더보기란 가게이름 :', viewMoreStoreName)
+                console.log('[더보기란] 가게이름 :', viewMoreStoreName)
   
                 let naverMapAddr = mapStoreInfo.filter((e) => (e.storeName).includes(viewMoreStoreName))
                 // console.log('naverMapAddr', naverMapAddr)
@@ -112,21 +129,22 @@ exports.getStoreInfo = async (argViewMore) => {
                 } 
                 else {
                     let viewMoreStoreAddr = naverMapAddr[0].storeAddr /* 네이버지도 상세주소 */
-                    console.log('네이버 지도 상세 주소 :', viewMoreStoreAddr,'\n')
+                    console.log('[네이버지도] 상세 주소 :', viewMoreStoreAddr,'\n')
 
-                    // 가게주소 좌표값 획득
+                    // [네이버지도] 가게주소 좌표값 획득
                     const naverLocation = await getNaverLocation(viewMoreStoreAddr)
-                    
-                    if(naverLocation == null||undefined) {
+                    console.log('[네이버지도] 좌표값 획득 여부', naverLocation)
+                   
+                    if(naverLocation == null||undefined||false) {
                         console.log('[네이버지도] 가게 주소 좌표값 x')
                         storeInfo = '에러'
     
                         return storeInfo
                     } else {
-                        console.log('네이버 지도 좌표값 획득!!!', naverLocation)
+                        console.log('[네이버 지도] 좌표값 획득!!!', naverLocation)
                     
                         storeInfo = { storeName : viewMoreStoreName, storeAddress : viewMoreStoreAddr, typeStore : '맛집', location : naverLocation } // location {lat, lng} 추가 필요
-                        console.log('더보기란 주소 정보 반환(네이버 o)\n', storeInfo)
+                        console.log('[더보기란] 주소 정보 반환(네이버 o)\n', storeInfo)
                 
                         return storeInfo
                     }
@@ -138,3 +156,4 @@ exports.getStoreInfo = async (argViewMore) => {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
     }
 }
+// getStoreInfo(viewMore)

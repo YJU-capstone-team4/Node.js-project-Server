@@ -17,7 +17,7 @@ exports.getYtbCrawling = async(argChannelName) => {
         
         let youtuberInfo = await getYoutuberInfo(channelName) /* 유튜버 정보 획득 */
         const channelUrl = youtuberInfo.ytbLinkAddress
-        const videoCount = 50 // youtuberInfo.videoCount
+        const videoCount = youtuberInfo.videoCount // youtuberInfo.videoCount
         console.log(channelName, '유저 유튜버 신청 반환 :\n', youtuberInfo,'\n')
         console.log(channelName, '총 영상 수:', videoCount)
         console.log(channelName, 'Channel URL :', channelUrl)
