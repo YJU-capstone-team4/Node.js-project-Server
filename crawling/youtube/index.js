@@ -133,7 +133,8 @@ exports.getYtbCrawling = async(argChannelName) => {
                 // }
             })
             youtuberInfo['video'] = video // 유튜브 정보에 video 객체 추가
-            console.log('video객체 추가:', youtuberInfo)
+            console.log('영상 수집 결과', video)
+            // console.log('video객체 추가:', youtuberInfo)
             
             i = i+CHUNKSIZE
             console.log('\n영상 정보 수집 상황 :', i +'/'+videoUrl.length) 

@@ -9,7 +9,7 @@ const place = '대전 동구 대전로 695-3 이동왕만두'
 // const place = '대구 서구 달구벌대로361길 11'
 
 // Naver Map : Request Url -> 좌표값 획득
-exports.getNaverLocation = async(argSearchPlace) => {
+const getNaverLocation = async(argSearchPlace) => {
     try{
         const browser = await puppeteer.launch({
             headless: true,                             
@@ -19,7 +19,7 @@ exports.getNaverLocation = async(argSearchPlace) => {
         })
         const searchPlace  = argSearchPlace                          /* 수집할 장소 */
         const searchUrl   = 'https://map.naver.com/'                 /* Naver Map URL */
-        console.log('[네이버지도 좌표값] 검색할 장소 이름 :', searchPlace)
+        console.log('검색할 장소 이름 :', searchPlace)
         
         const searchPage = await browser.newPage()        
         
@@ -27,12 +27,13 @@ exports.getNaverLocation = async(argSearchPlace) => {
         let naverReqUrl
         searchPage.on('request', async req => {
             let requestURL = req.url()
+            console.log('request Url 확인중:', req.url()+'\n')
             // if (req.resourceType() === 'xhr') {
             //     console.log('xhr 확인중:',requestURL)
             // }
             if (requestURL.indexOf("https://map.naver.com/v5/api/addresses/") > -1) {
                 naverReqUrl = requestURL
-                console.log('네이버 Request Url 수집 결과:', naverReqUrl)
+                console.log('네이버 Request Url 수집 결과!!!:', naverReqUrl)
 
                 /* Request URL 에서 위도 경도 값 추출 */
                 naverReqUrl = checkNaverlocation(naverReqUrl)
@@ -41,6 +42,7 @@ exports.getNaverLocation = async(argSearchPlace) => {
 
                 await req.abort(); // 작업 중단
                 console.log('Request Url 수집 후 반환')
+
                 // await searchPage.close()
                 // await browser.close()
                 return naverReqUrl
@@ -68,6 +70,7 @@ exports.getNaverLocation = async(argSearchPlace) => {
         console.log('좌표 수집 10초 대기 완료')
         // let checkTag1 = await searchPage.$('#app-root > div > div')
         // #app-root > div > div > div 여러 검색결과가 나올 경우
+
         console.log('browser.close()')
         await searchPage.close()
         await browser.close()
@@ -77,4 +80,4 @@ exports.getNaverLocation = async(argSearchPlace) => {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
     }
 }
-// getNaverLocation(place)
+getNaverLocation(place)
