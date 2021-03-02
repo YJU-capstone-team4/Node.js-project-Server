@@ -17,7 +17,7 @@ exports.getYtbCrawling = async(argChannelName) => {
         
         let youtuberInfo = await getYoutuberInfo(channelName) /* 유튜버 정보 획득 */
         const channelUrl = youtuberInfo.ytbLinkAddress
-        const videoCount = youtuberInfo.videoCount // youtuberInfo.videoCount
+        const videoCount = 50 // youtuberInfo.videoCount
         console.log(channelName, '유저 유튜버 신청 반환 :\n', youtuberInfo,'\n')
         console.log(channelName, '총 영상 수:', videoCount)
         console.log(channelName, 'Channel URL :', channelUrl)
@@ -85,7 +85,7 @@ exports.getYtbCrawling = async(argChannelName) => {
                     // }
                     sendFront(YtbCrawlingTb)
                     sendFrontError(youtuberInfo.ytbChannel, url.ytbVideoName)
-                    console.log('saveYoutuber', access)
+                    // console.log('saveYoutuber', access)
                 } 
                 else if(url == false) {
                     fal += 1
@@ -122,7 +122,7 @@ exports.getYtbCrawling = async(argChannelName) => {
                     //     console.log('saveYoutuber', access)
                     // }
                     sendFront(YtbCrawlingTb)
-                    console.log('saveYoutuber', access)
+                    // console.log('saveYoutuber', access)
                 }
                 console.log(url)
                 urlInfoResult.push(url)
@@ -171,4 +171,4 @@ exports.getYtbCrawling = async(argChannelName) => {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
     }
 }
-// getYtbCrawling('야식이')
+getYtbCrawling('야식이')

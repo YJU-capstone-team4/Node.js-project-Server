@@ -64,7 +64,7 @@ exports.getNaverLocation = async(argSearchPlace) => {
         // console.log('입력 완료!!')
         await searchPage.keyboard.press('Enter')
         // console.log('주소 검색!!')
-        await searchPage.waitForTimeout(5000)
+        await searchPage.waitForTimeout(10000) // 5초 -> 10초 대기
 
         // let checkTag1 = await searchPage.$('#app-root > div > div')
         // #app-root > div > div > div 여러 검색결과가 나올 경우

@@ -31,11 +31,16 @@ const upload = multer({storage: storage})
 //  동선 제목, 썸네일 저장 후 성공 여부 반환
 router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => {
     try {
-        if(!await ShareFlowTb.find({folderId : req.body.folderId})) {
+        const flag = await ShareFlowTb.findOne({folderId : req.body.folderId}).exec()
+        console.log(flag)
+        if(flag == null) {
+            
             if(!req.body.shareTitle || !req.body.folderId || !req.body.adminTag|| !req.body.userTags || !req.file){
                 res.status(200).json("입력되지 않은 값이 있습니다.")
             }
+
             else {
+                
                 const s3Client = s3.s3Client;
                 const params = s3.uploadParams;
         
@@ -48,14 +53,14 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
         
                 let payLoad = {url: req.file.location};
         
-                
+                console.log("동선 저장 시도")
                 //shareFlowTb에 들어갈 내용 저장
                 const shareFlowTb = new ShareFlowTb({
                     _id: new mongoose.Types.ObjectId(),
                     userTbId: userInfo._id,
                     userId: req.body.user_id,
                     shareTitle: req.body.shareTitle,
-        
+                    shareThumbnail:null,
                     folderId: req.body.folderId,
                     adminTag: JSON.parse(req.body.adminTag),
                     userTags: JSON.parse(req.body.userTags),
@@ -68,8 +73,10 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
                 .then(doc => {
                     return doc._id;
                 })
-        
-                params.Key = flowId.toString();
+                console.log(flowId)
+
+                console.log("동선 저장성공")
+                params.Key = flowId._id.toString();
                 params.Body = req.file.buffer;
                 console.log(params);
                 s3Client.upload(params, (err, data) => {
@@ -79,26 +86,25 @@ router.post('/shareFlow/folder',upload.single('img'), async (req, res, next) => 
                  })
                 console.log("파일 업로드 성공")
         
-                const shareFlowImg = await ShareFlowTb.findOne({_id : flowId})
+                const shareFlowImg = await ShareFlowTb.findOne({_id : flowId._id})
                 .exec()
         
-                shareFlowImg.shareThumbnail = flowId.toString()
+                shareFlowImg.shareThumbnail = flowId._id.toString()
                 console.log(shareFlowImg)
         
-                await ShareFlowTb.findOneAndUpdate({_id : flowId},shareFlowImg)
+                await ShareFlowTb.findOneAndUpdate({_id : flowId._id},shareFlowImg)
                 .catch(err => {
                     res.status(500).json("동선 공유를 실패했습니다.");
                 });
                 console.log("공유 동선 저장 완료")
-        
-        
+
                 // 해시 태그 저장
                 JSON.parse(req.body.userTags).forEach(async element =>  {
                     const tag = await UserTagTb.findOne({'userTag.userTag': element})
                     .exec()
                     console.log(tag)
                     console.log("해시태그 저장 시작")
-                    if(!tag) { // 아예 새로운 태그인 경우
+                    if(tag == null) { // 아예 새로운 태그인 경우
                         const userTag = await UserTagTb.findOne()
                         .exec()
                         let newTag = {                     
@@ -273,11 +279,10 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
             Bucket: 'test-gurume', // 사용자 버켓 이름
             Key: shareFlow.shareThumbnail // 버켓 내 경로
           }, (err, data) => {
-            if (err) { throw err; }
-            res.status(500).json("파일 삭제에 실패했습니다.")
-            console.log('s3 deleteObject ', data)
+            if(err) {
+                res.status(500).json("파일 삭제에 실패했습니다.");
+            }
           })
-
         // 해시태그 삭제
         const tag = await UserTagTb.findOne({_id : '5fb7a29bf648764c3cb9ebeb'}).exec()
         tag.userTag.forEach(userTag => {
@@ -294,22 +299,16 @@ router.delete('/shareFlow/folder', async(req, res, next) => {
             res.status(500).json("해시태그 삭제에 실패하였습니다.");
         });
     
-    
-
         //공유 동선 삭제
         await ShareFlowTb.findByIdAndDelete(req.query.shareFlowId)
         .exec() 
         .then(doc => {
             res.status(200).json("동선 삭제에 성공했습니다.")
         })
-        .catch(err => {
-            res.status(500).json("동선 삭제를 실패하였습니다.");
-        });
+
     
     } catch(e) {
-        res.status(500).json({
-            error: e
-        });
+        res.status(500).json("동선 삭제에 실패했습니다.");
 
     }
 
