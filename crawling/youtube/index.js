@@ -171,4 +171,4 @@ exports.getYtbCrawling = async(argChannelName) => {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
     }
 }
-getYtbCrawling('야식이')
+// getYtbCrawling('야식이')
