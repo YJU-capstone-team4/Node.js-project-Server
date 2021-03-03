@@ -591,7 +591,7 @@ router.post('/test', (req, res, next) => {
     // socket(app.io).sendResult()
     // console.log(io)
 
-    io.emit('result', algo.sendFront(YtbCrawlingTb))
+    algo.sendFront(YtbCrawlingTb)
     res.status(200).json('소켓 데이터 전송')
 });
 

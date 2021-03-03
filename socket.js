@@ -3,6 +3,8 @@ const YtbCrawlingTb = require('./models/ytbCrawlingTb.model');
 // var access          = require("./adminAccess")
 
 let socket = (io) => {
+    // socket io 글로벌화
+    global.io = io;
     // 관리자가 데이터수집 페이지에 접속 중일 때
     io.on('connection', (socket) => {
         // console.log('------------------------------------')
