@@ -124,8 +124,8 @@ exports.getGoogleLocation = async(argSearchPlace) => {
         let urlCut = url.substring(start+1, end)        /* URL에서 좌표값만 남김*/
         let location = urlCut.split(',')                /* 좌표 값 위도, 경도 구분 */
         let lat = location[0]                           /* 위도 */
-        let lag = location[1]                           /* 경도 */
-        let locationData = {lat, lag}                   /* {위도, 경도} */
+        let lng = location[1]                           /* 경도 */
+        let locationData = {lat, lng}                   /* {위도, 경도} */
         console.log('구글지도 URL 좌표값 결과 :', locationData)
 
         await searchPage.close()

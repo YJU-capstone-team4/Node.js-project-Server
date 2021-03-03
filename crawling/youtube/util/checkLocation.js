@@ -7,8 +7,8 @@ exports.checkNaverlocation = (argReqUrl) => {
     let urlCut = argReqUrl.substring(start+2, end)  /* URL에서 좌표값만 남김*/
     let location = urlCut.split(',')                /* 좌표 값 위도, 경도 구분 */
     let lat = location[1]                           /* 위도 */
-    let lag = location[0]                           /* 경도 */
-    const locationData = {lat, lag}      /* {장소이름, 위도, 경도} */
+    let lng = location[0]                           /* 경도 */
+    const locationData = {lat, lng}      /* {장소이름, 위도, 경도} */
     // console.log('checkNaverlocation:', locationData)
     
     return locationData
