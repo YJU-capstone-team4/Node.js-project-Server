@@ -131,8 +131,8 @@ const io = require("socket.io")(server, {
 
 var access = false;
 
-// // socket io 글로벌화
-// global.io = io;
+// socket io 글로벌화
+global.io = io;
 // 관리자 접속 여부 글로벌화
 global.access = access;
 
