@@ -136,8 +136,8 @@ global.io = io;
 // 관리자 접속 여부 글로벌화
 global.access = access;
 
-// // 사용자가 접속 중인지 아닌지 판별
-// var access = false
+// // 사용자가 접속 중인지 아닌지 판별 
+// var access = false 
 
 const YtbCrawlingTb = require('./models/ytbCrawlingTb.model');
 
