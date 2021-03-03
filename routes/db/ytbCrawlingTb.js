@@ -292,9 +292,7 @@ router.post('/address/search/:addressId', async (req, res, next) => {
         // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
         res.status(200).json(result)
     } catch (err) {
-        res.status(500).json({
-            error : err
-        })
+        res.status(500).json('addressId가 없습니다.')
     }
 });
 
@@ -593,7 +591,7 @@ router.post('/test', (req, res, next) => {
     // socket(app.io).sendResult()
     // console.log(io)
 
-    algo.sendFront(YtbCrawlingTb)
+    io.emit('result', algo.sendFront(YtbCrawlingTb))
     res.status(200).json('소켓 데이터 전송')
 });
 
