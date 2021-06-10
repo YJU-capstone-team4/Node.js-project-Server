@@ -7,12 +7,11 @@ router.get('/', (req, res, next) => {
   AdminTagTb.findOne( { 'adminTag.seasonTag' : { $in : '봄' } } )
     .exec()
     .then(docs => {
-        console.log('hihi')
         res.status(200).json(docs);
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -24,11 +23,17 @@ router.get('/:adminTag', (req, res, next) => {
     })
     .exec()
     .then(docs => {
-        res.status(200).json({
-            docs
-        }); 
+        if (res.status == 404)
+            res.status(404).json({
+                error: 404
+            })
+        else
+            res.status(200).json(docs);
     }).catch(err => {
         console.log(err);
+        res.status(500).json({
+            error: 500
+        });
     });
 });
 
@@ -40,22 +45,28 @@ router.post('/', (req, res, next) => {
     adminTagTb.save()
     .then(result => {
         console.log(result);
-        res.status(201).json({
-            message: 'Created adminTagTb successfully',
-            createdAdminTagId: {
-                _id: result._id,
-                adminTag: result.adminTag,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/adminTagTb/' + result.adminTag
+        if (res.status == 404) {
+            res.status(404).json({
+                error: 404
+            })
+        } else {    
+            res.status(200).json({
+                message: 'Created adminTagTb successfully',
+                createdAdminTagId: {
+                    _id: result._id,
+                    adminTag: result.adminTag,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/adminTagTb/' + result.adminTag
+                    }
                 }
-            }
-        });
+            });
+        }
     })
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 500
         });
     });
 });
