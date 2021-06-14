@@ -18,6 +18,13 @@ let socket = (io) => {
 
         socket.emit('start', 'admin join');
 
+        // socket test 코드
+        playSocket = setInterval(function() {
+            socket.emit('test', 'socket test')
+        }, 3000);
+
+        playSocket()
+
         // socket.on('givedata', (msg) => {
         //     // console.log(msg)
         //     // // 아래 saveYoutuber, saveVideo의 알고리즘은 수정이 필요함
