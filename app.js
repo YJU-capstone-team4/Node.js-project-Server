@@ -145,11 +145,15 @@ const socket = require('./socket');
 
 socket(io);
 
-function a(b) {
-  b.emit('test', 'socket test')
-}
-// socket test 코드
-setInterval(a(io), 3000)
+setInterval(function() {
+  console.log("2초 시간마다 계속 실행됩니다.");
+}, 2000);
+
+// function a(b) {
+//   b.emit('test', 'socket test')
+// }
+// // socket test 코드
+// setInterval(a(io), 3000)
 
 // // 관리자가 데이터수집 페이지에 접속 중일 때
 // io.on('connection', (socket) => {
