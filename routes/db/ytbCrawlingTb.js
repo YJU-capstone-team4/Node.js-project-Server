@@ -434,11 +434,24 @@ router.post('/test', (req, res, next) => {
  * 크롤링 서버 용
  ******************************************/
 
-// 크롤링 서버로부터 유뷰터만 저장
+// 크롤링 서버로부터 유튜버만 저장
 router.post('/crawling/save/youtuber', (req, res, next) => {
     algo.saveYoutuber(YtbCrawlingTb, res, req.body.channel, req.body.profile, req.body.link, req.body.sub, 
         req.body.hits, req.body.videocount)
 });
 
+// 크롤링 서버로부터 유튜버에 해당하는 비디오 저장
+router.post('/crawling/save/video', (req, res, next) => {
+    algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
+        req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
+        req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
+    
+    
+    // 비디오 status에 따라 소켓 전송
+    if (req.body.status == '완료')
+        sendFront(YtbCrawlingTb)
+    else if (req.body.status == '에러')
+        sendFrontError(channel, videoName)
+});
 
 module.exports = router;

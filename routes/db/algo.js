@@ -146,6 +146,28 @@ async function sockets(YtbCrawlingTb) {
 
 exports.sockets = sockets;
 
+// 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 완료
+async function sendFront(YtbCrawlingTb) {
+    sockets(YtbCrawlingTb).then(function(result) {
+        io.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+        console.log('result event : ' + result)
+    })
+}
+
+exports.sendFront = sendFront
+
+// 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 에러
+async function sendFrontError(ytbChannel, videoName) {
+    var a = {
+        'ytbChannel': ytbChannel,
+        'videoName': videoName
+    }
+    io.emit('errVideo', a);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+    console.log('errVideo event : ' + a)
+}
+
+exports.sendFrontError = sendFrontError
+
 // 데이터 수집 메인 페이지 - socket 알고리즘 - DB에 유튜버 저장
 async function saveYoutuber(YtbCrawlingTb, res, channel, profile, link, sub, hits, videocount) {
     try {
@@ -192,7 +214,7 @@ async function saveYoutuber(YtbCrawlingTb, res, channel, profile, link, sub, hit
 exports.saveYoutuber = saveYoutuber;
 
 // 데이터 수집 메인 페이지 - socket 알고리즘 - 해당 유튜버에 영상 저장
-async function saveVideo(YtbCrawlingTb, channel, videoName, thumbnail, ytbAddress, hits, date, more,
+async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbAddress, hits, date, more,
     status, regionTag, storeName, storeAddress, typeStore, lat, lng) {
     try {
         // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
@@ -224,17 +246,22 @@ async function saveVideo(YtbCrawlingTb, channel, videoName, thumbnail, ytbAddres
             })
 
             YtbCrawlingTb.update({ ytbChannel : channel }, { $push : { video : videos } }).exec()
+            
+            res.status(200).json('유튜버 DB 영상 저장 성공')
             console.log('유튜버 DB 영상 저장 성공')
 
         } else {
+            // tip :: 영상이 같으면 수정해야할 필요가 있을 수도 있음
+            res.status(200).json('유튜버 DB에 영상이 이미 존재합니다.')
             console.log('유튜버 DB에 영상이 이미 존재합니다.')
         }
 
     } catch (err) {
-        // res.status(500).json({
-        //     error : err
-        // })
+        
         console.log(err)
+        res.status(500).json({
+            err : 'Internal Server Error'
+        })
         console.log('유튜버 DB에 영상 저장 실패')
     }
 }
@@ -266,26 +293,3 @@ async function minusVideo(YtbCrawlingTb, channel) {
 }
 
 exports.minusVideo = minusVideo;
-
-
-// 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 완료
-async function sendFront(YtbCrawlingTb) {
-    sockets(YtbCrawlingTb).then(function(result) {
-        io.emit('result', result);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-        console.log('result event : ' + result)
-    })
-}
-
-exports.sendFront = sendFront
-
-// 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 에러
-async function sendFrontError(ytbChannel, videoName) {
-    var a = {
-        'ytbChannel': ytbChannel,
-        'videoName': videoName
-    }
-    io.emit('errVideo', a);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-    console.log('errVideo event : ' + a)
-}
-
-exports.sendFrontError = sendFrontError
