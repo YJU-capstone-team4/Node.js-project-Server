@@ -446,12 +446,48 @@ router.post('/crawling/save/video', (req, res, next) => {
         req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
         req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
     
+    // 비디오 갯수 계산
+    var errCount = 0;
+    var completeCount = 0;
+
+    // 프론트 전송 폼
+    var array = []
+
+    // ytbCrawlingTb 전체
+    var data = await YtbCrawlingTb.find()
+
+    for(let i = 0; i < data.length; i++) {
+        for(let j = 0; j < data[i].video.length; j++) {
+            if(data[i].video[j].status == "에러") {
+                errCount++;
+            } else if (data[i].video[j].status == "완료") {
+                completeCount++;
+            }
+        }
+        array.push({
+            ytbChannel: data[i].ytbChannel,
+            ytbProfile: data[i].ytbProfile,
+            videoCount: data[i].videoCount,
+            errCount: errCount,
+            completeCount: completeCount
+        })
+        errCount = 0;
+        completeCount = 0;
+    }
     
     // 비디오 status에 따라 소켓 전송
-    if (req.body.status == '완료')
-        sendFront(YtbCrawlingTb)
-    else if (req.body.status == '에러')
-        sendFrontError(channel, videoName)
+    if (req.body.status == '완료') {
+        sockets(YtbCrawlingTb).then(function(result) {
+            io.emit('result', array);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+            console.log('result event : ' + result)
+        })
+    }
+    else if (req.body.status == '에러') {
+        sockets(YtbCrawlingTb).then(function(a) {
+            io.emit('errVideo', array);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+            console.log('errVideo event : ' + a)
+        })
+    }
 });
 
 module.exports = router;
