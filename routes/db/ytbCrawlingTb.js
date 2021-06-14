@@ -429,4 +429,16 @@ router.post('/test', (req, res, next) => {
     res.status(200).json('소켓 데이터 전송')
 });
 
+
+/******************************************
+ * 크롤링 서버 용
+ ******************************************/
+
+// 크롤링 서버로부터 유뷰터만 저장
+router.post('/crawling/save/youtuber', (req, res, next) => {
+    algo.saveYoutuber(YtbCrawlingTb, res, req.body.channel, req.body.profile, req.body.link, req.body.sub, 
+        req.body.hits, req.body.videocount)
+});
+
+
 module.exports = router;

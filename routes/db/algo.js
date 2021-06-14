@@ -147,7 +147,7 @@ async function sockets(YtbCrawlingTb) {
 exports.sockets = sockets;
 
 // 데이터 수집 메인 페이지 - socket 알고리즘 - DB에 유튜버 저장
-async function saveYoutuber(YtbCrawlingTb, channel, profile, link, sub, hits, videocount) {
+async function saveYoutuber(YtbCrawlingTb, res, channel, profile, link, sub, hits, videocount) {
     try {
         // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
 
@@ -165,6 +165,7 @@ async function saveYoutuber(YtbCrawlingTb, channel, profile, link, sub, hits, vi
                 videoCount: videocount,
                 video: [],
             });
+            res.status(200).json('유튜버 DB에 저장 성공')
             console.log('유튜버 DB에 저장 성공')
         } else {
             console.log('유튜버 데이터가 이미 존재합니다.')
@@ -175,13 +176,14 @@ async function saveYoutuber(YtbCrawlingTb, channel, profile, link, sub, hits, vi
                 ytbHits: hits,
                 videoCount: videocount
             }).exec();
+            res.status(200).json('유튜버 DB에 video 제외 데이터 수정 성공')
             console.log('유튜버 DB에 video 제외 데이터 수정 성공')
         }
 
     } catch (err) {
-        // res.status(500).json({
-        //     error : err
-        // })
+        res.status(500).json({
+            err : 'Internal Server Error'
+        })
         console.log(err)
         console.log('유튜버에 DB 저장 실패')
     }
