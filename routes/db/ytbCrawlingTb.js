@@ -103,26 +103,53 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 });
 
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버 => 민혁 코드 추가하면 됨
-router.post('/address/search/:addressId', async (req, res, next) => {
+// router.post('/address/search/:addressId', async (req, res, next) => {
+//     try {
+//         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
+//         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+        
+//         console.log(req.params.addressId)
+//         var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
+
+//         // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
+//         // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
+//         // axios({
+//         //     url: '/user/12345',
+//         //     method: 'post',
+//         //     params: {
+//         //       address: req.params.addressId
+//         //     }
+//         // })
+
+//         // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
+//         res.status(200).json(result)
+//     } catch (err) {
+//         res.status(500).json({
+//             error : 'Internal Server Error'
+//         })
+//     }
+// });
+
+// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버
+router.post('/address/crawling/search', async (req, res, next) => {
     try {
         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
-        
-        console.log(req.params.addressId)
-        var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
 
-        // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
-        // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
-        // axios({
-        //     url: '/user/12345',
-        //     method: 'post',
-        //     params: {
-        //       address: req.params.addressId
-        //     }
-        // })
+        // console.log(req.params.addressId)
+        // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
+        array = []
 
-        // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
-        res.status(200).json(result)
+        for( i = 0; i < 3; i++) {
+            array.push({
+                'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
+                'data' : req.body.addressData[i].data
+            })
+        }
+
+        console.log(array)
+
+        io.emit('addressData', array);
     } catch (err) {
         res.status(500).json({
             error : 'Internal Server Error'
@@ -182,37 +209,6 @@ router.post('/save/video/:channelId', async (req, res, next) => {
 
     res.status(200).json(b)
 });
-
-// router.post("/save/video/:channelId", async (req, res, next) => {
-//     try {
-//         let result = await YtbCrawlingTb.find({ ytbChannel: req.params.channelId });
-//         req.body.video.forEach((body) => {
-//             for (var i = 0; i < result[0].video.length; i++) {            
-//                 if (result[0].video[i]._id == body._id) {
-//                     console.log("result : " + result[0].video[i]._id)
-//                     console.log("body : " + body._id)
-//                     console.log(body.storeInfo.location.lng)
-
-//                     result[0].video[i].status = body.status;
-//                     // result[0].video[i].storeInfo.storeName = body.storeInfo.storeName;
-//                     // result[0].video[i].storeInfo.storeAddress = body.storeInfo.storeAddress;
-//                     // result[0].video[i].storeInfo.location.lat = body.storeInfo.location.lat;
-//                     // result[0].video[i].storeInfo.location.lng = body.storeInfo.location.lng;
-//                     // break;
-//                 }
-//             }
-//       });
-//       await result.save();
-  
-//       res.status(200).json({
-//         result
-//       });
-//     } catch (err) {
-//       res.status(500).json({
-//         err
-//       });
-//     }
-// });
 
 // 크롤링 완료된 유튜버 ytbChannelTb, ytbStoreTb에 나눠 저장
 router.post('/save/youtuber/:channelId', async (req, res, next) => {
@@ -446,48 +442,50 @@ router.post('/crawling/save/video', (req, res, next) => {
         req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
         req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
     
-    // 비디오 갯수 계산
-    var errCount = 0;
-    var completeCount = 0;
+    // // 비디오 갯수 계산
+    // var errCount = 0;
+    // var completeCount = 0;
 
-    // 프론트 전송 폼
-    var array = []
+    // // 프론트 전송 폼
+    // var array = []
 
-    // ytbCrawlingTb 전체
-    var data = await YtbCrawlingTb.find()
+    // // ytbCrawlingTb 전체
+    // var data = await YtbCrawlingTb.find()
 
-    for(let i = 0; i < data.length; i++) {
-        for(let j = 0; j < data[i].video.length; j++) {
-            if(data[i].video[j].status == "에러") {
-                errCount++;
-            } else if (data[i].video[j].status == "완료") {
-                completeCount++;
-            }
-        }
-        array.push({
-            ytbChannel: data[i].ytbChannel,
-            ytbProfile: data[i].ytbProfile,
-            videoCount: data[i].videoCount,
-            errCount: errCount,
-            completeCount: completeCount
-        })
-        errCount = 0;
-        completeCount = 0;
-    }
+    // for(let i = 0; i < data.length; i++) {
+    //     for(let j = 0; j < data[i].video.length; j++) {
+    //         if(data[i].video[j].status == "에러") {
+    //             errCount++;
+    //         } else if (data[i].video[j].status == "완료") {
+    //             completeCount++;
+    //         }
+    //     }
+    //     array.push({
+    //         ytbChannel: data[i].ytbChannel,
+    //         ytbProfile: data[i].ytbProfile,
+    //         videoCount: data[i].videoCount,
+    //         errCount: errCount,
+    //         completeCount: completeCount
+    //     })
+    //     errCount = 0;
+    //     completeCount = 0;
+    // }
+
+    algo.sendFront(YtbCrawlingTb)
     
-    // 비디오 status에 따라 소켓 전송
-    if (req.body.status == '완료') {
-        sockets(YtbCrawlingTb).then(function(result) {
-            io.emit('result', array);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-            console.log('result event : ' + result)
-        })
-    }
-    else if (req.body.status == '에러') {
-        sockets(YtbCrawlingTb).then(function(a) {
-            io.emit('errVideo', array);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
-            console.log('errVideo event : ' + a)
-        })
-    }
+    // // 비디오 status에 따라 소켓 전송
+    // if (req.body.status == '완료') {
+    //     sockets(YtbCrawlingTb).then(function(result) {
+    //         io.emit('result', array);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+    //         console.log('result event : ' + result)
+    //     })
+    // }
+    // else if (req.body.status == '에러') {
+    //     sockets(YtbCrawlingTb).then(function(a) {
+    //         io.emit('errVideo', array);  // emit을 사용하여 sockets이라는 함수에서 나온 결과값 보냄
+    //         console.log('errVideo event : ' + a)
+    //     })
+    // }
 });
 
 module.exports = router;

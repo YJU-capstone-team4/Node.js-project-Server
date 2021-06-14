@@ -100,8 +100,8 @@ exports.paginationSearch = paginationSearch;
 // 데이터 수집 메인 페이지 - socket 알고리즘
 async function sockets(YtbCrawlingTb) {
     try {
-        var errCount = 1;
-        var completeCount = 1;
+        var errCount = 0;
+        var completeCount = 0;
 
         // 프론트 전송 폼
         var array = []
@@ -168,7 +168,7 @@ async function sendFrontError(ytbChannel, videoName) {
 
 exports.sendFrontError = sendFrontError
 
-// 데이터 수집 메인 페이지 - socket 알고리즘 - DB에 유튜버 저장
+// 크롤링서버 -> 백엔드 유튜버 저장
 async function saveYoutuber(YtbCrawlingTb, res, channel, profile, link, sub, hits, videocount) {
     try {
         // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
@@ -213,7 +213,7 @@ async function saveYoutuber(YtbCrawlingTb, res, channel, profile, link, sub, hit
 
 exports.saveYoutuber = saveYoutuber;
 
-// 데이터 수집 메인 페이지 - socket 알고리즘 - 해당 유튜버에 영상 저장
+// 크롤링 서버 -> 백엔드 비디오 저장
 async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbAddress, hits, date, more,
     status, regionTag, storeName, storeAddress, typeStore, lat, lng) {
     try {
