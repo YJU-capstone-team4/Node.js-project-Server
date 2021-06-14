@@ -18,12 +18,11 @@ let socket = (io) => {
 
         socket.emit('start', 'admin join');
 
-        // socket test 코드
-        playSocket = setInterval(function() {
-            socket.emit('test', 'socket test')
-        }, 3000);
-
-        playSocket()
+        // // socket test 코드
+        // playSocket = setInterval(function() {
+        //     socket.emit('test', 'socket test')
+        // }, 3000);
+        // playSocket()
 
         // socket.on('givedata', (msg) => {
         //     // console.log(msg)
