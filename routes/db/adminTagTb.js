@@ -25,14 +25,14 @@ router.get('/:adminTag', (req, res, next) => {
     .then(docs => {
         if (res.status == 404)
             res.status(404).json({
-                error: 404
+                error: 'Not Found'
             })
         else
             res.status(200).json(docs);
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: 500
+            error: 'Internal Server Error'
         });
     });
 });
