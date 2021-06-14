@@ -2,6 +2,10 @@ const algo          = require("./routes/db/algo")    // 알고리즘 용도
 const YtbCrawlingTb = require('./models/ytbCrawlingTb.model');
 // var access          = require("./adminAccess")
 
+function a(socket) {
+    socket.emit('test', 'socket test')
+}
+
 let socket = (io) => {
     // 관리자가 데이터수집 페이지에 접속 중일 때
     io.on('connection', (socket) => {
@@ -19,7 +23,7 @@ let socket = (io) => {
         socket.emit('start', 'admin join');
 
         // socket test 코드
-        setInterval(socket.emit('test', 'socket test'), 3000)
+        setInterval(a(socket), 3000)
 
         // socket.on('givedata', (msg) => {
         //     // console.log(msg)
