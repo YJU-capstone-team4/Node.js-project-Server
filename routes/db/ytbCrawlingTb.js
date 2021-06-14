@@ -81,32 +81,6 @@ router.get('/error/:channelId', async (req, res, next) => {
         })
     }
 });
-// router.get('/error', async (req, res, next) => {
-//     try {
-//         var errCrawling = await YtbCrawlingTb.aggregate([
-//             {
-//               "$match": { 'video.status' : '에러' }
-//             },
-//             {
-//                 "$set": {
-//                   "video": {
-//                     "$filter": {
-//                       "input": "$video",
-//                       "as": "v",
-//                       "cond": {"$eq": ["$$v.status","에러"]}
-//                     }
-//                   }
-//                 }
-//             }
-//         ])
-
-//         res.status(200).json(errCrawling)
-//     } catch (err) {
-//         res.status(500).json({
-//             error : err
-//         })
-//     }
-// });
 
 // 삭제 버튼 클릭 시 배열 안 해당 영상 삭제
 router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
@@ -150,7 +124,9 @@ router.post('/address/search/:addressId', async (req, res, next) => {
         // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
         res.status(200).json(result)
     } catch (err) {
-        res.status(500).json('addressId가 없습니다.')
+        res.status(500).json({
+            error : 'Internal Server Error'
+        })
     }
 });
 

@@ -270,48 +270,35 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     // 변수에 담은 뒤 신청 유튜버에서 삭제
     await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
 
-    // ytbCrawling으로 이동
-    // const ytbCrawlingTb = new YtbCrawlingTb({
-    //     _id: new mongoose.Types.ObjectId(),
-    //     ytbChannel: ytbReq.ytbChannel,
-    //     ytbProfile: ytbReq.ytbProfile,
-    //     ytbLinkAddress: ytbReq.ytbLinkAddress,
-    //     ytbSubscribe: ytbReq.ytbSubscribe,
-    //     ytbHits: ytbReq.ytbHits,
-    //     videoCount: ytbReq.videoCount,
-    //     video: []
-    // });
-    // ytbCrawlingTb.save()
-    
-    // res.status(200).json({
-    //     ytbChannel: ytbReq.ytbChannel
-    // });
-
     // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링
     console.log('req.params.youtuber :', req.params.youtuber)
 
-    getYtbCrawling(req.params.youtuber)
-    res.status(200).json('crawling 성공!')
+    // 내 쪽에서 민혁이 쪽으로 데이터 전송!! - 민혁 주소 필요
+    fetch('https://jsonplaceholder.typicode.com/todos/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            youtuber: req.params.youtuber
+        })
+    })
+    .then(res => {
+        // response 처리
+        // 응답을 JSON 형태로 파싱
+        return res.json();
+    })
+    .then(data => {
+        // json 출력
+        res.status(200).json('Crawling 성공');
+        console.log(data);
+    })
+    .catch(err => {
+        // error 처리
+        console.log('Fetch Error', err);
+    });
+    
+    // getYtbCrawling(req.params.youtuber)
+    // res.status(200).json('crawling 성공!')
 
-    // const ytbCrawlingTb = new YtbCrawlingTb({
-    //     _id: new mongoose.Types.ObjectId(),
-    //     ytbChannel: minhyuk.ytbChannel,
-    //     ytbProfile: minhyuk.ytbProfile,
-    //     ytbLinkAddress: minhyuk.ytbLinkAddress,
-    //     ytbSubscribe: minhyuk.ytbSubscribe,
-    //     ytbHits: minhyuk.ytbHits,
-    //     videoCount: minhyuk.videoCount,
-    //     video: minhyuk.video,
-    //   });
-    //   ytbCrawlingTb.save()
-    //   .then(result => {
-    //       res.status(200).json(result);
-    //   })
-    //   .catch(err => {
-    //       res.status(500).json({
-    //           error: err
-    //       });
-    //   });
 });
 
 module.exports = router;
