@@ -145,8 +145,8 @@ const socket = require('./socket');
 
 socket(io);
 
+// socket 테스트용 코드
 setInterval(function() {
-  console.log("2초 시간마다 계속 실행됩니다.");
   io.emit('test', 'socket test')
 }, 5000);
 
