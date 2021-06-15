@@ -38,7 +38,7 @@ router.get('/', (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -70,7 +70,7 @@ router.get('/:userId', async (req, res, next) => {
 
     } catch(e) {
         res.status(500).json({
-            error: e
+            error: 'Internal Server Error'
         });
     }
 });
@@ -91,7 +91,7 @@ router.post('/', (req, res, next) => {
     ytbReqTb.save()
     .then(result => {
         console.log(result);
-        res.status(201).json({
+        res.status(200).json({
             message: 'Created ytbReqTb successfully',
             createdUserId: {
                 _id: result._id,
@@ -113,7 +113,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -127,7 +127,7 @@ router.delete('/delete/:youtuber', async (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -163,7 +163,10 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     })
     .catch(err => {
         // error 처리
-        console.log('Fetch Error', err);
+        // console.log('Fetch Error', err);
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
     });
     
     // getYtbCrawling(req.params.youtuber)
