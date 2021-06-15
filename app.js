@@ -154,12 +154,13 @@ var cnt = 0;
 
 var interval = setInterval(function() {
   cnt++;
-  io.emit('test', 'socket test')
+  io.emit('test', cnt)
   console.log('test socket 전송 : ', cnt)
 
-  if (cnt == 5) {
+  if (cnt == 10) {
     clearInterval(interval)
     console.log('test socket 전송 종료')
+    cnt = 0
   }
 }, 3000);
 
