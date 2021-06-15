@@ -44,29 +44,23 @@ router.post('/', (req, res, next) => {
     });
     adminTagTb.save()
     .then(result => {
-        console.log(result);
-        if (res.status == 404) {
-            res.status(404).json({
-                error: 404
-            })
-        } else {    
-            res.status(200).json({
-                message: 'Created adminTagTb successfully',
-                createdAdminTagId: {
-                    _id: result._id,
-                    adminTag: result.adminTag,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/adminTagTb/' + result.adminTag
-                    }
+        console.log(result); 
+        res.status(200).json({
+            message: 'Created adminTagTb successfully',
+            createdAdminTagId: {
+                _id: result._id,
+                adminTag: result.adminTag,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/adminTagTb/' + result.adminTag
                 }
-            });
-        }
+            }
+        });
     })
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: 500
+            error: 'Internal Server Error'
         });
     });
 });
@@ -89,7 +83,7 @@ router.patch('/insert/:newAdminTag', (req, res, next) => {
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -99,17 +93,22 @@ router.delete('/delete/:newAdminTag', (req, res, next) => {
     AdminTagTb.update({ 'adminTag.regionTag': req.params.newAdminTag }, { $pull: { 'adminTag.regionTag': req.params.newAdminTag } })
     .exec()
     .then(result => {
-        res.status(200).json({
-            value: req.params.newAdminTag,
-            request: {
-                type: 'Delete',
-                url: 'http://localhost:3000/adminTag/delete' + req.params.newAdminTag,
-            }
-        })
+        if (res.status == 404)
+            res.status(404).json({
+                error: 'Not Found'
+            })
+        else
+            res.status(200).json({
+                value: req.params.newAdminTag,
+                request: {
+                    type: 'Delete',
+                    url: 'http://localhost:3000/adminTag/delete' + req.params.newAdminTag,
+                }
+            })
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
