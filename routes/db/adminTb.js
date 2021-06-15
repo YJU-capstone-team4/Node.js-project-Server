@@ -28,7 +28,7 @@ router.get('/', (req, res, next) => {
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -62,7 +62,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -84,57 +84,12 @@ router.get('/:adminId', (req, res, next) => {
         } else {
             res.status(404)
             .json({
-                message: "No valid entry found for userId"
+                message: "Not Found"
             })
         }
     }).catch(err => {
         console.log(err);
     });
 });
-
-// router.patch('/:adminId', (req, res, next) => {
-//     const updateOps = {};
-//     for(const ops of req.body) {
-//         updateOps[ops.propName] = ops.value
-//     }
-//     AdminTb.update({userId : req.params.userId}, { $set: updateOps })
-//     .exec()
-//     .then(result => {
-//         res.status(201).json({
-//             message: 'AdeminTb updated',
-//             request: {
-//                 type: 'GET',
-//                 url: 'http://localhost:3000/adminTb' + userId
-//             }
-//         });
-//     }).catch(err => {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
-
-// router.delete('/:userId', (req, res, next) => {
-//     AdminTb.remove({userId : req.params.userId})
-//     // const id = req.params.productId;
-//     // UserTb.remove({_id: id})
-//     .exec()
-//     .then(result => {
-//         res.status(200).json({
-//             message: 'AdminTb deleted',
-//             request: {
-//                 type: 'POST',
-//                 url: 'http://localhost:3000/adminTb/',
-//                 // body: { name: 'String', price: 'Number' }
-//             }
-//         })
-//     }).catch(err => {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
 
 module.exports = router;
