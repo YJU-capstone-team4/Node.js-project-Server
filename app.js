@@ -146,14 +146,18 @@ const socket = require('./socket');
 socket(io);
 
 // socket 테스트용 코드
-let count = 0
-setInterval(function() {  
-  io.emit('test', 'socket test')
-  count += 1;
+// setInterval(function() {
+//   io.emit('test', 'socket test')
+// }, 5000);
 
-  if(count == 3) {
-    clearInterval()
-  }
+var cnt = 0;        
+var timer = setInterval(function(){
+    cnt++;
+    io.emit('test', 'socket test')
+
+    if(cnt == 5){
+        clearInterval(timer);
+    }
 }, 1000);
 
 // // 관리자가 데이터수집 페이지에 접속 중일 때
