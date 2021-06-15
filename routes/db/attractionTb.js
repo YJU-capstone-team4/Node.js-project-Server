@@ -10,25 +10,30 @@ router.get('/', (req, res, next) => {
     .populate('adminTagTbId')
     .exec()
     .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            attractionTb: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    attractionInfo: doc.attractionInfo,
-                    regionTag: doc.regionTag,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/attractionTb/' + doc._id
-                    }
-                }
+        if (res.status == 404)
+            res.status(404).json({
+                error: 'Not Found'
             })
-        });
+        else
+            res.status(200).json({
+                count: docs.length,
+                attractionTb: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        attractionInfo: doc.attractionInfo,
+                        regionTag: doc.regionTag,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/attractionTb/' + doc._id
+                        }
+                    }
+                })
+            });
         
     })
     .catch(err => {
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -58,7 +63,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
