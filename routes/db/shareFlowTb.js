@@ -101,7 +101,7 @@ router.get('/', async (req, res, next) => {
         algo.pagination(req, res, ShareFlowTb)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -144,7 +144,7 @@ router.get('/title/:flowTitle', async (req, res, next) => {
         algo.paginationSearch(req, res, ShareFlowTb, 'shareTitle', req.params.flowTitle)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -180,7 +180,7 @@ router.get('/id/:userId', async (req, res, next) => {
         algo.paginationSearch(req, res, ShareFlowTb, 'userId', req.params.userId)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -216,7 +216,7 @@ router.get('/region/:regionTag', async (req, res, next) => {
         algo.paginationSearch(req, res, ShareFlowTb, 'adminTag.regionTag', req.params.regionTag)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -264,7 +264,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
