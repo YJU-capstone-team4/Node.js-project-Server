@@ -49,7 +49,7 @@ router.get('/socket', async (req, res, next) => {
         res.status(200).json(array)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -77,7 +77,7 @@ router.get('/error/:channelId', async (req, res, next) => {
         res.status(200).json(errCrawling)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -97,7 +97,7 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
     }
     catch (err) {
         res.status(500).json(
-            err
+            'Internal Server Error'
         );
     }
 });
@@ -404,7 +404,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
