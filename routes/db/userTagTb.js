@@ -8,24 +8,30 @@ router.get('/', (req, res, next) => {
     // .select("name price _id")
     .exec()
     .then(docs => {
-        const response = {
-            count: docs.length,
-            userTagTbs: docs.map(doc => {
-                return {
-                    _id: doc._id,
-                    userTag: doc.userTag,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/userTag/' + doc.userTag
-                    }
-                }
+        if (res.status == 404)
+            res.status(404).json({
+                error: 'Not Found'
             })
-        };
-        res.status(200).json(response);
+        else {
+            const response = {
+                count: docs.length,
+                userTagTbs: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        userTag: doc.userTag,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/userTag/' + doc.userTag
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
+        }
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -53,7 +59,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
