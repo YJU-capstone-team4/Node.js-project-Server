@@ -150,15 +150,18 @@ socket(io);
 //   io.emit('test', 'socket test')
 // }, 5000);
 
-var cnt = 0;        
-var timer = setInterval(function(){
-    cnt++;
-    io.emit('test', 'socket test')
+var cnt = 0;
 
-    if(cnt == 5){
-        clearInterval(timer);
-    }
-}, 1000);
+var interval = setInterval(function() {
+  cnt++;
+  io.emit('test', 'socket test')
+  console.log('test socket 전송 : ', cnt)
+
+  if (cnt == 5) {
+    clearInterval(interval)
+    console.log('test socket 전송 종료')
+  }
+}, 3000);
 
 // // 관리자가 데이터수집 페이지에 접속 중일 때
 // io.on('connection', (socket) => {
