@@ -150,17 +150,28 @@ socket(io);
 //   io.emit('test', 'socket test')
 // }, 5000);
 
-var cnt = 0;
+// var cnt = 0;
+// var interval = setInterval(function() {
+//   cnt++;
+//   io.emit('test', cnt)
+//   console.log('test socket 전송 : ', cnt)
 
-var interval = setInterval(function() {
+//   if (cnt == 10) {
+//     clearInterval(interval)
+//     console.log('test socket 전송 종료')
+//     cnt = 0
+//   }
+// }, 3000);
+
+var cnt = 0;
+setInterval(function() {
   cnt++;
   io.emit('test', cnt)
   console.log('test socket 전송 : ', cnt)
 
   if (cnt == 10) {
-    clearInterval(interval)
-    console.log('test socket 전송 종료')
     cnt = 0
+    console.log('test socket 0으로 초기화 : ', cnt)
   }
 }, 3000);
 
