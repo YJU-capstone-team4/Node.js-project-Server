@@ -44,7 +44,7 @@ router.post('/', (req, res, next) => {
     adminTb.save()
     .then(result => {
         console.log(result);
-        res.status(201).json({
+        res.status(200).json({
             message: 'Created adminTb successfully',
             createdAdminId: {
                 _id: result._id,
