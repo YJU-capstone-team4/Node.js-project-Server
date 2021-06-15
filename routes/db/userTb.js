@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
         algo.pagination(req, res, UserTb)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -67,7 +67,7 @@ router.post('/', (req, res, next) => {
     userTb.save()
     .then(result => {
         console.log(result);
-        res.status(201).json({
+        res.status(200).json({
             message: 'Created userTb successfully',
             createdUserId: {
                 _id: result._id,
@@ -90,7 +90,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -125,7 +125,7 @@ router.get('/id/:userId', (req, res, next) => {
         algo.paginationSearch(req, res, UserTb, 'userId', req.params.userId)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -160,7 +160,7 @@ router.get('/nickname/:nickname', (req, res, next) => {
         algo.paginationSearch(req, res, UserTb, 'nickname', req.params.nickname)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -195,7 +195,7 @@ router.get('/memo/:memo', (req, res, next) => {
         algo.paginationSearch(req, res, UserTb, 'memo', req.params.memo)
     } catch (err) {
         res.status(500).json({
-            error : err
+            error : 'Internal Server Error'
         })
     }
 });
@@ -222,7 +222,7 @@ router.get('/folder/:folderId', (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -249,7 +249,7 @@ router.get('/store/:storeId', (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -263,7 +263,7 @@ router.patch('/:userId', (req, res, next) => {
     UserTb.update({userId : req.params.userId}, { $set: updateOps })
     .exec()
     .then(result => {
-        res.status(201).json({
+        res.status(200).json({
             message: 'UserTb updated',
             request: {
                 type: 'GET',
@@ -273,7 +273,7 @@ router.patch('/:userId', (req, res, next) => {
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -296,7 +296,7 @@ router.delete('/:userId', (req, res, next) => {
     }).catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
