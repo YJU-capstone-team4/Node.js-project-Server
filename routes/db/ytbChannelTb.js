@@ -35,7 +35,7 @@ router.get('/', (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
@@ -55,13 +55,14 @@ router.get('/:channerId', (req, res, next) => {
         if (doc) {
             res.status(200).json(doc);
         } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for object Id"
+            res.status(404).json({
+                error: 'Not Found'
             })
         }
     }).catch(err => {
-        console.log(err);
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
     });
 });
 
@@ -75,14 +76,15 @@ router.get('/show/:channerId', (req, res, next) => {
         if (doc) {
             res.status(200).json(doc);
         } else {
-            res.status(404)
-            .json({
-                message: "No valid entry found for object Id"
+            res.status(404).json({
+                error: 'Not Found'
             })
         }
     })
     .catch(err => {
-        console.log(err);
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
     });
 });
 
@@ -127,7 +129,7 @@ router.post('/', (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            error: 'Internal Server Error'
         });
     });
 });
