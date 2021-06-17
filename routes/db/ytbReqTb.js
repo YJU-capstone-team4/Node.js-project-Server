@@ -7,6 +7,7 @@ const UserTb = require("../../models/userTb.model")
 const YtbChannelTb = require("../../models/ytbChannelTb.model")
 const YtbCrawlingTb = require("../../models/ytbCrawlingTb.model")
 const { getYtbCrawling } = require('../../crawling/youtube/index')
+const fetch = require('node-fetch');
 
 router.get('/', (req, res, next) => {
     YtbReqTb.find()
