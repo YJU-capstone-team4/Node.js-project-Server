@@ -439,8 +439,8 @@ router.post('/crawling/save/youtuber', (req, res, next) => {
 // 크롤링 서버로부터 유튜버에 해당하는 비디오 저장
 router.post('/crawling/save/video', (req, res, next) => {    
     if (req.body.charged == true) {
-        console.log('전 charged : ', req.body.charged)
-        console.log('전 channel : ', req.body.channel)
+        // console.log('전 charged : ', req.body.charged)
+        // console.log('전 channel : ', req.body.channel)
         algo.minusVideo(YtbCrawlingTb, req.body.channel)
     } else {
         algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
