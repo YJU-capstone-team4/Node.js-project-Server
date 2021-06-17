@@ -8,6 +8,7 @@ const YtbChannelTb = require("../../models/ytbChannelTb.model")
 const YtbCrawlingTb = require("../../models/ytbCrawlingTb.model")
 const { getYtbCrawling } = require('../../crawling/youtube/index')
 const fetch = require('node-fetch');
+const axios = require('axios');
 
 router.get('/', (req, res, next) => {
     YtbReqTb.find()
@@ -146,20 +147,11 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
 
     // 내 쪽에서 민혁이 쪽으로 데이터 전송!! - 민혁 주소 필요
     var url = 'https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/' + req.params.youtuber
-    // fetch('https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/', {
-    //     method: 'GET',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({
-    //         youtuber: req.params.youtuber
-    //     })
-    // })
-    fetch(url)
-    .then(res => {
-        // response 처리
-        // 응답을 JSON 형태로 파싱
-        return res.json();
-    })
-    .then(data => {
+
+    console.log('url : ', url)
+
+    axios.get(url)
+    .then(function(response) {
         // json 출력
         res.status(200).json('Crawling 시작');
         console.log(data);
@@ -171,6 +163,25 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
             error: 'Internal Server Error'
         });
     });
+
+    // fetch(url)
+    // .then(res => {
+    //     // response 처리
+    //     // 응답을 JSON 형태로 파싱
+    //     return res.json();
+    // })
+    // .then(data => {
+    //     // json 출력
+    //     res.status(200).json('Crawling 시작');
+    //     console.log(data);
+    // })
+    // .catch(err => {
+    //     // error 처리
+    //     // console.log('Fetch Error', err);
+    //     res.status(500).json({
+    //         error: 'Internal Server Error'
+    //     });
+    // });
 });
 
 module.exports = router;
