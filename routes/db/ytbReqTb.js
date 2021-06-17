@@ -144,7 +144,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     console.log('req.params.youtuber :', req.params.youtuber)
 
     // 내 쪽에서 민혁이 쪽으로 데이터 전송!! - 민혁 주소 필요
-    fetch('https://jsonplaceholder.typicode.com/todos/', {
+    fetch('https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
