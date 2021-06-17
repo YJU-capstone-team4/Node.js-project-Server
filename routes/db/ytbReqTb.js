@@ -146,7 +146,8 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     console.log('req.params.youtuber :', req.params.youtuber)
 
     // 내 쪽에서 민혁이 쪽으로 데이터 전송!! - 민혁 주소 필요
-    var url = 'https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/' + req.params.youtuber
+    var a = 'https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/' + req.params.youtuber
+    var url = encodeURI(a)
 
     console.log('url : ', url)
 
