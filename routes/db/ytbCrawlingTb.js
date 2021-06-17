@@ -437,10 +437,16 @@ router.post('/crawling/save/youtuber', (req, res, next) => {
 });
 
 // 크롤링 서버로부터 유튜버에 해당하는 비디오 저장
-router.post('/crawling/save/video', (req, res, next) => {
-    algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
-        req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
-        req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
+router.post('/crawling/save/video', (req, res, next) => {    
+    if (req.body.charged == true) {
+        algo.minusVideo(YtbCrawlingTb, req.body.channel)
+    } else {
+        algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
+            req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
+            req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
+            
+        algo.sendFront(YtbCrawlingTb)
+    }
     
     // // 비디오 갯수 계산
     // var errCount = 0;
@@ -470,8 +476,6 @@ router.post('/crawling/save/video', (req, res, next) => {
     //     errCount = 0;
     //     completeCount = 0;
     // }
-
-    algo.sendFront(YtbCrawlingTb)
     
     // // 비디오 status에 따라 소켓 전송
     // if (req.body.status == '완료') {
