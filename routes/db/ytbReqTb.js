@@ -145,13 +145,15 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     console.log('req.params.youtuber :', req.params.youtuber)
 
     // 내 쪽에서 민혁이 쪽으로 데이터 전송!! - 민혁 주소 필요
-    fetch('https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            youtuber: req.params.youtuber
-        })
-    })
+    var url = 'https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/' + req.params.youtuber
+    // fetch('https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/', {
+    //     method: 'GET',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //         youtuber: req.params.youtuber
+    //     })
+    // })
+    fetch(url)
     .then(res => {
         // response 처리
         // 응답을 JSON 형태로 파싱
