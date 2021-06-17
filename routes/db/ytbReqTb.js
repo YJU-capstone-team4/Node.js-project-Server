@@ -146,7 +146,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
 
     // 내 쪽에서 민혁이 쪽으로 데이터 전송!! - 민혁 주소 필요
     fetch('https://bxi4xtuqwc.execute-api.ap-northeast-2.amazonaws.com/start/', {
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             youtuber: req.params.youtuber
@@ -159,7 +159,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     })
     .then(data => {
         // json 출력
-        res.status(200).json('Crawling 성공');
+        res.status(200).json('Crawling 시작');
         console.log(data);
     })
     .catch(err => {
@@ -169,10 +169,6 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
             error: 'Internal Server Error'
         });
     });
-    
-    // getYtbCrawling(req.params.youtuber)
-    // res.status(200).json('crawling 성공!')
-
 });
 
 module.exports = router;
