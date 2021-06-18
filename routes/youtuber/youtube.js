@@ -374,49 +374,41 @@ router.post('/youtuber/like', async (req, res, next) => {
 
 // 유튜버 신청 동협 코드
 router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
-    try {
-        req.body.user_id = 'payment'
-        const user = await UserTb
-            .findOne({
-                "userId": req.body.user_id
-            })
-            .select('_id')
-            .select('userId')
-            .exec() 
-        mongoose.set('useFindAndModify', false);
-
-        // const result = req.params
-        // console.log(result)
-        // console.log(result.ytbChannel)
-        console.log(req.params.youtuber)
-        console.log(user._id)
-
-        // 프로필 크롤링 URL
-        var a = process.env.USER_CRAWLING_URL + req.params.youtuber + '&userId=' + req.body.user_id + '&userTbId=' + user._id
-        console.log(a)
-        var url = encodeURI(a)
-        console.log(url)
-
-        axios.get(url)
-        .then(function(response) {
-            // json 출력
-            res.status(200).json('유저 신청 유튜버 Crawling 시작');
-            console.log('유저 신청 유튜버 Crawling 시작');
+    req.body.user_id = 'payment'
+    const user = await UserTb
+        .findOne({
+            "userId": req.body.user_id
         })
-        .catch(err => {
-            // error 처리
-            console.log('error', err);
-            res.status(500).json({
-                error: 'Internal Server Error'
-            });
-        });
+        .select('_id')
+        .select('userId')
+        .exec() 
+    mongoose.set('useFindAndModify', false);
 
-    }catch(e) {
+    // const result = req.params
+    // console.log(result)
+    // console.log(result.ytbChannel)
+    console.log(req.params.youtuber)
+    console.log(user._id)
+
+    // 프로필 크롤링 URL
+    var a = process.env.USER_CRAWLING_URL + req.params.youtuber + '&userId=' + req.body.user_id + '&userTbId=' + user._id
+    console.log(a)
+    var url = encodeURI(a)
+    console.log(url)
+
+    axios.get(url)
+    .then(function(response) {
+        // json 출력
+        console.log('유저 신청 유튜버 Crawling 시작');
+        res.status(200).json('유저 신청 유튜버 Crawling 시작');
+    })
+    .catch(err => {
+        // error 처리
+        console.log('유튜버 프로필 크롤링 실패')
         res.status(500).json({
-            error: e
+            error: 'Internal Server Error'
         });
-
-    }
+    });
 });
 
 // 크롤링 결과(간단한 프로필) 값을 저장하는 코드
@@ -426,24 +418,25 @@ router.post('/youtuberRequest/save', async (req, res, next) => {
         console.log('신청 유튜버 프로필 저장 시작')
         console.log(req.body.ytbChannel)
 
-        await YtbReqTb.create({
-                _id: new mongoose.Types.ObjectId(),
-                ytbChannel: req.body.ytbChannel,
-                ytbProfile: req.body.ytbProfile,
-                ytbLinkAddress: req.body.ytbLinkAddress,
-                ytbSubscribe: req.body.ytbSubscribe,
-                ytbHits: req.body.ytbHits,
-                videoCount: req.body.videoCount,
-                userTbId: req.body._id,
-                userId: req.body.user_id
+        YtbReqTb.create({
+            _id: new mongoose.Types.ObjectId(),
+            ytbChannel: req.body.ytbChannel,
+            ytbProfile: req.body.ytbProfile,
+            ytbLinkAddress: req.body.ytbLinkAddress,
+            ytbSubscribe: req.body.ytbSubscribe,
+            ytbHits: req.body.ytbHits,
+            videoCount: req.body.videoCount,
+            userTbId: req.body._id,
+            userId: req.body.user_id
       });
 
       console.log('yrtReqTb save success')
       res.status(200).json('yrtReqTb save success')
 
     }catch(e) {
+        console.log('유튜버 프로필 저장 실패')
         res.status(500).json({
-            error: e
+            error: 500
         });
 
     }
