@@ -392,7 +392,7 @@ router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
         console.log(user._id)
 
         // 프로필 크롤링 URL
-        var a = process.env.USER_CRAWLING_URL + req.params.youtuber + '&&userId=' + req.body.user_id + '&&userTbId=' + user._id
+        var a = process.env.USER_CRAWLING_URL + req.params.youtuber + '&userId=' + req.body.user_id + '&userTbId=' + user._id
         console.log(a)
         var url = encodeURI(a)
         console.log(url)
