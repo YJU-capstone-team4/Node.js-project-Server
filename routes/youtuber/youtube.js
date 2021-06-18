@@ -10,6 +10,7 @@ const UserTb = require('../../models/userTb.model');
 const ShareFlowTb = require("../../models/shareFlowTb.model");
 const UserTagTb = require('../../models/userTagTb.model');
 const YtbReqTb = require("../../models/ytbReqTb.model")
+const axios = require('axios');
 
 const { getYoutuberInfo } = require('../../crawling/youtube/getYoutuberInfo')
 
