@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -319,7 +320,58 @@ router.post('/youtuber/like', async (req, res, next) => {
     }
 });
 
-// 유튜버 신청
+// 유튜버 신청 한얼 코드
+// router.post('/youtuberRequest/', async (req, res, next) => {
+//     try {
+//         req.body.user_id = 'payment'
+//         const user = await UserTb
+//             .findOne({
+//                 "userId": req.body.user_id
+//             })
+//             .select('_id')
+//             .select('userId')
+//             .exec()
+//         mongoose.set('useFindAndModify', false);
+    
+//         // 크롤링 함수 불러오기
+//         const result = await getYoutuberInfo(req.body.ytbChannel)
+//         console.log(result)
+//         console.log(result.ytbChannel)
+    
+//         // const result = []// 함수 실행 return 값 반환
+//         await YtbReqTb.create({
+//                 _id: new mongoose.Types.ObjectId(),
+//                 ytbChannel: result.ytbChannel,
+//                 ytbProfile: result.ytbProfile,
+//                 ytbLinkAddress: result.ytbLinkAddress,
+//                 ytbSubscribe: result.ytbSubscribe,
+//                 ytbHits: result.ytbHits,
+//                 videoCount: result.videoCount,
+//                 userTbId: user._id,
+//                 userId: req.body.user_id
+//       });
+
+//       res.status(200).json('yrtReqTb save success')
+//     //   await ytbReqTb.save()
+
+//         // // 신청할 객체에 필요한 정보 추가하기
+//         // result.userTbId = user._id;
+//         // result.userId = req.body.user_id;
+
+//         // console.log(result)
+
+//         // // 신청 db에 추가
+//         // await YtbReqTb(result).save() 
+
+//     }catch(e) {
+//         res.status(500).json({
+//             error: e
+//         });
+
+//     }
+// });
+
+// 유튜버 신청 동협 코드
 router.post('/youtuberRequest', async (req, res, next) => {
     try {
         req.body.user_id = 'payment'
@@ -329,38 +381,57 @@ router.post('/youtuberRequest', async (req, res, next) => {
             })
             .select('_id')
             .select('userId')
-            .exec()
+            .exec() 
         mongoose.set('useFindAndModify', false);
-    
-        // 크롤링 함수 불러오기
-        const result = await getYoutuberInfo(req.body.ytbChannel)
+
+        const result = req.params
         console.log(result)
         console.log(result.ytbChannel)
-    
+
+        // 프로필 크롤링 URL
+        var url = encodeURI(process.env.USER_CRAWLING_URL + req.body.youtuber + 
+            '&&userId=' + req.body.user_id + '&&userTbId=' + user._id)
+
+        axios.get(url)
+        .then(function(response) {
+            // json 출력
+            res.status(200).json('유저 신청 유튜버 Crawling 시작');
+            console.log('유저 신청 유튜버 Crawling 시작');
+        })
+        .catch(err => {
+            // error 처리
+            console.log('error', err);
+            res.status(500).json({
+                error: 'Internal Server Error'
+            });
+        });
+
+    }catch(e) {
+        res.status(500).json({
+            error: e
+        });
+
+    }
+});
+
+// 크롤링 결과(간단한 프로필) 값을 저장하는 코드
+router.post('/youtuberRequest/save', async (req, res, next) => {
+    try {
         // const result = []// 함수 실행 return 값 반환
         await YtbReqTb.create({
                 _id: new mongoose.Types.ObjectId(),
-                ytbChannel: result.ytbChannel,
-                ytbProfile: result.ytbProfile,
-                ytbLinkAddress: result.ytbLinkAddress,
-                ytbSubscribe: result.ytbSubscribe,
-                ytbHits: result.ytbHits,
-                videoCount: result.videoCount,
-                userTbId: user._id,
+                ytbChannel: req.body.ytbChannel,
+                ytbProfile: req.body.ytbProfile,
+                ytbLinkAddress: req.body.ytbLinkAddress,
+                ytbSubscribe: req.body.ytbSubscribe,
+                ytbHits: req.body.ytbHits,
+                videoCount: req.body.videoCount,
+                userTbId: req.body._id,
                 userId: req.body.user_id
       });
 
+      console.log('yrtReqTb save success')
       res.status(200).json('yrtReqTb save success')
-    //   await ytbReqTb.save()
-
-        // // 신청할 객체에 필요한 정보 추가하기
-        // result.userTbId = user._id;
-        // result.userId = req.body.user_id;
-
-        // console.log(result)
-
-        // // 신청 db에 추가
-        // await YtbReqTb(result).save() 
 
     }catch(e) {
         res.status(500).json({
