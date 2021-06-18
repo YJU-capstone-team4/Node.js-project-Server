@@ -372,7 +372,7 @@ router.post('/youtuber/like', async (req, res, next) => {
 // });
 
 // 유튜버 신청 동협 코드
-router.post('/youtuberRequest', async (req, res, next) => {
+router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
     try {
         req.body.user_id = 'payment'
         const user = await UserTb
@@ -389,7 +389,7 @@ router.post('/youtuberRequest', async (req, res, next) => {
         console.log(result.ytbChannel)
 
         // 프로필 크롤링 URL
-        var url = encodeURI(process.env.USER_CRAWLING_URL + req.body.youtuber + 
+        var url = encodeURI(process.env.USER_CRAWLING_URL + req.params.youtuber + 
             '&&userId=' + req.body.user_id + '&&userTbId=' + user._id)
 
         axios.get(url)
