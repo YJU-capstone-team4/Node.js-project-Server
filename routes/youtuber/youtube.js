@@ -430,8 +430,8 @@ router.post('/youtuberRequest/save/crawling', async (req, res, next) => {
             ytbSubscribe: req.body.ytbSubscribe,
             ytbHits: req.body.ytbHits,
             videoCount: req.body.videoCount,
-            userTbId: req.body._id,
-            userId: req.body.user_id
+            userTbId: req.body.userTbId,
+            userId: req.body.userId
       });
 
       console.log('yrtReqTb save success')
