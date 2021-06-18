@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer')
 const { checkNaverlocation } = require('./checkLocation')
 
-const place = '서울특별시 영등포구 국회대로68길 23'
+// const place = '서울특별시 영등포구 국회대로68길 23'
 // const place = '대전 동구 대전로 695-3 이동왕만두'
 // const place = '대구 서구 내당동 내당칼국수' 216-4
 // const place = '부산광역시 남구 대연동 수영로 309' // 여러 주소 뜨는 경우
@@ -38,11 +38,12 @@ exports.getNaverLocation = async(argSearchPlace) => {
                 naverReqUrl = checkNaverlocation(naverReqUrl)
                 console.log('네이버 위도 경도 결과 :', naverReqUrl)
 
-
                 await req.abort(); // 작업 중단
                 console.log('Request Url 수집 후 반환')
+
                 // await searchPage.close()
                 // await browser.close()
+
                 return naverReqUrl
             } else {
                 await req.continue()
@@ -55,26 +56,27 @@ exports.getNaverLocation = async(argSearchPlace) => {
         const inputBox = '#container > shrinkable-layout > div > app-base > search-input-box > div > div > div > input'
         await searchPage.waitForSelector(inputBox)
    
-        console.log('검색바 렌더링 완료')
+        // console.log('검색바 렌더링 완료')
   
         // await searchPage.mouse.click(168, 67, { button: 'left' }) // 검색바 클릭
-        console.log('검색바 클릭 완료')
+        // console.log('검색바 클릭 완료')
 
         await searchPage.keyboard.type(searchPlace) // 주소 입력
-        console.log('입력 완료!!')
+        // console.log('입력 완료!!')
         await searchPage.keyboard.press('Enter')
-        console.log('주소 검색!!')
-        await searchPage.waitForTimeout(10000) // 5초 -> 10초 대기
+        // console.log('주소 검색!!')
+        await searchPage.waitForTimeout(10000) // 5초 -> 10초 -> 12초 ->15초 
         console.log('좌표 수집 10초 대기 완료')
         // let checkTag1 = await searchPage.$('#app-root > div > div')
         // #app-root > div > div > div 여러 검색결과가 나올 경우
-        console.log('browser.close()')
+        // console.log('browser.close()')
         await searchPage.close()
         await browser.close()
 
         return naverReqUrl
     } catch(e) {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
+        process.exit()
     }
 }
 // getNaverLocation(place)
@@ -99,23 +101,11 @@ exports.getGoogleLocation = async(argSearchPlace) => {
         await searchPage.goto(searchUrl, {waitUntil:'networkidle2'})    /* Google Travel 접속 */
 
         await searchPage.waitForSelector('input#searchboxinput')
-        await searchPage.type('input#searchboxinput', searchPlace)         /* 검색할 장소 입력 */
+        await searchPage.type('input#searchboxinput', searchPlace)      /* 검색할 장소 입력 */
         await searchPage.keyboard.press('Enter')                        /* 해당 장소 검색 */
         await searchPage.waitForTimeout(5000)
-
-        const storeSelector = '#pane > div > div.widget-pane-content.scrollable-y > div > div > div.section-hero-header-title > div.section-hero-header-title-top-container > div.section-hero-header-title-description > div:nth-child(1) > h1 > span:nth-child(1)'
-        // const addressSelector = '.ugiz4pqJLAG__primary-text.gm2-body-2'
-
-        if(await searchPage.$(storeSelector) == null) {
-            console.log('구글 지도 좌표값 검색결과가 없습니다. \n')
-
-            searchPage.close()
-            browser.close()
-            return null
-        } 
-
     
-        let url = searchPage.url()                                /* 위도, 경도 값이 포함된 URL 획득 */
+        let url = searchPage.url()                     /* 위도, 경도 값이 포함된 URL 획득 */                
         console.log("구글 지도 URL : ",url)
 
         /* URL 에서 위도 경도 값 추출 */
@@ -126,15 +116,16 @@ exports.getGoogleLocation = async(argSearchPlace) => {
         let lat = location[0]                           /* 위도 */
         let lng = location[1]                           /* 경도 */
         let locationData = {lat, lng}                   /* {위도, 경도} */
-        console.log('구글지도 URL 좌표값 결과 :', locationData)
+        // console.log('구글지도 URL 좌표값 결과 :', locationData)
 
         await searchPage.close()
         await browser.close()
-
+        
         return locationData
 
     } catch(e) {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
+        process.exit()
     }
 }
 // getGoogleLocation(place)

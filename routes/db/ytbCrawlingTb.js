@@ -103,53 +103,16 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 });
 
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버 => 민혁 코드 추가하면 됨
-// router.post('/address/search/:addressId', async (req, res, next) => {
-//     try {
-//         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
-//         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
-        
-//         console.log(req.params.addressId)
-//         var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
-
-//         // const axios = require('axios'); -> 나중에 추가 및 npm install 필요 - 수정
-//         // axios 통신 만듦 - 현재는 사용 안함 - 수정 필요
-//         // axios({
-//         //     url: '/user/12345',
-//         //     method: 'post',
-//         //     params: {
-//         //       address: req.params.addressId
-//         //     }
-//         // })
-
-//         // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
-//         res.status(200).json(result)
-//     } catch (err) {
-//         res.status(500).json({
-//             error : 'Internal Server Error'
-//         })
-//     }
-// });
-
-// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버
-router.post('/address/crawling/search', async (req, res, next) => {
+router.post('/address/search/:addressId', async (req, res, next) => {
     try {
         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+        
+        console.log(req.params.addressId)
+        var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
 
-        // console.log(req.params.addressId)
-        // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
-        array = []
-
-        for( i = 0; i < 3; i++) {
-            array.push({
-                'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
-                'data' : req.body.addressData[i].data
-            })
-        }
-
-        console.log(array)
-
-        io.emit('addressData', array);
+        // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
+        res.status(200).json(result)
     } catch (err) {
         res.status(500).json({
             error : 'Internal Server Error'
@@ -157,14 +120,29 @@ router.post('/address/crawling/search', async (req, res, next) => {
     }
 });
 
-// < 주소 전달 > 크롤링 서버 -> 백 -> 프론트
-// router.post('/address/search/result/:addressId', async (req, res, next) => {
-//     // 이건 어떻게 수정해야할까? 람다 서버 전용인데... -> 수정 필요
+// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버
+// router.post('/address/crawling/search', async (req, res, next) => {
 //     try {
-//         res.status(200).json(req.body)
+//         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
+//         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+
+//         // console.log(req.params.addressId)
+//         // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
+//         array = []
+
+//         for( i = 0; i < 3; i++) {
+//             array.push({
+//                 'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
+//                 'data' : req.body.addressData[i].data
+//             })
+//         }
+
+//         console.log(array)
+
+//         io.emit('addressData', array);
 //     } catch (err) {
 //         res.status(500).json({
-//             error : err
+//             error : 'Internal Server Error'
 //         })
 //     }
 // });

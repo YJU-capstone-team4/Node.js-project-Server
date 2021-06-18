@@ -3,7 +3,7 @@ const { adminGoogleMap } = require('./util/getAdminStore')
 const { adminKakaoMap } = require('./util/getAdminStore')
 
 // const place = 'ㅁㄴㅇㄻㄴㅇㄻㄴㅇㄹ'
-const place = '대구 서구 내당동 내당칼국수'
+// const place = '대구 서구 내당동 내당칼국수'
 
 exports.adminStore = async(argSearchPlace) => {
     try{
@@ -30,6 +30,7 @@ exports.adminStore = async(argSearchPlace) => {
         return adminResult
     } catch(e) {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
+        process.exit()
     }
 }
 // adminStore(place)
