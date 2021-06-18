@@ -28,6 +28,7 @@ exports.adminNaverMap = async(argSearchPlace) => {
         await searchPage.goto(searchUrl)    /* Naver Map url 이동 */ // , {waitUntil:'networkidle2'}
         console.log('네이버 지도 이동')
 
+        await searchPage.waitForTimeout(5000)
         const searchBox = '#header > header > div.Nsearch._searchKeywordView._searchGuide > div > div > div > span.Nbox_text._textPanel > input'
         await searchPage.waitForSelector(searchBox)
         await searchPage.waitForTimeout(2000)
@@ -35,7 +36,7 @@ exports.adminNaverMap = async(argSearchPlace) => {
         await searchPage.type(searchBox, searchPlace)    /* 주소 검색란에 주소 입력 */
         await searchPage.keyboard.press('Enter') 
         await console.log('주소 검색 완료')
-        await searchPage.waitForTimeout(5000)
+        await searchPage.waitForTimeout(2000)
 
         let naverResult
 

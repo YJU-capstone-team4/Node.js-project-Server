@@ -103,49 +103,52 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 });
 
 // < 주소 전달 > 프론트 -> 백 -> 크롤링 서버 => 민혁 코드 추가하면 됨
-router.post('/address/search/:addressId', async (req, res, next) => {
-    try {
-        // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
-        // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
-        
-        console.log(req.params.addressId)
-        var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
-
-        // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
-        res.status(200).json(result)
-    } catch (err) {
-        res.status(500).json({
-            error : 'Internal Server Error'
-        })
-    }
-});
-
-// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버
-// router.post('/address/crawling/search', async (req, res, next) => {
+// router.post('/address/search/:addressId', async (req, res, next) => {
 //     try {
 //         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
 //         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+        
+//         console.log(req.params.addressId)
+//         var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
 
-//         // console.log(req.params.addressId)
-//         // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
-//         array = []
-
-//         for( i = 0; i < 3; i++) {
-//             array.push({
-//                 'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
-//                 'data' : req.body.addressData[i].data
-//             })
-//         }
-
-//         console.log(array)
-
-//         io.emit('addressData', array);
+//         // 이건 나중에 민혁이에게서 받아오는 데이터를 전송할 것임 - 수정
+//         res.status(200).json(result)
 //     } catch (err) {
 //         res.status(500).json({
 //             error : 'Internal Server Error'
 //         })
 //     }
 // });
+
+// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버
+router.post('/address/crawling/search', async (req, res, next) => {
+    try {
+        // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
+        // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+
+        // console.log(req.params.addressId)
+        // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
+        
+        // array = []
+
+        // for( i = 0; i < 3; i++) {
+        //     array.push({
+        //         'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
+        //         'data' : req.body.addressData[i].data
+        //     })
+        // }
+
+        array = req.body.addressData
+
+        console.log(array)
+
+        io.emit('addressData', array);
+    } catch (err) {
+        res.status(500).json({
+            error : 'Internal Server Error'
+        })
+    }
+});
 
 // 3사 결과 비디오 저장 시
 router.post('/save/video/:channelId', async (req, res, next) => {
