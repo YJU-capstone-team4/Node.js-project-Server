@@ -384,9 +384,11 @@ router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
             .exec() 
         mongoose.set('useFindAndModify', false);
 
-        const result = req.params
-        console.log(result)
-        console.log(result.ytbChannel)
+        // const result = req.params
+        // console.log(result)
+        // console.log(result.ytbChannel)
+        console.log(req.params.youtuber)
+        console.log(user._id)
 
         // 프로필 크롤링 URL
         var url = encodeURI(process.env.USER_CRAWLING_URL + req.params.youtuber + 
