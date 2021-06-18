@@ -396,7 +396,7 @@ router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
     var url = encodeURI(a)
     console.log(url)
 
-    axios.get(url)
+    axios.get(a)
     .then(function(response) {
         // json 출력
         console.log('유저 신청 유튜버 Crawling 시작');
