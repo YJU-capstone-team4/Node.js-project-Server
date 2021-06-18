@@ -141,7 +141,7 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
     const ytbReq = await YtbReqTb.findOne({ 'ytbChannel' : req.params.youtuber });
     
     // 변수에 담은 뒤 신청 유튜버에서 삭제
-    // await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
+    await YtbReqTb.remove({ 'ytbChannel' : req.params.youtuber });
 
     // 민혁이 코드 실행 : req.params.youtuber로 검색해서 크롤링
     console.log('req.params.youtuber :', req.params.youtuber)
@@ -151,19 +151,19 @@ router.put('/recognize/:youtuber', async (req, res, next) => {
 
     console.log('url : ', url)
 
-    // axios.get(url)
-    // .then(function(response) {
-    //     // json 출력
-    //     res.status(200).json('Crawling 시작');
-    //     console.log(data);
-    // })
-    // .catch(err => {
-    //     // error 처리
-    //     console.log('error', err);
-    //     res.status(500).json({
-    //         error: 'Internal Server Error'
-    //     });
-    // });
+    axios.get(url)
+    .then(function(response) {
+        // json 출력
+        res.status(200).json('Crawling 시작');
+        console.log(data);
+    })
+    .catch(err => {
+        // error 처리
+        console.log('error', err);
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+    });
 
     // fetch(url)
     // .then(res => {
