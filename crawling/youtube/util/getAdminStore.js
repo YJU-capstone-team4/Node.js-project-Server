@@ -1,5 +1,5 @@
 const { getGoogleLocation } = require('./getLocation')
-const { getGoogleLocation } = require('./getLocation')
+const { getNaverLocation } = require('./getLocation')
 const puppeteer = require('puppeteer')
 
 // const place = '부산광역시 남구 대연동 수영로 309' // 216-4
@@ -214,6 +214,9 @@ exports.adminKakaoMap = async(argSearchPlace) => {
         const searchPlace  = argSearchPlace /* 수집할 장소 */
         const searchUrl   = 'https://map.kakao.com/' /* kakao Map URL */
 
+        const searchPlace  = argSearchPlace /* 수집할 장소 */
+        const searchUrl   = 'https://map.kakao.com/' /* kakao Map URL */
+
         console.log('카카오 검색할 장소 이름 :', searchPlace)
         
         const searchPage = await browser.newPage() 
@@ -295,6 +298,7 @@ exports.adminKakaoMap = async(argSearchPlace) => {
 
             return kakaoResult
         }
+
     } catch(e) {
         console.log(`다음과 같은 에러가 발생했습니다: ${e.name}: ${e.message}`)
         return { crawlingPlatform : 'Kakao', data : [] }
