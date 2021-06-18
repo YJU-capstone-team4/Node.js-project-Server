@@ -423,6 +423,9 @@ router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
 router.post('/youtuberRequest/save', async (req, res, next) => {
     try {
         // const result = []// 함수 실행 return 값 반환
+        console.log('신청 유튜버 프로필 저장 시작')
+        console.log(req.body.ytbChannel)
+
         await YtbReqTb.create({
                 _id: new mongoose.Types.ObjectId(),
                 ytbChannel: req.body.ytbChannel,
