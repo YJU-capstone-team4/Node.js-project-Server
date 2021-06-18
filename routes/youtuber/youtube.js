@@ -416,7 +416,7 @@ router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
 });
 
 // 크롤링 결과(간단한 프로필) 값을 저장하는 코드
-router.post('/youtuberRequest/saved', async (req, res, next) => {
+router.post('/youtuberRequest/save/crawling', async (req, res, next) => {
     try {
         // const result = []// 함수 실행 return 값 반환
         console.log('신청 유튜버 프로필 저장 시작')
