@@ -404,7 +404,7 @@ router.post('/youtuberRequest/:youtuber', async (req, res, next) => {
     })
     .catch(err => {
         // error 처리
-        console.log('유튜버 프로필 크롤링 실패')
+        console.log('유튜버 프로필 크롤링 실패', err)
         res.status(500).json({
             error: 'Internal Server Error'
         });
