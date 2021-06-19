@@ -138,11 +138,23 @@ router.post('/address/crawling/search', async (req, res, next) => {
         //     })
         // }
 
-        array = req.body.addressData
+        addressData = {
+            "crawlingPlatform" : req.body.crawlingPlatform,
+            "data": [
+                {
+                    "crawlingStore": req.body.data[0].crawlingStore,
+                    "address": req.body.data[0].address,
+                    "crawlingLocation": {
+                        "lat": req.body.data[0].lat,
+                        "lng": req.body.data[0].lng
+                    }
+                }
+            ]
+        }
 
-        console.log(array)
+        console.log(addressData)
 
-        io.emit('addressData', array);
+        io.emit('addressData', addressData);
     } catch (err) {
         res.status(500).json({
             error : 'Internal Server Error'
