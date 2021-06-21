@@ -248,7 +248,6 @@ async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbA
             YtbCrawlingTb.update({ ytbChannel : channel }, { $push : { video : videos } }).exec()
             
             res.status(200).json('유튜버 DB 영상 저장 성공')
-            res.end()
             console.log('유튜버 DB 영상 저장 성공')
 
         } else {
