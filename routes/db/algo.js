@@ -268,6 +268,7 @@ async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbA
 
 exports.saveVideo = saveVideo;
 
+// minusVideo await용 함수
 function minus(checkYoutuber) {
     console.log('algo.minus 실행')
     return checkYoutuber.videoCount - 1
@@ -282,9 +283,9 @@ async function minusVideo(YtbCrawlingTb, channel) {
         var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
         var count = await minus(checkYoutuber)
 
-        // await YtbCrawlingTb.update({ ytbChannel: channel }, {
-        //     videoCount: count
-        // }).exec();
+        await YtbCrawlingTb.update({ ytbChannel: channel }, {
+            videoCount: count
+        }).exec();
         // console.log(access.adminAccess)
 
         await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
