@@ -194,14 +194,14 @@ router.post('/address/crawling/search', async (req, res, next) => {
 
         if(req.body.crawlingPlatform == 'Kakao') {
             io.emit('addressData', addressData);
-            res.status(200).json({
-                message : "addressData 전송 성공"
-            })
+            console.log("addressData 전송 성공")
         } else {
-            res.status(200).json({
-                message : "addressData 저장 성공"
-            })
+            console.log("addressData 저장 성공")
         }
+        
+        res.status(200).json({
+            message : "3사 검색 성공"
+        })
     } catch (err) {
         res.status(500).json({
             error : 'Internal Server Error'
