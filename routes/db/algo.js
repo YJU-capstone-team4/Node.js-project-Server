@@ -277,10 +277,12 @@ async function minusVideo(YtbCrawlingTb, channel) {
         var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
         var count = checkYoutuber.videoCount - 1
 
-        YtbCrawlingTb.update({ ytbChannel: channel }, {
+        await YtbCrawlingTb.update({ ytbChannel: channel }, {
             videoCount: count
         }).exec();
         // console.log(access.adminAccess)
+
+        await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
 
     } catch (err) {
         // res.status(500).json({
