@@ -156,6 +156,10 @@ router.post('/address/crawling/search', async (req, res, next) => {
         console.log(addressData)
 
         io.emit('addressData', addressData);
+
+        res.status(200).json({
+            message : "전송 성공"
+        })
     } catch (err) {
         res.status(500).json({
             error : 'Internal Server Error'
