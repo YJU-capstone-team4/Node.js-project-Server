@@ -273,9 +273,21 @@ exports.saveVideo = saveVideo;
 //     console.log('algo.minus 실행')
 //     return checkYoutuber.videoCount - 1
 // }
+
+var minusCount = 0
+var minusChannel = ''
+var minusVideoCount = 0
 function minus(YtbCrawlingTb, checkYoutuber, channel) {
     return new Promise(function(resolve, reject) {
-        var items = checkYoutuber.videoCount - 1;
+        if (channel != minusChannel) {
+            minusCount = 0
+            minusChannel = channel
+            minusVideoCount = checkYoutuber.videoCount
+        } else {
+            minusCount++
+        }
+
+        var items = minusVideoCount - minusCount;
         console.log('minus 함수 : ', items)
 
         YtbCrawlingTb.update({ ytbChannel: channel }, {
