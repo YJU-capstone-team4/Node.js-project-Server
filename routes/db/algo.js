@@ -275,7 +275,7 @@ async function minusVideo(YtbCrawlingTb, channel) {
 
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
         var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel }).videoCount
-        var count = checkYoutuber.videoCount - 1
+        // var count = checkYoutuber.videoCount - 1
         console.log("videoCount : ", checkYoutuber)
 
         // await YtbCrawlingTb.update({ ytbChannel: channel }, {
@@ -283,7 +283,7 @@ async function minusVideo(YtbCrawlingTb, channel) {
         // }).exec();
         // console.log(access.adminAccess)
 
-        await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
+        // await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
 
     } catch (err) {
         // res.status(500).json({
