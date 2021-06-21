@@ -121,25 +121,62 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 // });
 
 // < 주소 전달 > 크롤링 -> 백 -> 프론트 서버
+// router.post('/address/crawling/search', async (req, res, next) => {
+//     try {
+//         // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
+//         // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
+
+//         // console.log(req.params.addressId)
+//         // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
+        
+//         // array = []
+
+//         // for( i = 0; i < 3; i++) {
+//         //     array.push({
+//         //         'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
+//         //         'data' : req.body.addressData[i].data
+//         //     })
+//         // }
+//         console.log('crawlingPlatform : ', req.body.crawlingPlatform)
+
+//         addressData = {
+//             "crawlingPlatform" : req.body.crawlingPlatform,
+//             "data": [
+//                 {
+//                     "crawlingStore": req.body.crawlingStore,
+//                     "address": req.body.address,
+//                     "crawlingLocation": {
+//                         "lat": req.body.lat,
+//                         "lng": req.body.lng
+//                     }
+//                 }
+//             ]
+//         }
+
+//         console.log(addressData)
+
+//         io.emit('addressData', addressData);
+
+//         res.status(200).json({
+//             message : "전송 성공"
+//         })
+//     } catch (err) {
+//         res.status(500).json({
+//             error : 'Internal Server Error'
+//         })
+//     }
+// });
+
+// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버2
+var addressData = []
 router.post('/address/crawling/search', async (req, res, next) => {
     try {
-        // 민혁이에게 req.params.addressId를 보내는 로직을 짜야 함 - 수정
-        // 현재는 코드 실행이지만 후에는 fetch를 사용하여 html 통신으로 보내야 함 - 수정
-
-        // console.log(req.params.addressId)
-        // var result = await adminStore(req.params.addressId) // 3사 지도 크롤링 결과
-        
-        // array = []
-
-        // for( i = 0; i < 3; i++) {
-        //     array.push({
-        //         'crawlingPlatform': req.body.addressData[i].crawlingPlatform,
-        //         'data' : req.body.addressData[i].data
-        //     })
-        // }
         console.log('crawlingPlatform : ', req.body.crawlingPlatform)
+        if (req.body.crawlingPlatform == 'Google') {
+            addressData = []
+        }
 
-        addressData = {
+        addressData.push({
             "crawlingPlatform" : req.body.crawlingPlatform,
             "data": [
                 {
@@ -151,15 +188,20 @@ router.post('/address/crawling/search', async (req, res, next) => {
                     }
                 }
             ]
-        }
+        })
 
         console.log(addressData)
 
-        io.emit('addressData', addressData);
-
-        res.status(200).json({
-            message : "전송 성공"
-        })
+        if(req.body.crawlingPlatform == 'Kakao') {
+            io.emit('addressData', addressData);
+            res.status(200).json({
+                message : "addressData 전송 성공"
+            })
+        } else {
+            res.status(200).json({
+                message : "addressData 저장 성공"
+            })
+        }
     } catch (err) {
         res.status(500).json({
             error : 'Internal Server Error'
