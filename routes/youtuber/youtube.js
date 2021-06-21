@@ -387,11 +387,11 @@ router.post('/youtuberRequest', async (req, res, next) => {
     // const result = req.params
     // console.log(result)
     // console.log(result.ytbChannel)
-    console.log(req.body.youtuber)
+    console.log(req.body.ytbChannel)
     console.log(user._id)
 
     // 프로필 크롤링 URL
-    var a = process.env.USER_CRAWLING_URL + req.body.youtuber + '&userId=' + req.body.user_id + '&userTbId=' + user._id
+    var a = process.env.USER_CRAWLING_URL + req.body.ytbChannel + '&userId=' + req.body.user_id + '&userTbId=' + user._id
     console.log(a)
     var url = encodeURI(a)
     console.log(url)
