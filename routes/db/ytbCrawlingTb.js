@@ -621,7 +621,6 @@ router.post('/crawling/save/video', (req, res, next) => {
             req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
 
         algo.sendFront(YtbCrawlingTb)
-        req.end()
         res.end()
     }
     
