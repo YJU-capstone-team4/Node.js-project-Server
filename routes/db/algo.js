@@ -273,7 +273,7 @@ exports.saveVideo = saveVideo;
 //     console.log('algo.minus 실행')
 //     return checkYoutuber.videoCount - 1
 // }
-function minus(YtbCrawlingTb, checkYoutuber) {
+function minus(YtbCrawlingTb, checkYoutuber, channel) {
     return new Promise(function(resolve, reject) {
         var items = checkYoutuber.videoCount - 1;
         console.log('minus 함수 : ', items)
@@ -293,7 +293,7 @@ async function minusVideo(YtbCrawlingTb, channel) {
 
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
         var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
-        var count = await minus(YtbCrawlingTb, checkYoutuber)
+        var count = await minus(YtbCrawlingTb, checkYoutuber, channel)
 
         // await YtbCrawlingTb.update({ ytbChannel: channel }, {
         //     videoCount: count
