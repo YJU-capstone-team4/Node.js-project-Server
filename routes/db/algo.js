@@ -274,13 +274,13 @@ exports.saveVideo = saveVideo;
 //     return checkYoutuber.videoCount - 1
 // }
 
-var minusCount = 0
-var minusChannel = ''
-var minusVideoCount = 0
+var minusCount = 1  // 제외 비디오 갯수
+var minusChannel = ''   // 제외할 유튜버 이름
+var minusVideoCount = 0 // 전체 비디오 갯수
 function minus(YtbCrawlingTb, checkYoutuber, channel) {
     return new Promise(function(resolve, reject) {
         if (channel != minusChannel) {
-            minusCount = 0
+            minusCount = 1
             minusChannel = channel
             minusVideoCount = checkYoutuber.videoCount
         } else {
