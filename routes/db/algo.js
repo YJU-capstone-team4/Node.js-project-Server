@@ -281,7 +281,6 @@ async function minusVideo(YtbCrawlingTb, channel) {
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
         var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
         var count = await minus(checkYoutuber)
-        console.log("videoCount : ", checkYoutuber)
 
         // await YtbCrawlingTb.update({ ytbChannel: channel }, {
         //     videoCount: count
