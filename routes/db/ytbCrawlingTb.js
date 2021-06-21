@@ -137,16 +137,17 @@ router.post('/address/crawling/search', async (req, res, next) => {
         //         'data' : req.body.addressData[i].data
         //     })
         // }
+        console.log('crawlingPlatform : ', req.body.crawlingPlatform)
 
         addressData = {
             "crawlingPlatform" : req.body.crawlingPlatform,
             "data": [
                 {
-                    "crawlingStore": req.body.data[0].crawlingStore,
-                    "address": req.body.data[0].address,
+                    "crawlingStore": req.body.crawlingStore,
+                    "address": req.body.address,
                     "crawlingLocation": {
-                        "lat": req.body.data[0].lat,
-                        "lng": req.body.data[0].lng
+                        "lat": req.body.lat,
+                        "lng": req.body.lng
                     }
                 }
             ]
