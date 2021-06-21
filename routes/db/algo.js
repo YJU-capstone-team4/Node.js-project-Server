@@ -268,14 +268,19 @@ async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbA
 
 exports.saveVideo = saveVideo;
 
+function minus(checkYoutuber) {
+    console.log('algo.minus 실행')
+    return checkYoutuber.videoCount - 1
+}
+
 // 데이터 수집 메인 페이지 - 유료광고 영상일 시 videoCount - 1
 async function minusVideo(YtbCrawlingTb, channel) {
     try {
         // 여기서 민혁이 코드 실행시킬 것 / 비디오 제외 유튜버 값 받아오기
 
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
-        var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel }).videoCount
-        // var count = checkYoutuber.videoCount - 1
+        var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
+        var count = await minus(checkYoutuber)
         console.log("videoCount : ", checkYoutuber)
 
         // await YtbCrawlingTb.update({ ytbChannel: channel }, {
@@ -283,7 +288,7 @@ async function minusVideo(YtbCrawlingTb, channel) {
         // }).exec();
         // console.log(access.adminAccess)
 
-        // await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
+        await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
 
     } catch (err) {
         // res.status(500).json({
