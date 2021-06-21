@@ -167,8 +167,66 @@ router.delete('/video/delete/:channelId/:videoId', async (req, res, next) => {
 //     }
 // });
 
-// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버2
+// // < 주소 전달 > 크롤링 -> 백 -> 프론트 서버2
+// var addressData = []
+// router.post('/address/crawling/search', async (req, res, next) => {
+//     try {
+//         console.log('crawlingPlatform : ', req.body.crawlingPlatform)
+//         if (req.body.crawlingPlatform == 'Google') {
+//             addressData = []
+//         }
+
+//         addressData.push({
+//             "crawlingPlatform" : req.body.crawlingPlatform,
+//             "data": [
+//                 {
+//                     "crawlingStore": req.body.crawlingStore,
+//                     "address": req.body.address,
+//                     "crawlingLocation": {
+//                         "lat": req.body.lat,
+//                         "lng": req.body.lng
+//                     }
+//                 }
+//             ]
+//         })
+
+//         console.log(addressData)
+
+//         if(req.body.crawlingPlatform == 'Kakao') {
+//             io.emit('addressData', addressData);
+//             console.log("addressData 전송 성공")
+//         } else {
+//             console.log("addressData 저장 성공")
+//         }
+        
+//         res.status(200).json({
+//             message : "3사 검색 성공"
+//         })
+//     } catch (err) {
+//         res.status(500).json({
+//             error : 'Internal Server Error'
+//         })
+//     }
+// });
+
+// < 주소 전달 > 크롤링 -> 백 -> 프론트 서버3
 var addressData = []
+var plat = ['Google', 'Naver', "Kakao"]
+// for(var i = 0; i < 3; i++) {
+    // addressData.push({
+    //     "crawlingPlatform" : plat[i],
+    //     "data": [
+    //         {
+    //             "crawlingStore": '',
+    //             "address": '',
+    //             "crawlingLocation": {
+    //                 "lat": 0,
+    //                 "lng": 0
+    //             }
+    //         }
+    //     ]
+    // })
+// }
 router.post('/address/crawling/search', async (req, res, next) => {
     try {
         console.log('crawlingPlatform : ', req.body.crawlingPlatform)
@@ -193,6 +251,38 @@ router.post('/address/crawling/search', async (req, res, next) => {
         console.log(addressData)
 
         if(req.body.crawlingPlatform == 'Kakao') {
+            if (addressData[1].crawlingPlatform != 'Naver') {
+                addressData.pop()
+
+                addressData.push({
+                    "crawlingPlatform" : 'Naver',
+                    "data": [
+                        {
+                            "crawlingStore": '',
+                            "address": '',
+                            "crawlingLocation": {
+                                "lat": 0,
+                                "lng": 0
+                            }
+                        }
+                    ]
+                })
+
+                addressData.push({
+                    "crawlingPlatform" : req.body.crawlingPlatform,
+                    "data": [
+                        {
+                            "crawlingStore": req.body.crawlingStore,
+                            "address": req.body.address,
+                            "crawlingLocation": {
+                                "lat": req.body.lat,
+                                "lng": req.body.lng
+                            }
+                        }
+                    ]
+                })
+            }
+
             io.emit('addressData', addressData);
             console.log("addressData 전송 성공")
         } else {
