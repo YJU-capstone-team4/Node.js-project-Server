@@ -609,19 +609,19 @@ router.post('/crawling/save/youtuber', (req, res, next) => {
 });
 
 // 크롤링 서버로부터 유튜버에 해당하는 비디오 저장
-router.post('/crawling/save/video', (req, res, next) => {    
+router.post('/crawling/save/video', async (req, res, next) => {    
     if (req.body.charged == true) {
         // console.log('전 charged : ', req.body.charged)
         // console.log('전 channel : ', req.body.channel)
-        algo.minusVideo(YtbCrawlingTb, req.body.channel)
-        console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1')
+        await algo.minusVideo(YtbCrawlingTb, req.body.channel)
+        await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1')
     } else {
-        algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
+        await algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
             req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
             req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
 
-        algo.sendFront(YtbCrawlingTb)
-        res.end()
+        await algo.sendFront(YtbCrawlingTb)
+        await res.end()
     }
     
     // // 비디오 갯수 계산
