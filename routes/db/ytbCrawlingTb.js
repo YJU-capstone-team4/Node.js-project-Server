@@ -614,7 +614,8 @@ router.post('/crawling/save/video', async (req, res, next) => {
         // console.log('전 charged : ', req.body.charged)
         // console.log('전 channel : ', req.body.channel)
         await algo.minusVideo(YtbCrawlingTb, req.body.channel)
-        await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1')
+        // await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1')
+        res.status(200).json('영상 제외')
     } else {
         await algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
             req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
