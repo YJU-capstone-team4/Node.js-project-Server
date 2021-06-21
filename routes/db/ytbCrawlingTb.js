@@ -614,6 +614,7 @@ router.post('/crawling/save/video', (req, res, next) => {
         // console.log('전 charged : ', req.body.charged)
         // console.log('전 channel : ', req.body.channel)
         algo.minusVideo(YtbCrawlingTb, req.body.channel)
+        console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1')
     } else {
         algo.saveVideo(YtbCrawlingTb, res, req.body.channel, req.body.videoName, req.body.thumbnail, 
             req.body.ytbAddress, req.body.hits, req.body.date, req.body.more, req.body.status, req.body.regionTag, 
