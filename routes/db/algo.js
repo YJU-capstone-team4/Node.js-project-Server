@@ -273,11 +273,16 @@ exports.saveVideo = saveVideo;
 //     console.log('algo.minus 실행')
 //     return checkYoutuber.videoCount - 1
 // }
-function minus(checkYoutuber) {
+function minus(YtbCrawlingTb, checkYoutuber) {
     return new Promise(function(resolve, reject) {
-      var items = checkYoutuber.videoCount - 1;
-      console.log('minus 함수 : ', items)
-      resolve(items)
+        var items = checkYoutuber.videoCount - 1;
+        console.log('minus 함수 : ', items)
+
+        YtbCrawlingTb.update({ ytbChannel: channel }, {
+            videoCount: items
+        }).exec();
+
+        resolve(items)
     });
 }
 
@@ -288,14 +293,14 @@ async function minusVideo(YtbCrawlingTb, channel) {
 
         // 들어가는 값들은 전부 민혁이코드.값이 될 것임
         var checkYoutuber = await YtbCrawlingTb.findOne({ ytbChannel: channel })
-        var count = await minus(checkYoutuber)
+        var count = await minus(YtbCrawlingTb, checkYoutuber)
 
-        await YtbCrawlingTb.update({ ytbChannel: channel }, {
-            videoCount: count
-        }).exec();
+        // await YtbCrawlingTb.update({ ytbChannel: channel }, {
+        //     videoCount: count
+        // }).exec();
         // console.log(access.adminAccess)
 
-        await console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
+        console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
 
     } catch (err) {
         // res.status(500).json({
