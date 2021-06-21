@@ -621,7 +621,6 @@ router.post('/crawling/save/video', async (req, res, next) => {
             req.body.storeName, req.body.storeAddress, req.body.typeStore, req.body.lat, req.body.lng)
 
         await algo.sendFront(YtbCrawlingTb)
-        await res.end()
     }
     
     // // 비디오 갯수 계산
