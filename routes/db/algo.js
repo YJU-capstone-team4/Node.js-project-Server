@@ -269,9 +269,16 @@ async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbA
 exports.saveVideo = saveVideo;
 
 // minusVideo await용 함수
+// function minus(checkYoutuber) {
+//     console.log('algo.minus 실행')
+//     return checkYoutuber.videoCount - 1
+// }
 function minus(checkYoutuber) {
-    console.log('algo.minus 실행')
-    return checkYoutuber.videoCount - 1
+    return new Promise(function(resolve, reject) {
+      var items = checkYoutuber.videoCount - 1;
+      console.log('minus 함수 : ', items)
+      resolve(items)
+    });
 }
 
 // 데이터 수집 메인 페이지 - 유료광고 영상일 시 videoCount - 1
