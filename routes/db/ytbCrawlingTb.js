@@ -304,9 +304,6 @@ var addressData = []
 router.post('/address/crawling/search', async (req, res, next) => {
     try {
         console.log('crawlingPlatform : ', req.body.crawlingPlatform)
-        if (req.body.crawlingPlatform == 'Google') {
-            addressData = []
-        }
 
         addressData.push({
             "crawlingPlatform" : req.body.crawlingPlatform,
@@ -327,6 +324,7 @@ router.post('/address/crawling/search', async (req, res, next) => {
         if(addressData.length == 3) {
             io.emit('addressData', addressData);
             console.log("addressData 전송 성공")
+            addressData = []
         } else {
             console.log("addressData 저장 성공")
         }
