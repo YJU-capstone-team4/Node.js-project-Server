@@ -288,13 +288,16 @@ function minus(YtbCrawlingTb, checkYoutuber, channel) {
         }
 
         var items = minusVideoCount - minusCount;
-        console.log('minus 함수 : ', items)
+        // console.log('minus 함수 : ', items)
+        // console.log('제거된 영상 갯수 : ', minusCount)
+        console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', items)
 
         YtbCrawlingTb.update({ ytbChannel: channel }, {
             videoCount: items
         }).exec();
 
-        resolve(items)
+        // resolve(items)
+        resolve(minusCount)
     });
 }
 
@@ -312,7 +315,8 @@ async function minusVideo(YtbCrawlingTb, channel) {
         // }).exec();
         // console.log(access.adminAccess)
 
-        console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
+        // console.log('유료광고 또는 더보기란 주소 없음으로 영상 수 -1 : ', count)
+        console.log('제거된 영상 갯수 : ', count)
 
     } catch (err) {
         // res.status(500).json({
