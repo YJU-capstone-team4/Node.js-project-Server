@@ -168,6 +168,14 @@ async function sendFrontError(ytbChannel, videoName) {
 
 exports.sendFrontError = sendFrontError
 
+// 관리자 접속 중일 때 프론트에 데이터 전송해야할 것! - 완료
+async function sendRes(res) {
+    res.status(200).json('유튜버 DB 영상 저장 성공')
+    console.log('유튜버 DB 영상 저장 성공')
+}
+
+exports.sendRes = sendRes
+
 // 크롤링서버 -> 백엔드 유튜버 저장
 async function saveYoutuber(YtbCrawlingTb, res, channel, profile, link, sub, hits, videocount) {
     try {
@@ -247,8 +255,8 @@ async function saveVideo(YtbCrawlingTb, res, channel, videoName, thumbnail, ytbA
 
             YtbCrawlingTb.update({ ytbChannel : channel }, { $push : { video : videos } }).exec()
             
-            res.status(200).json('유튜버 DB 영상 저장 성공')
-            console.log('유튜버 DB 영상 저장 성공')
+            // res.status(200).json('유튜버 DB 영상 저장 성공')
+            // console.log('유튜버 DB 영상 저장 성공')
 
         } else {
             // tip :: 영상이 같으면 수정해야할 필요가 있을 수도 있음
